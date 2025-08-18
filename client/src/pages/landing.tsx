@@ -135,20 +135,20 @@ export default function Landing() {
           </div>
         </div>
         
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/70 z-10"></div>
+        {/* Light Overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/50 z-10"></div>
         
         {/* Hero Content */}
         <div className="relative z-20 h-full flex items-center">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="text-center text-white">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 animate-fadeInUp drop-shadow-lg">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 animate-fadeInUp" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>
                 Aytaç Mert
               </h1>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 md:mb-6 animate-fadeInUp animate-delay-200 drop-shadow-lg">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 md:mb-6 animate-fadeInUp animate-delay-200" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>
                 Köpek Eğitimi Akademisi
               </h2>
-              <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 text-gray-100 max-w-4xl mx-auto animate-fadeInUp animate-delay-300 drop-shadow-md leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 text-white max-w-4xl mx-auto animate-fadeInUp animate-delay-300 leading-relaxed" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.9)' }}>
                 Sıfırdan eğitmen seviyesine. Kendi köpeğinizi eğitin veya profesyonel eğitmen olun.
                 25 yıllık deneyimimizle en kaliteli eğitimi sunuyoruz.
               </p>

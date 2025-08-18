@@ -217,9 +217,9 @@
 
 .slider-track img {
   object-fit: cover;
-  object-position: center 20%;
-  filter: brightness(0.8);
-  transition: filter 0.3s ease;
+  object-position: center center;
+  filter: none;
+  transition: all 0.3s ease;
   height: 100%;
   width: 100%;
 }
