@@ -86,7 +86,7 @@ export default function Landing() {
       <Navigation />
 
       {/* Hero Section with Background Image Slider */}
-      <section className="relative h-screen min-h-[600px] overflow-hidden">
+      <section className="hero-section relative h-[80vh] min-h-[700px] max-h-[900px] overflow-hidden">
         {/* Background Image Slider */}
         <div className="absolute inset-0 slider-container">
           <div className="slider-track h-full">
@@ -94,68 +94,68 @@ export default function Landing() {
               <img
                 src={resim1}
                 alt="Köpek eğitimi - Profesyonel antrenman"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
             <div className="flex-shrink-0 w-full h-full relative">
               <img
                 src={resim2}
                 alt="Köpek eğitimi - Uzman eğitmen"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
             <div className="flex-shrink-0 w-full h-full relative">
               <img
                 src={resim3}
                 alt="Köpek eğitimi - Pratik çalışma"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
             <div className="flex-shrink-0 w-full h-full relative">
               <img
                 src={resim4}
                 alt="Köpek eğitimi - İleri seviye"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
             <div className="flex-shrink-0 w-full h-full relative">
               <img
                 src={resim5}
                 alt="Köpek eğitimi - Çocuk dostu"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
             <div className="flex-shrink-0 w-full h-full relative">
               <img
                 src={resim6}
                 alt="Köpek eğitimi - Temel komutlar"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
           </div>
         </div>
         
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/70 z-10"></div>
         
         {/* Hero Content */}
         <div className="relative z-20 h-full flex items-center">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="text-center text-white">
-              <h1 className="text-5xl md:text-7xl font-bold mb-8 animate-fadeInUp">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 animate-fadeInUp drop-shadow-lg">
                 Aytaç Mert
               </h1>
-              <h2 className="text-3xl md:text-5xl font-semibold mb-6 animate-fadeInUp animate-delay-200">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 md:mb-6 animate-fadeInUp animate-delay-200 drop-shadow-lg">
                 Köpek Eğitimi Akademisi
               </h2>
-              <p className="text-xl md:text-2xl mb-12 text-gray-100 max-w-4xl mx-auto animate-fadeInUp animate-delay-300">
+              <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 text-gray-100 max-w-4xl mx-auto animate-fadeInUp animate-delay-300 drop-shadow-md leading-relaxed">
                 Sıfırdan eğitmen seviyesine. Kendi köpeğinizi eğitin veya profesyonel eğitmen olun.
                 25 yıllık deneyimimizle en kaliteli eğitimi sunuyoruz.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fadeInUp animate-delay-400">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center animate-fadeInUp animate-delay-400">
                 <Button
                   size="lg"
-                  className="bg-white text-black hover:bg-gray-200 font-semibold px-8 py-4 text-lg hover-lift"
+                  className="bg-white text-black hover:bg-gray-200 font-semibold px-6 md:px-8 py-3 md:py-4 text-base md:text-lg hover-lift shadow-xl"
                   onClick={() => window.location.href = "/api/login"}
                   data-testid="button-register"
                 >
@@ -164,7 +164,7 @@ export default function Landing() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-black font-semibold px-8 py-4 text-lg hover-lift"
+                  className="border-white text-white hover:bg-white hover:text-black font-semibold px-6 md:px-8 py-3 md:py-4 text-base md:text-lg hover-lift shadow-xl"
                   onClick={() => scrollToSection("courses")}
                   data-testid="button-view-courses"
                 >
