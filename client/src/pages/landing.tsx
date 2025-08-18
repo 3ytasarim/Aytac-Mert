@@ -78,7 +78,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden" style={{position: 'relative', zIndex: 0}}>
+    <div className="min-h-screen bg-background" style={{overflow: 'hidden visible'}}>
       <Navigation />
 
       {/* Hero Section with Professional Slider */}
