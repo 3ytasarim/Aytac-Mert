@@ -641,8 +641,8 @@
 
 .scroll-down-arrow:hover .chevron:before,
 .scroll-down-arrow:hover .chevron:after {
-  background: #3b82f6;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+  background: #374151;
+  box-shadow: 0 0 15px rgba(55, 65, 81, 0.8);
 }
 
 /* Section Headers */
@@ -717,7 +717,7 @@
 .title-underline {
   width: 80px;
   height: 4px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #000000 100%);
   margin: 0 auto;
   border-radius: 2px;
   animation: underlineExpand 2s ease-out;
@@ -758,7 +758,7 @@
   top: 0;
   width: 5px;
   height: 100%;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
   border-radius: 0 10px 10px 0;
   animation: barGrow 1s ease-out;
 }
@@ -939,7 +939,7 @@
 /* CTA Section */
 .cta-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #000000 100%);
   color: white;
   text-align: center;
 }
@@ -971,7 +971,7 @@
 
 .cta-btn-primary {
   background: white !important;
-  color: #3b82f6 !important;
+  color: #1f2937 !important;
   border: none !important;
   padding: 1rem 2rem;
   font-size: 1.1rem;
@@ -981,7 +981,7 @@
 
 .cta-btn-primary:hover {
   background: #f8fafc !important;
-  color: #3b82f6 !important;
+  color: #000000 !important;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
