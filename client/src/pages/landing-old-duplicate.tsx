@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -31,11 +32,18 @@ export default function Landing() {
     isOpen: false,
     course: null,
   });
+  const [scrollY, setScrollY] = useState(0);
   const { toast } = useToast();
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
   });
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
@@ -77,7 +85,7 @@ export default function Landing() {
   };
 
   return (
-    <>
+    <div className="landing-page">
       <Navigation />
 
       {/* Hero Section */}
@@ -438,6 +446,6 @@ export default function Landing() {
         onClose={() => setPaymentModal({ isOpen: false, course: null })}
         course={paymentModal.course}
       />
-    </>
+    </div>
   );
 }
