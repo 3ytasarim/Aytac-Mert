@@ -90,46 +90,46 @@ export default function Landing() {
         {/* Background Image Slider */}
         <div className="absolute inset-0 slider-container">
           <div className="slider-track h-full">
-            <div className="flex-shrink-0 w-full h-full relative">
+            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim1}
                 alt="Köpek eğitimi - Profesyonel antrenman"
-                className="w-full h-full"
+                style={{ maxHeight: '100%', width: 'auto' }}
               />
             </div>
-            <div className="flex-shrink-0 w-full h-full relative">
+            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim2}
                 alt="Köpek eğitimi - Uzman eğitmen"
-                className="w-full h-full"
+                style={{ maxHeight: '100%', width: 'auto' }}
               />
             </div>
-            <div className="flex-shrink-0 w-full h-full relative">
+            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim3}
                 alt="Köpek eğitimi - Pratik çalışma"
-                className="w-full h-full"
+                style={{ maxHeight: '100%', width: 'auto' }}
               />
             </div>
-            <div className="flex-shrink-0 w-full h-full relative">
+            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim4}
                 alt="Köpek eğitimi - İleri seviye"
-                className="w-full h-full"
+                style={{ maxHeight: '100%', width: 'auto' }}
               />
             </div>
-            <div className="flex-shrink-0 w-full h-full relative">
+            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim5}
                 alt="Köpek eğitimi - Çocuk dostu"
-                className="w-full h-full"
+                style={{ maxHeight: '100%', width: 'auto' }}
               />
             </div>
-            <div className="flex-shrink-0 w-full h-full relative">
+            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim6}
                 alt="Köpek eğitimi - Temel komutlar"
-                className="w-full h-full"
+                style={{ maxHeight: '100%', width: 'auto' }}
               />
             </div>
           </div>
