@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import StudentDashboard from "@/pages/student-dashboard";
 import AdminDashboard from "@/pages/admin-dashboard";
+import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,10 +33,14 @@ function Router() {
           ) : (
             <Route path="/" component={StudentDashboard} />
           )}
+          <Route path="/hakkimizda" component={About} />
           <Route component={NotFound} />
         </>
       ) : (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/hakkimizda" component={About} />
+        </>
       )}
     </Switch>
   );
