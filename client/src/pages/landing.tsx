@@ -90,84 +90,30 @@ export default function Landing() {
         {/* Background Image Slider */}
         <div className="absolute inset-0 slider-container">
           <div className="slider-track h-full">
-            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
-              <img
-                src={resim1}
-                alt="Köpek eğitimi - Profesyonel antrenman"
-                style={{ 
-                  height: '85%', 
-                  width: 'auto',
-                  maxWidth: '60%',
-                  borderRadius: '12px',
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
-                }}
-              />
-            </div>
-            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
-              <img
-                src={resim2}
-                alt="Köpek eğitimi - Uzman eğitmen"
-                style={{ 
-                  height: '85%', 
-                  width: 'auto',
-                  maxWidth: '60%',
-                  borderRadius: '12px',
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
-                }}
-              />
-            </div>
-            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
-              <img
-                src={resim3}
-                alt="Köpek eğitimi - Pratik çalışma"
-                style={{ 
-                  height: '85%', 
-                  width: 'auto',
-                  maxWidth: '60%',
-                  borderRadius: '12px',
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
-                }}
-              />
-            </div>
-            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
-              <img
-                src={resim4}
-                alt="Köpek eğitimi - İleri seviye"
-                style={{ 
-                  height: '85%', 
-                  width: 'auto',
-                  maxWidth: '60%',
-                  borderRadius: '12px',
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
-                }}
-              />
-            </div>
-            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
-              <img
-                src={resim5}
-                alt="Köpek eğitimi - Çocuk dostu"
-                style={{ 
-                  height: '85%', 
-                  width: 'auto',
-                  maxWidth: '60%',
-                  borderRadius: '12px',
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
-                }}
-              />
-            </div>
-            <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
-              <img
-                src={resim6}
-                alt="Köpek eğitimi - Temel komutlar"
-                style={{ 
-                  height: '85%', 
-                  width: 'auto',
-                  maxWidth: '60%',
-                  borderRadius: '12px',
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
-                }}
-              />
-            </div>
+            <div 
+              className="slide-item"
+              style={{ backgroundImage: `url(${resim1})` }}
+            ></div>
+            <div 
+              className="slide-item"
+              style={{ backgroundImage: `url(${resim2})` }}
+            ></div>
+            <div 
+              className="slide-item"
+              style={{ backgroundImage: `url(${resim3})` }}
+            ></div>
+            <div 
+              className="slide-item"
+              style={{ backgroundImage: `url(${resim4})` }}
+            ></div>
+            <div 
+              className="slide-item"
+              style={{ backgroundImage: `url(${resim5})` }}
+            ></div>
+            <div 
+              className="slide-item"
+              style={{ backgroundImage: `url(${resim6})` }}
+            ></div>
           </div>
         </div>
         

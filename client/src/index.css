@@ -228,15 +228,18 @@
   justify-content: center;
 }
 
-.slider-track img {
-  filter: none;
+.slide-item {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
   transition: all 0.3s ease;
-  /* Images will be sized by inline styles */
 }
 
-.slider-track img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.7) !important;
+.slide-item:hover {
+  transform: scale(1.01);
 }
 
 /* Responsive adjustments for portrait images */
@@ -252,22 +255,12 @@
     height: 80vh !important;
     min-height: 600px !important;
   }
-  
-  .slider-track img {
-    height: 75% !important;
-    max-width: 70% !important;
-  }
 }
 
 @media (max-width: 480px) {
   .hero-section {
     height: 70vh !important;
     min-height: 500px !important;
-  }
-  
-  .slider-track img {
-    height: 70% !important;
-    max-width: 80% !important;
   }
 }
 
