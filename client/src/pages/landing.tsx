@@ -84,6 +84,11 @@ export default function Landing() {
       <section className="hero-section" id="home">
         <div className="hero-background">
           <ProfessionalSlider />
+          <div className="scroll-down-arrow" onClick={() => scrollToSection('courses')}>
+            <div className="chevron"></div>
+            <div className="chevron"></div>
+            <div className="chevron"></div>
+          </div>
         </div>
       </section>
 

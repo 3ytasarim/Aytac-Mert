@@ -247,8 +247,29 @@
   height: 100%;
   border-radius: 0;
   overflow: hidden;
-  background: #fff;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #000000 50%, #0d0d0d 75%, #000000 100%);
+  background-size: 400% 400%, 300% 300%, 200% 200%, 100% 100%;
+  animation: backgroundFlow 15s ease-in-out infinite;
   margin-left: calc(-50vw + 50%);
+}
+
+@keyframes backgroundFlow {
+  0%, 100% { 
+    background-position: 0% 50%, 0% 0%, 0% 0%, 0% 0%; 
+  }
+  25% { 
+    background-position: 100% 50%, 100% 100%, 50% 50%, 0% 0%; 
+  }
+  50% { 
+    background-position: 100% 100%, 0% 100%, 100% 0%, 0% 0%; 
+  }
+  75% { 
+    background-position: 0% 100%, 100% 0%, 0% 100%, 0% 0%; 
+  }
 }
 
 .slides-wrapper {
@@ -547,7 +568,82 @@
   height: 100%;
 }
 
-/* Hero content styles removed since hero now only contains slider */
+/* Scroll Down Arrow Animation */
+.scroll-down-arrow {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 200;
+}
+
+.chevron {
+  position: absolute;
+  width: 28px;
+  height: 8px;
+  opacity: 0;
+  transform: scale3d(0.5, 0.5, 0.5);
+  animation: move 3s ease-out infinite;
+}
+
+.chevron:first-child {
+  animation: move 3s ease-out 1s infinite;
+}
+
+.chevron:nth-child(2) {
+  animation: move 3s ease-out 2s infinite;
+}
+
+.chevron:before,
+.chevron:after {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 51%;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.chevron:before {
+  left: 0;
+  transform: skew(0deg, 30deg);
+}
+
+.chevron:after {
+  right: 0;
+  width: 50%;
+  transform: skew(0deg, -30deg);
+}
+
+@keyframes move {
+  25% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 1;
+    transform: translateY(30px);
+  }
+  67% {
+    opacity: 1;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(55px) scale3d(0.5, 0.5, 0.5);
+  }
+}
+
+.scroll-down-arrow:hover .chevron {
+  animation-duration: 1s;
+}
+
+.scroll-down-arrow:hover .chevron:before,
+.scroll-down-arrow:hover .chevron:after {
+  background: #3b82f6;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+}
 
 /* Section Headers */
 .section-header {
