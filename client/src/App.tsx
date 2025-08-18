@@ -36,14 +36,12 @@ function Router() {
           )}
           <Route path="/hakkimizda" component={About} />
           <Route path="/iletisim" component={Contact} />
-          <Route component={NotFound} />
         </>
       ) : (
         <>
           <Route path="/" component={Landing} />
           <Route path="/hakkimizda" component={About} />
           <Route path="/iletisim" component={Contact} />
-          <Route component={NotFound} />
         </>
       )}
     </Switch>
