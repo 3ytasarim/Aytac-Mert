@@ -498,6 +498,10 @@
 }
 
 @media (max-width: 768px) {
+  .scroll-down-arrow {
+    bottom: 60px;
+  }
+  
   .slide-indicators {
     bottom: 15px;
     right: 20px;
@@ -571,7 +575,7 @@
 /* Scroll Down Arrow Animation */
 .scroll-down-arrow {
   position: absolute;
-  bottom: 30px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
