@@ -82,7 +82,7 @@ export default function Landing() {
       <Navigation />
 
       {/* Hero Section with Professional Slider */}
-      <section className="hero-section relative h-screen min-h-[800px] overflow-hidden">
+      <section className="hero-section relative h-screen min-h-[800px] overflow-hidden" style={{contain: 'layout style paint'}}>
         <ProfessionalSlider />
       </section>
 

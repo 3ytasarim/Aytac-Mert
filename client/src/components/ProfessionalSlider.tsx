@@ -127,13 +127,7 @@ export function ProfessionalSlider() {
                     </div>
                   </div>
                 </div>
-                <div 
-                  className="slide-bg" 
-                  style={{backgroundImage: `url(${slide.image})`}}
-                  data-current={state === 'current' ? 'true' : undefined}
-                  data-next={state === 'next' ? 'true' : undefined}
-                  data-previous={state === 'previous' ? 'true' : undefined}
-                ></div>
+
               </div>
             );
           })}
