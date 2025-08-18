@@ -67,14 +67,14 @@ export function Navigation() {
                 Hakkımızda
                 <span className="nav-underline"></span>
               </a>
-              <button
-                onClick={() => scrollToSection("contact")}
+              <a
+                href="/iletisim"
                 className="nav-link relative px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                 data-testid="nav-contact"
               >
                 İletişim
                 <span className="nav-underline"></span>
-              </button>
+              </a>
             </div>
           </div>
 
