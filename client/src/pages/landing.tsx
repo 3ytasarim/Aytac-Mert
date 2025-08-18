@@ -260,7 +260,7 @@ export default function Landing() {
                   href="https://api.whatsapp.com/send?phone=905532658445&text=Merhaba%2C+k%C3%B6pek+e%C4%9Fitimi+hakk%C4%B1nda+bilgi+almak+istiyorum."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
+                  className="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
                   data-testid="link-whatsapp"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -271,7 +271,7 @@ export default function Landing() {
                   href="https://www.facebook.com/uzmank9kopekegitimi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
+                  className="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
                   data-testid="link-facebook"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -282,7 +282,7 @@ export default function Landing() {
                   href="https://www.instagram.com/uzmank9kopekegitimi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 hover:from-pink-600 hover:via-purple-600 hover:to-orange-600 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
+                  className="w-10 h-10 bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 hover:from-pink-600 hover:via-purple-600 hover:to-orange-600 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
                   data-testid="link-instagram"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -293,7 +293,7 @@ export default function Landing() {
                   href="https://www.youtube.com/channel/UCaCxjvc0ROGZJbcwYoMRYng"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
+                  className="w-10 h-10 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl"
                   data-testid="link-youtube"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
