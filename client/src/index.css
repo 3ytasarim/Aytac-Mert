@@ -206,7 +206,17 @@
 .slider-container {
   overflow: hidden;
   position: relative;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  background: 
+    radial-gradient(ellipse at top left, rgba(30, 58, 138, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(15, 23, 42, 0.4) 0%, transparent 50%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+  background-size: 200% 200%;
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .slider-track {
@@ -224,6 +234,11 @@
   /* Images will be sized by inline styles */
 }
 
+.slider-track img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.7) !important;
+}
+
 /* Responsive adjustments for portrait images */
 @media (max-width: 1200px) {
   .hero-section {
@@ -237,12 +252,22 @@
     height: 80vh !important;
     min-height: 600px !important;
   }
+  
+  .slider-track img {
+    height: 75% !important;
+    max-width: 70% !important;
+  }
 }
 
 @media (max-width: 480px) {
   .hero-section {
     height: 70vh !important;
     min-height: 500px !important;
+  }
+  
+  .slider-track img {
+    height: 70% !important;
+    max-width: 80% !important;
   }
 }
 

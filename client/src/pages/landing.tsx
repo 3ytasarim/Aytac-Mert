@@ -94,42 +94,78 @@ export default function Landing() {
               <img
                 src={resim1}
                 alt="Köpek eğitimi - Profesyonel antrenman"
-                style={{ maxHeight: '100%', width: 'auto' }}
+                style={{ 
+                  height: '85%', 
+                  width: 'auto',
+                  maxWidth: '60%',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+                }}
               />
             </div>
             <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim2}
                 alt="Köpek eğitimi - Uzman eğitmen"
-                style={{ maxHeight: '100%', width: 'auto' }}
+                style={{ 
+                  height: '85%', 
+                  width: 'auto',
+                  maxWidth: '60%',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+                }}
               />
             </div>
             <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim3}
                 alt="Köpek eğitimi - Pratik çalışma"
-                style={{ maxHeight: '100%', width: 'auto' }}
+                style={{ 
+                  height: '85%', 
+                  width: 'auto',
+                  maxWidth: '60%',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+                }}
               />
             </div>
             <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim4}
                 alt="Köpek eğitimi - İleri seviye"
-                style={{ maxHeight: '100%', width: 'auto' }}
+                style={{ 
+                  height: '85%', 
+                  width: 'auto',
+                  maxWidth: '60%',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+                }}
               />
             </div>
             <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim5}
                 alt="Köpek eğitimi - Çocuk dostu"
-                style={{ maxHeight: '100%', width: 'auto' }}
+                style={{ 
+                  height: '85%', 
+                  width: 'auto',
+                  maxWidth: '60%',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+                }}
               />
             </div>
             <div className="flex-shrink-0 w-full h-full flex items-center justify-center">
               <img
                 src={resim6}
                 alt="Köpek eğitimi - Temel komutlar"
-                style={{ maxHeight: '100%', width: 'auto' }}
+                style={{ 
+                  height: '85%', 
+                  width: 'auto',
+                  maxWidth: '60%',
+                  borderRadius: '12px',
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+                }}
               />
             </div>
           </div>
