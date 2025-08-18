@@ -580,6 +580,12 @@
   transform: translateX(-50%);
   cursor: pointer;
   z-index: 200;
+  padding: 10px;
+  transition: transform 0.2s ease;
+}
+
+.scroll-down-arrow:hover {
+  transform: translateX(-50%) scale(1.1);
 }
 
 .chevron {
@@ -589,6 +595,7 @@
   opacity: 0;
   transform: scale3d(0.5, 0.5, 0.5);
   animation: move 3s ease-out infinite;
+  pointer-events: none;
 }
 
 .chevron:first-child {
@@ -640,7 +647,8 @@
 }
 
 .scroll-down-arrow:hover .chevron {
-  animation-duration: 1s;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-in-out;
 }
 
 .scroll-down-arrow:hover .chevron:before,
