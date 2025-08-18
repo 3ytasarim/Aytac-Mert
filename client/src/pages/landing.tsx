@@ -81,74 +81,9 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Hero Section with Single Background */}
+      {/* Hero Section with Professional Slider */}
       <section className="hero-section relative h-screen min-h-[800px] overflow-hidden">
-        {/* Single Background Image */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${resim1})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        ></div>
-        
-        {/* Dark Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/70 z-10"></div>
-        
-        {/* Hero Content */}
-        <div className="relative z-20 h-full flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="text-center text-white">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 animate-fadeInUp" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>
-                Aytaç Mert
-              </h1>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 md:mb-6 animate-fadeInUp animate-delay-200" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>
-                Köpek Eğitimi Akademisi
-              </h2>
-              <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 text-white max-w-4xl mx-auto animate-fadeInUp animate-delay-300 leading-relaxed" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.9)' }}>
-                Sıfırdan eğitmen seviyesine. Kendi köpeğinizi eğitin veya profesyonel eğitmen olun.
-                25 yıllık deneyimimizle en kaliteli eğitimi sunuyoruz.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center animate-fadeInUp animate-delay-400">
-                <Button
-                  size="lg"
-                  className="bg-white text-black hover:bg-gray-200 font-semibold px-6 md:px-8 py-3 md:py-4 text-base md:text-lg hover-lift shadow-xl"
-                  onClick={() => window.location.href = "/api/login"}
-                  data-testid="button-register"
-                >
-                  Hemen Başla
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-black font-semibold px-6 md:px-8 py-3 md:py-4 text-base md:text-lg hover-lift shadow-xl"
-                  onClick={() => scrollToSection("courses")}
-                  data-testid="button-view-courses"
-                >
-                  Kursları İncele
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Training Photos Slider */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
-              Eğitim Fotoğrafları
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Profesyonel köpek eğitimi sürecimizden kareler
-            </p>
-          </div>
-          
-          <ProfessionalSlider />
-        </div>
+        <ProfessionalSlider />
       </section>
 
       {/* Courses Section */}

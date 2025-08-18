@@ -139,34 +139,7 @@ export function ProfessionalSlider() {
           })}
         </div>
 
-        <div className="slides-infos">
-          {slides.map((slide, index) => {
-            const state = getSlideState(index);
-            return (
-              <div 
-                key={index}
-                className="slide-info" 
-                data-current={state === 'current' ? 'true' : undefined}
-                data-next={state === 'next' ? 'true' : undefined}
-                data-previous={state === 'previous' ? 'true' : undefined}
-              >
-                <div className="slide-info-inner">
-                  <div className="slide-info-text-wrapper">
-                    <div className="slide-info-text" data-title="true">
-                      <span>{slide.title}</span>
-                    </div>
-                    <div className="slide-info-text" data-subtitle="true">
-                      <span>{slide.subtitle}</span>
-                    </div>
-                    <div className="slide-info-text" data-description="true">
-                      <span>{slide.description}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+
       </div>
 
       <button 
