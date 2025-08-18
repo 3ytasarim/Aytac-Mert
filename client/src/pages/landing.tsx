@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { Navigation } from "@/components/ui/navigation";
 import type { Course } from "@shared/schema";
 import { z } from "zod";
 import { ProfessionalSlider } from "@/components/ProfessionalSlider";
+import { ChevronDown, Star, Users, Award, Clock } from "lucide-react";
 
 const contactFormSchema = insertContactSchema.extend({
   fullName: z.string().min(2, "Ad soyad en az 2 karakter olmalıdır"),
@@ -31,11 +32,18 @@ export default function Landing() {
     isOpen: false,
     course: null,
   });
+  const [scrollY, setScrollY] = useState(0);
   const { toast } = useToast();
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
   });
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
@@ -77,45 +85,146 @@ export default function Landing() {
   };
 
   return (
-    <div className="landing-container">
+    <div className="landing-page">
       <Navigation />
 
-      {/* Hero Section with Professional Slider */}
-      <section className="hero-wrapper">
-        <ProfessionalSlider />
+      {/* Hero Section */}
+      <section className="hero-section" id="home">
+        <div className="hero-background">
+          <ProfessionalSlider />
+          <div className="hero-overlay" />
+        </div>
+        
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1 className="hero-title">
+              <span className="title-main">Profesyonel Köpek Eğitimi</span>
+              <span className="title-sub">Aytaç Mert Akademisi</span>
+            </h1>
+            <p className="hero-description">
+              Köpeğinizle mükemmel bir bağ kurun ve profesyonel eğitmenlik becerilerinizi geliştirin. 
+              Uzman eğitmenlerimiz size rehberlik ediyor.
+            </p>
+            <div className="hero-buttons">
+              <Button 
+                size="lg" 
+                className="hero-btn-primary"
+                onClick={() => scrollToSection('courses')}
+              >
+                Eğitimleri İncele
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="hero-btn-secondary"
+                onClick={() => setIsContactModalOpen(true)}
+              >
+                İletişime Geç
+              </Button>
+            </div>
+          </div>
+          
+          <div className="hero-stats">
+            <div className="stat-item">
+              <div className="stat-number">500+</div>
+              <div className="stat-label">Mutlu Köpek Sahibi</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">50+</div>
+              <div className="stat-label">Sertifikalı Eğitmen</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">10+</div>
+              <div className="stat-label">Yıllık Tecrübe</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="scroll-indicator" onClick={() => scrollToSection('courses')}>
+          <ChevronDown className="scroll-arrow" />
+          <span>Keşfet</span>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Neden Aytaç Mert Akademisi?</h2>
+            <p className="section-subtitle">
+              Profesyonel köpek eğitiminde lider akademi olarak size en iyi hizmeti sunuyoruz
+            </p>
+          </div>
+          
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">
+                <Star />
+              </div>
+              <h3 className="feature-title">Uzman Eğitmenler</h3>
+              <p className="feature-description">
+                10+ yıl tecrübeli, sertifikalı eğitmenlerden öğrenin
+              </p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">
+                <Users />
+              </div>
+              <h3 className="feature-title">Bireysel Yaklaşım</h3>
+              <p className="feature-description">
+                Her köpeğin özelliklerine göre kişiselleştirilmiş eğitim
+              </p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">
+                <Award />
+              </div>
+              <h3 className="feature-title">Sertifikalı Eğitim</h3>
+              <p className="feature-description">
+                Uluslararası geçerli sertifikalarla kariyerinizi ilerletin
+              </p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">
+                <Clock />
+              </div>
+              <h3 className="feature-title">Esnek Program</h3>
+              <p className="feature-description">
+                Size uygun saatlerde, istediğiniz hızda öğrenin
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Courses Section */}
       <section id="courses" className="courses-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fadeInUp">
-              Eğitim Programlarımız
-            </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto animate-fadeInUp animate-delay-200">
-              Köpeğinizi sıfırdan eğitin veya profesyonel eğitmen olma yolunda ilerleme kaydedin.
-              Her seviyeye uygun kapsamlı eğitim programları.
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Eğitim Programları</h2>
+            <p className="section-subtitle">
+              Temel eğitimden profesyonel eğitmenliğe kadar kapsamlı programlar
             </p>
           </div>
 
           {coursesLoading ? (
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="courses-loading">
               {[1, 2].map((i) => (
-                <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                  <div className="w-full h-48 bg-gray-200 animate-pulse"></div>
-                  <div className="p-6">
-                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-3"></div>
-                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-4"></div>
-                    <div className="flex items-center justify-between">
-                      <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
-                    </div>
+                <div key={i} className="course-skeleton">
+                  <div className="skeleton-image"></div>
+                  <div className="skeleton-content">
+                    <div className="skeleton-title"></div>
+                    <div className="skeleton-text"></div>
+                    <div className="skeleton-footer"></div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="courses-grid">
               {courses.map((course) => (
                 <CourseCard
                   key={course.id}
@@ -130,122 +239,134 @@ export default function Landing() {
 
       {/* About Section */}
       <section id="about" className="about-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fadeInUp">
-              Biz Kimiz?
-            </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-5xl mx-auto leading-relaxed animate-fadeInUp animate-delay-200">
-              Bu sayfa diğer sayfalarda bulacağınız bilen köpeklere komut verilmesini içermez.
-              Bu sayfada hiç komutları bilmeyen sıfırdan çalışmaya başlayan köpeklerin eğitimlerinin nasıl yapıldığını,
-              köpeklerin duruşu, davranışlarına göre ödüllendirme sistemi ile nasıl eğitildiğini açıklamalı şekilde anlatır.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                number: "01",
-                text: "Kendi köpeğini eğitmek isteyen köpek sahiplerinin sürekli yenileyen farklı farklı çalışmalarla eğitim videolarını izleyerek kendi köpeklerini çok rahat bir şekilde eğitebilmelerini sağlar."
-              },
-              {
-                number: "02",
-                text: "Köpek eğitmenliğini meslek olarak yapmak isteyen arkadaşlarımızın sıfırdan eğitim çalışmalarını farklı farklı karakterdeki köpekleri görerek ve kendi köpeğinde uygulayarak Eğitmenlik Seviyesinde daha da tecrübe sahibi olmasını sağlar."
-              },
-              {
-                number: "03",
-                text: "Gün ve Şartlara bağlı olarak Eğitmenlik yapmak isteyen arkadaşlarımıza 18 yaşından büyük olması kaydıyla iletişime geçmeleri halinde E-DEVLET te gözüken sertifika ve Uluslararası sertifikaya sahip olabilme imkanı sağlar."
-              },
-              {
-                number: "04",
-                text: "Sürekli olarak farklı köpek çalışmaları ve sürekli güncellenen yeni video ve anlatımlarla tecrübelerinize tecrübe katar."
-              }
-            ].map((item, index) => (
-              <Card key={index} className="bg-white shadow-md">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                    <span className="text-white font-bold text-xl">{item.number}</span>
+        <div className="container">
+          <div className="about-content">
+            <div className="about-text">
+              <h2 className="section-title">Hakkımızda</h2>
+              <p className="about-description">
+                Bu sayfa diğer sayfalarda bulacağınız bilen köpeklere komut verilmesini içermez.
+                Bu sayfada hiç komutları bilmeyen sıfırdan çalışmaya başlayan köpeklerin eğitimlerinin nasıl yapıldığını,
+                köpeklerin duruşu, davranışlarına göre ödüllendirme sistemi ile nasıl eğitildiğini açıklamalı şekilde anlatır.
+              </p>
+              
+              <div className="approach-grid">
+                {[
+                  {
+                    number: "01",
+                    title: "Kişisel Eğitim",
+                    text: "Kendi köpeğini eğitmek isteyen köpek sahiplerinin sürekli yenileyen farklı çalışmalarla eğitim videolarını izleyerek kendi köpeklerini eğitebilmelerini sağlar."
+                  },
+                  {
+                    number: "02",
+                    title: "Profesyonel Gelişim",
+                    text: "Köpek eğitmenliğini meslek olarak yapmak isteyen arkadaşlarımızın farklı karakterdeki köpeklerle çalışarak tecrübe kazanmasını sağlar."
+                  },
+                  {
+                    number: "03",
+                    title: "Sertifikasyon",
+                    text: "18 yaş üzeri eğitmen adaylarına E-DEVLET'te geçerli ve uluslararası sertifika alma imkanı sunuyoruz."
+                  },
+                  {
+                    number: "04",
+                    title: "Sürekli Gelişim",
+                    text: "Sürekli güncellenen video içerikleri ve yeni eğitim metodları ile tecrübelerinize tecrübe katıyoruz."
+                  }
+                ].map((item, index) => (
+                  <div key={index} className="approach-card">
+                    <div className="approach-number">{item.number}</div>
+                    <div className="approach-content">
+                      <h3 className="approach-title">{item.title}</h3>
+                      <p className="approach-text">{item.text}</p>
+                    </div>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    {item.text}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="contact-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              İletişime Geçin
-            </h2>
-            <p className="text-xl text-gray-600">Size en kısa sürede dönüş yapacağız</p>
-          </div>
-
-          <div className="text-center">
-            <Button
-              size="lg"
-              onClick={() => setIsContactModalOpen(true)}
-              data-testid="button-contact"
-            >
-              İletişim Formu
-            </Button>
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="container">
+          <div className="cta-content">
+            <h2 className="cta-title">Bugün Başlayın!</h2>
+            <p className="cta-description">
+              Köpeğinizle olan ilişkinizi güçlendirin ve profesyonel eğitmenlik yolculuğunuza başlayın
+            </p>
+            <div className="cta-buttons">
+              <Button 
+                size="lg" 
+                className="cta-btn-primary"
+                onClick={() => scrollToSection('courses')}
+              >
+                Eğitimlere Başla
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="cta-btn-secondary"
+                onClick={() => setIsContactModalOpen(true)}
+              >
+                Ücretsiz Danışmanlık
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Aytaç Mert - Köpek Eğitimi Akademisi</h3>
-            <p className="text-gray-400 mb-8">Profesyonel köpek eğitimi ve eğitmen yetiştirme merkezi</p>
-            
-            <div className="flex justify-center space-x-6 mb-8">
-              <a
-                href="https://api.whatsapp.com/send?phone=905532658445&text=Merhaba%2C+k%C3%B6pek+e%C4%9Fitimi+hakk%C4%B1nda+bilgi+almak+istiyorum."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-green-400 transition-colors"
-                data-testid="link-whatsapp"
-              >
-                <i className="fab fa-whatsapp text-2xl"></i>
-              </a>
-              <a
-                href="https://www.facebook.com/uzmank9kopekegitimi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-blue-400 transition-colors"
-                data-testid="link-facebook"
-              >
-                <i className="fab fa-facebook text-2xl"></i>
-              </a>
-              <a
-                href="https://www.instagram.com/uzmank9kopekegitimi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-pink-400 transition-colors"
-                data-testid="link-instagram"
-              >
-                <i className="fab fa-instagram text-2xl"></i>
-              </a>
-              <a
-                href="https://www.youtube.com/channel/UCaCxjvc0ROGZJbcwYoMRYng"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-red-400 transition-colors"
-                data-testid="link-youtube"
-              >
-                <i className="fab fa-youtube text-2xl"></i>
-              </a>
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-main">
+              <h3 className="footer-title">Aytaç Mert - Köpek Eğitimi Akademisi</h3>
+              <p className="footer-description">
+                Profesyonel köpek eğitimi ve eğitmen yetiştirme merkezi
+              </p>
+              
+              <div className="social-links">
+                <a
+                  href="https://api.whatsapp.com/send?phone=905532658445&text=Merhaba%2C+k%C3%B6pek+e%C4%9Fitimi+hakk%C4%B1nda+bilgi+almak+istiyorum."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-link whatsapp"
+                  data-testid="link-whatsapp"
+                >
+                  <i className="fab fa-whatsapp"></i>
+                </a>
+                <a
+                  href="https://www.facebook.com/uzmank9kopekegitimi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-link facebook"
+                  data-testid="link-facebook"
+                >
+                  <i className="fab fa-facebook"></i>
+                </a>
+                <a
+                  href="https://www.instagram.com/uzmank9kopekegitimi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-link instagram"
+                  data-testid="link-instagram"
+                >
+                  <i className="fab fa-instagram"></i>
+                </a>
+                <a
+                  href="https://www.youtube.com/channel/UCaCxjvc0ROGZJbcwYoMRYng"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-link youtube"
+                  data-testid="link-youtube"
+                >
+                  <i className="fab fa-youtube"></i>
+                </a>
+              </div>
             </div>
             
-            <div className="border-t border-gray-700 pt-8">
-              <p className="text-gray-400">&copy; 2024 Aytaç Mert Köpek Eğitimi Akademisi. Tüm hakları saklıdır.</p>
+            <div className="footer-bottom">
+              <p>&copy; 2024 Aytaç Mert Köpek Eğitimi Akademisi. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </div>
