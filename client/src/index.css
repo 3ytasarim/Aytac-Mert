@@ -222,32 +222,39 @@
   transition: all 0.3s ease;
   height: 100%;
   width: 100%;
+  /* Optimize for portrait images (1243x2048) */
+  min-width: 100%;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for portrait images */
+@media (max-width: 1200px) {
+  .hero-section {
+    height: 90vh !important;
+    min-height: 700px !important;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-section {
-    height: 60vh !important;
-    min-height: 500px !important;
-    max-height: 650px !important;
+    height: 80vh !important;
+    min-height: 600px !important;
   }
   
   .slider-track img {
     object-fit: cover;
-    object-position: center center;
+    object-position: center 30%;
   }
 }
 
 @media (max-width: 480px) {
   .hero-section {
-    height: 55vh !important;
-    min-height: 450px !important;
-    max-height: 550px !important;
+    height: 70vh !important;
+    min-height: 500px !important;
   }
   
   .slider-track img {
     object-fit: cover;
-    object-position: center center;
+    object-position: center 25%;
   }
 }
 

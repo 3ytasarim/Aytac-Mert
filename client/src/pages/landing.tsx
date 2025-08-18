@@ -86,7 +86,7 @@ export default function Landing() {
       <Navigation />
 
       {/* Hero Section with Background Image Slider */}
-      <section className="hero-section relative h-[70vh] min-h-[600px] max-h-[800px] overflow-hidden">
+      <section className="hero-section relative h-screen min-h-[800px] overflow-hidden">
         {/* Background Image Slider */}
         <div className="absolute inset-0 slider-container">
           <div className="slider-track h-full">
