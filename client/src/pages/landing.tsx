@@ -118,7 +118,7 @@ export default function Landing() {
         <div className="container">
           <div className="who-are-we-content">
             <div className="who-are-we-header">
-              <h2 className="who-are-we-title">Biz Kimiz?</h2>
+              <h2 className="who-are-we-title">Kuruluş Amacı</h2>
               <div className="title-underline"></div>
             </div>
             
