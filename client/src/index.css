@@ -1324,10 +1324,17 @@
 @media (max-width: 768px) {
   .mobile-footer {
     padding-bottom: 5rem !important; /* Space for fixed social icons */
+    margin-bottom: 0 !important;
   }
   
   body {
-    padding-bottom: 0;
+    padding-bottom: 4rem; /* Ensure content doesn't go behind social icons */
+  }
+  
+  /* Ensure social icons stay above footer */
+  footer {
+    position: relative;
+    z-index: 1;
   }
 }
 
