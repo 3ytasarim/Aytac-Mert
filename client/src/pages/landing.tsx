@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PaymentModal } from "@/components/ui/payment-modal";
 import { CourseCard } from "@/components/ui/course-card";
 import { Navigation } from "@/components/ui/navigation";
+import { ImageSlider } from "@/components/ui/image-slider";
 import type { Course } from "@shared/schema";
 import { z } from "zod";
 
@@ -76,23 +77,27 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-blue-800 text-white py-16">
+      <section className="bg-gradient-to-br from-black to-gray-900 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Profesyonel Köpek Eğitimi
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 animate-fadeInUp">
+              Aytaç Mert
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-semibold mb-6 animate-fadeInUp animate-delay-200">
+              Köpek Eğitimi Akademisi
+            </h2>
+            <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-4xl mx-auto animate-fadeInUp animate-delay-300">
               Sıfırdan eğitmen seviyesine. Kendi köpeğinizi eğitin veya profesyonel eğitmen olun.
+              25 yıllık deneyimimizle en kaliteli eğitimi sunuyoruz.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fadeInUp animate-delay-400">
               <Button
                 size="lg"
-                className="bg-accent text-white hover:bg-orange-600"
+                className="bg-white text-black hover:bg-gray-200 font-semibold px-8 py-4 text-lg hover-lift"
                 onClick={() => window.location.href = "/api/login"}
                 data-testid="button-register"
               >
@@ -101,7 +106,7 @@ export default function Landing() {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-white/20 backdrop-blur text-white border-white/30 hover:bg-white/30"
+                className="border-white text-white hover:bg-white hover:text-black font-semibold px-8 py-4 text-lg hover-lift"
                 onClick={() => scrollToSection("courses")}
                 data-testid="button-view-courses"
               >
@@ -112,15 +117,19 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Image Slider Section - Replaces Professional Dog Training */}
+      <ImageSlider />
+
       {/* Courses Section */}
-      <section id="courses" className="py-16 bg-white">
+      <section id="courses" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fadeInUp">
               Eğitim Programlarımız
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto animate-fadeInUp animate-delay-200">
               Köpeğinizi sıfırdan eğitin veya profesyonel eğitmen olma yolunda ilerleme kaydedin.
+              Her seviyeye uygun kapsamlı eğitim programları.
             </p>
           </div>
 
@@ -155,13 +164,13 @@ export default function Landing() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-16 bg-gray-50">
+      <section id="about" className="py-20 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fadeInUp">
               Biz Kimiz?
             </h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-600 max-w-5xl mx-auto leading-relaxed animate-fadeInUp animate-delay-200">
               Bu sayfa diğer sayfalarda bulacağınız bilen köpeklere komut verilmesini içermez.
               Bu sayfada hiç komutları bilmeyen sıfırdan çalışmaya başlayan köpeklerin eğitimlerinin nasıl yapıldığını,
               köpeklerin duruşu, davranışlarına göre ödüllendirme sistemi ile nasıl eğitildiğini açıklamalı şekilde anlatır.
