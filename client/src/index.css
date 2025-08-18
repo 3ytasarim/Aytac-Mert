@@ -580,9 +580,15 @@
   transform: translateX(-50%);
   cursor: pointer;
   z-index: 9999;
-  padding: 15px;
+  padding: 25px;
   transition: transform 0.2s ease;
   pointer-events: auto;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .scroll-down-arrow:hover {
@@ -590,13 +596,14 @@
 }
 
 .chevron {
-  position: absolute;
+  position: relative;
   width: 28px;
   height: 8px;
   opacity: 0;
   transform: scale3d(0.5, 0.5, 0.5);
   animation: move 3s ease-out infinite;
   pointer-events: none;
+  margin: 2px 0;
 }
 
 .chevron:first-child {
