@@ -278,35 +278,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2 className="cta-title">Bugün Başlayın!</h2>
-            <p className="cta-description">
-              Köpeğinizle olan ilişkinizi güçlendirin ve profesyonel eğitmenlik yolculuğunuza başlayın
-            </p>
-            <div className="cta-buttons">
-              <Button 
-                size="lg" 
-                className="cta-btn-primary"
-                onClick={() => scrollToSection('courses')}
-              >
-                Eğitimlere Başla
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="cta-btn-secondary"
-                onClick={() => setIsContactModalOpen(true)}
-              >
-                Ücretsiz Danışmanlık
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="footer">
         <div className="container">
