@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -76,6 +76,27 @@ export default function Landing() {
     }
   };
 
+  // Scroll animation effect
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+    animateElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      animateElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -92,55 +113,34 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section">
+      {/* Who Are We Section */}
+      <section className="who-are-we-section">
         <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Neden Aytaç Mert Akademisi?</h2>
-            <p className="section-subtitle">
-              Profesyonel köpek eğitiminde lider akademi olarak size en iyi hizmeti sunuyoruz
-            </p>
-          </div>
-          
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Star />
-              </div>
-              <h3 className="feature-title">Uzman Eğitmenler</h3>
-              <p className="feature-description">
-                10+ yıl tecrübeli, sertifikalı eğitmenlerden öğrenin
-              </p>
+          <div className="who-are-we-content">
+            <div className="who-are-we-header">
+              <h2 className="who-are-we-title">Biz Kimiz?</h2>
+              <div className="title-underline"></div>
             </div>
             
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Users />
+            <div className="who-are-we-text">
+              <div className="text-block animate-on-scroll">
+                <div className="text-highlight-bar"></div>
+                <p className="text-content">
+                  Bu sayfa diğer sayfalarda bulacağınız bilen köpeklere komut verilmesini içermez. Bu sayfada 
+                  hiç komutları bilmeyen sıfırdan çalışmaya başlayan köpeklerin eğitimlerinin nasıl yapıldığını, 
+                  köpeklerin duruşu, davranışlarına göre ödüllendirme sistemi ile nasıl eğitildiğini açıklamalı 
+                  şekilde anlatır.
+                </p>
               </div>
-              <h3 className="feature-title">Bireysel Yaklaşım</h3>
-              <p className="feature-description">
-                Her köpeğin özelliklerine göre kişiselleştirilmiş eğitim
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Award />
+              
+              <div className="text-block animate-on-scroll">
+                <div className="text-highlight-bar"></div>
+                <p className="text-content">
+                  Bu sayfa'da kendi köpeğiniz yada birkaç farklı köpekle çalışmakla eğitimlerinizi 
+                  geliştirebileceğiniz dilediğiniz taktirde iletişime geçmeniz halinde o günkü koşullarla aynı 
+                  zamanda sertifikalandırabiliceğiniz bir sayfadır.
+                </p>
               </div>
-              <h3 className="feature-title">Sertifikalı Eğitim</h3>
-              <p className="feature-description">
-                Uluslararası geçerli sertifikalarla kariyerinizi ilerletin
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Clock />
-              </div>
-              <h3 className="feature-title">Esnek Program</h3>
-              <p className="feature-description">
-                Size uygun saatlerde, istediğiniz hızda öğrenin
-              </p>
             </div>
           </div>
         </div>
