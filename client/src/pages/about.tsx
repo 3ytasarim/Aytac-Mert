@@ -1,4 +1,5 @@
 import { Navigation } from "@/components/ui/navigation";
+import { SocialIcons } from "@/components/SocialIcons";
 import { useAuth } from "@/hooks/useAuth";
 import { Award, Users, Target, Star } from "lucide-react";
 
@@ -8,6 +9,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <Navigation />
+      <SocialIcons />
       
       {/* Hero Section */}
       <section className="about-hero-section">

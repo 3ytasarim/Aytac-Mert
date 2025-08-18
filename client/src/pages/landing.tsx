@@ -16,6 +16,7 @@ import { Navigation } from "@/components/ui/navigation";
 import type { Course } from "@shared/schema";
 import { z } from "zod";
 import { ProfessionalSlider } from "@/components/ProfessionalSlider";
+import { SocialIcons } from "@/components/SocialIcons";
 import { ChevronDown, Star, Users, Award, Clock } from "lucide-react";
 
 const contactFormSchema = insertContactSchema.extend({
@@ -100,6 +101,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
+      <SocialIcons />
 
       {/* Hero Section */}
       <section className="hero-section" id="home">
