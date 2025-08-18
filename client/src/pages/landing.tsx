@@ -85,40 +85,21 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Hero Section with Background Image Slider */}
+      {/* Hero Section with Single Background */}
       <section className="hero-section relative h-screen min-h-[800px] overflow-hidden">
-        {/* Background Image Slider */}
-        <div className="absolute inset-0 slider-container">
-          <div className="slider-track h-full">
-            <div 
-              className="slide-item"
-              style={{ backgroundImage: `url(${resim1})` }}
-            ></div>
-            <div 
-              className="slide-item"
-              style={{ backgroundImage: `url(${resim2})` }}
-            ></div>
-            <div 
-              className="slide-item"
-              style={{ backgroundImage: `url(${resim3})` }}
-            ></div>
-            <div 
-              className="slide-item"
-              style={{ backgroundImage: `url(${resim4})` }}
-            ></div>
-            <div 
-              className="slide-item"
-              style={{ backgroundImage: `url(${resim5})` }}
-            ></div>
-            <div 
-              className="slide-item"
-              style={{ backgroundImage: `url(${resim6})` }}
-            ></div>
-          </div>
-        </div>
+        {/* Single Background Image */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${resim1})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        ></div>
         
-        {/* Light Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/50 z-10"></div>
+        {/* Dark Overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/70 z-10"></div>
         
         {/* Hero Content */}
         <div className="relative z-20 h-full flex items-center">
@@ -152,6 +133,43 @@ export default function Landing() {
                 >
                   Kursları İncele
                 </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Training Photos Slider */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
+              Eğitim Fotoğrafları
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Profesyonel köpek eğitimi sürecimizden kareler
+            </p>
+          </div>
+          
+          <div className="training-slider-container relative overflow-hidden rounded-2xl shadow-2xl">
+            <div className="training-slider-track">
+              <div className="training-slide">
+                <img src={resim1} alt="Köpek eğitimi 1" className="training-slide-img" />
+              </div>
+              <div className="training-slide">
+                <img src={resim2} alt="Köpek eğitimi 2" className="training-slide-img" />
+              </div>
+              <div className="training-slide">
+                <img src={resim3} alt="Köpek eğitimi 3" className="training-slide-img" />
+              </div>
+              <div className="training-slide">
+                <img src={resim4} alt="Köpek eğitimi 4" className="training-slide-img" />
+              </div>
+              <div className="training-slide">
+                <img src={resim5} alt="Köpek eğitimi 5" className="training-slide-img" />
+              </div>
+              <div className="training-slide">
+                <img src={resim6} alt="Köpek eğitimi 6" className="training-slide-img" />
               </div>
             </div>
           </div>
