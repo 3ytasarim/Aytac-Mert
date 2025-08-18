@@ -84,57 +84,6 @@ export default function Landing() {
       <section className="hero-section" id="home">
         <div className="hero-background">
           <ProfessionalSlider />
-          <div className="hero-overlay" />
-        </div>
-        
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              <span className="title-main">Profesyonel Köpek Eğitimi</span>
-              <span className="title-sub">Aytaç Mert Akademisi</span>
-            </h1>
-            <p className="hero-description">
-              Köpeğinizle mükemmel bir bağ kurun ve profesyonel eğitmenlik becerilerinizi geliştirin. 
-              Uzman eğitmenlerimiz size rehberlik ediyor.
-            </p>
-            <div className="hero-buttons">
-              <Button 
-                size="lg" 
-                className="hero-btn-primary"
-                onClick={() => scrollToSection('courses')}
-              >
-                Eğitimleri İncele
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="hero-btn-secondary"
-                onClick={() => setIsContactModalOpen(true)}
-              >
-                İletişime Geç
-              </Button>
-            </div>
-          </div>
-          
-          <div className="hero-stats">
-            <div className="stat-item">
-              <div className="stat-number">500+</div>
-              <div className="stat-label">Mutlu Köpek Sahibi</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">50+</div>
-              <div className="stat-label">Sertifikalı Eğitmen</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">10+</div>
-              <div className="stat-label">Yıllık Tecrübe</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="scroll-indicator" onClick={() => scrollToSection('courses')}>
-          <ChevronDown className="scroll-arrow" />
-          <span>Keşfet</span>
         </div>
       </section>
 
