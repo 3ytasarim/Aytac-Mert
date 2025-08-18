@@ -77,7 +77,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col overflow-hidden">
+    <div className="min-h-screen flex flex-col">
       <Navigation />
 
       {/* Hero Section */}
