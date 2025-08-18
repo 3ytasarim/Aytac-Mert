@@ -78,20 +78,24 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{overflow: 'hidden visible'}}>
+    <div className="min-h-screen bg-background" style={{overflow: 'clip', contain: 'layout style paint'}}>
       <Navigation />
 
       {/* Hero Section with Professional Slider */}
       <section 
-        className="hero-section relative h-screen min-h-[800px] overflow-hidden" 
+        className="hero-section relative h-screen min-h-[800px] max-h-screen overflow-hidden" 
         style={{
-          contain: 'layout style paint',
+          contain: 'strict',
           isolation: 'isolate',
           zIndex: 1,
-          position: 'relative'
+          position: 'relative',
+          height: '100vh',
+          maxHeight: '100vh'
         }}
       >
-        <ProfessionalSlider />
+        <div style={{height: '100%', width: '100%', overflow: 'hidden'}}>
+          <ProfessionalSlider />
+        </div>
       </section>
 
       {/* Courses Section */}
@@ -208,7 +212,16 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12" style={{position: 'relative', zIndex: 10, isolation: 'isolate'}}>
+      <footer 
+        className="bg-gray-900 text-white py-12" 
+        style={{
+          position: 'relative', 
+          zIndex: 100, 
+          isolation: 'isolate',
+          contain: 'strict',
+          overflow: 'clip'
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-4">Aytaç Mert - Köpek Eğitimi Akademisi</h3>
