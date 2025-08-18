@@ -44,7 +44,7 @@ export function Navigation() {
           <div className="hidden md:block">
             <div className="flex items-center space-x-1">
               <a
-                href="#"
+                href="/"
                 className="nav-link relative px-4 py-2 rounded-lg text-base font-medium text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                 data-testid="nav-home"
               >
@@ -147,7 +147,7 @@ export function Navigation() {
         <div className="bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg">
           <div className="px-4 py-6 space-y-4">
             <a
-              href="#"
+              href="/"
               className="mobile-nav-item block px-4 py-3 text-black font-medium rounded-lg hover:bg-black/5 transition-all duration-300"
               data-testid="mobile-nav-home"
             >
@@ -160,20 +160,20 @@ export function Navigation() {
             >
               Kurslar
             </button>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="mobile-nav-item block w-full text-left px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-black/5 hover:text-black transition-all duration-300"
+            <a
+              href="/hakkimizda"
+              className="mobile-nav-item block px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-black/5 hover:text-black transition-all duration-300"
               data-testid="mobile-nav-about"
             >
               Hakkımızda
-            </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="mobile-nav-item block w-full text-left px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-black/5 hover:text-black transition-all duration-300"
+            </a>
+            <a
+              href="/iletisim"
+              className="mobile-nav-item block px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-black/5 hover:text-black transition-all duration-300"
               data-testid="mobile-nav-contact"
             >
               İletişim
-            </button>
+            </a>
             
             <div className="pt-4 space-y-3 border-t border-gray-200">
               {isLoading ? (
