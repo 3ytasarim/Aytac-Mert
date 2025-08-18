@@ -14,9 +14,14 @@ import { useToast } from "@/hooks/use-toast";
 import { PaymentModal } from "@/components/ui/payment-modal";
 import { CourseCard } from "@/components/ui/course-card";
 import { Navigation } from "@/components/ui/navigation";
-import { ImageSlider } from "@/components/ui/image-slider";
 import type { Course } from "@shared/schema";
 import { z } from "zod";
+import resim1 from "@assets/resim1_1755508508622.jpg";
+import resim2 from "@assets/resim2_1755508508623.jpg";
+import resim3 from "@assets/resim3_1755508508623.jpg";
+import resim4 from "@assets/resim4_1755508508623.jpg";
+import resim5 from "@assets/resim5_1755508508623.jpg";
+import resim6 from "@assets/resim6_1755508508623.jpg";
 
 const contactFormSchema = insertContactSchema.extend({
   fullName: z.string().min(2, "Ad soyad en az 2 karakter olmalıdır"),
@@ -80,45 +85,96 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-black to-gray-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 animate-fadeInUp">
-              Aytaç Mert
-            </h1>
-            <h2 className="text-3xl md:text-5xl font-semibold mb-6 animate-fadeInUp animate-delay-200">
-              Köpek Eğitimi Akademisi
-            </h2>
-            <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-4xl mx-auto animate-fadeInUp animate-delay-300">
-              Sıfırdan eğitmen seviyesine. Kendi köpeğinizi eğitin veya profesyonel eğitmen olun.
-              25 yıllık deneyimimizle en kaliteli eğitimi sunuyoruz.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fadeInUp animate-delay-400">
-              <Button
-                size="lg"
-                className="bg-white text-black hover:bg-gray-200 font-semibold px-8 py-4 text-lg hover-lift"
-                onClick={() => window.location.href = "/api/login"}
-                data-testid="button-register"
-              >
-                Hemen Başla
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black font-semibold px-8 py-4 text-lg hover-lift"
-                onClick={() => scrollToSection("courses")}
-                data-testid="button-view-courses"
-              >
-                Kursları İncele
-              </Button>
+      {/* Hero Section with Background Image Slider */}
+      <section className="relative h-screen min-h-[600px] overflow-hidden">
+        {/* Background Image Slider */}
+        <div className="absolute inset-0 slider-container">
+          <div className="slider-track h-full">
+            <div className="flex-shrink-0 w-full h-full relative">
+              <img
+                src={resim1}
+                alt="Köpek eğitimi - Profesyonel antrenman"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-shrink-0 w-full h-full relative">
+              <img
+                src={resim2}
+                alt="Köpek eğitimi - Uzman eğitmen"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-shrink-0 w-full h-full relative">
+              <img
+                src={resim3}
+                alt="Köpek eğitimi - Pratik çalışma"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-shrink-0 w-full h-full relative">
+              <img
+                src={resim4}
+                alt="Köpek eğitimi - İleri seviye"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-shrink-0 w-full h-full relative">
+              <img
+                src={resim5}
+                alt="Köpek eğitimi - Çocuk dostu"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-shrink-0 w-full h-full relative">
+              <img
+                src={resim6}
+                alt="Köpek eğitimi - Temel komutlar"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+        
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        
+        {/* Hero Content */}
+        <div className="relative z-20 h-full flex items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="text-center text-white">
+              <h1 className="text-5xl md:text-7xl font-bold mb-8 animate-fadeInUp">
+                Aytaç Mert
+              </h1>
+              <h2 className="text-3xl md:text-5xl font-semibold mb-6 animate-fadeInUp animate-delay-200">
+                Köpek Eğitimi Akademisi
+              </h2>
+              <p className="text-xl md:text-2xl mb-12 text-gray-100 max-w-4xl mx-auto animate-fadeInUp animate-delay-300">
+                Sıfırdan eğitmen seviyesine. Kendi köpeğinizi eğitin veya profesyonel eğitmen olun.
+                25 yıllık deneyimimizle en kaliteli eğitimi sunuyoruz.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fadeInUp animate-delay-400">
+                <Button
+                  size="lg"
+                  className="bg-white text-black hover:bg-gray-200 font-semibold px-8 py-4 text-lg hover-lift"
+                  onClick={() => window.location.href = "/api/login"}
+                  data-testid="button-register"
+                >
+                  Hemen Başla
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-black font-semibold px-8 py-4 text-lg hover-lift"
+                  onClick={() => scrollToSection("courses")}
+                  data-testid="button-view-courses"
+                >
+                  Kursları İncele
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Image Slider Section - Replaces Professional Dog Training */}
-      <ImageSlider />
 
       {/* Courses Section */}
       <section id="courses" className="py-20 bg-white">
