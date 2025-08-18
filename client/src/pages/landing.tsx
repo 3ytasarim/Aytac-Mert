@@ -106,9 +106,9 @@ export default function Landing() {
         <div className="hero-background">
           <ProfessionalSlider />
           <div className="scroll-down-arrow" onClick={() => scrollToSection('courses')}>
-            <div className="chevron"></div>
-            <div className="chevron"></div>
-            <div className="chevron"></div>
+            <div className="chevron" style={{pointerEvents: 'none'}}></div>
+            <div className="chevron" style={{pointerEvents: 'none'}}></div>
+            <div className="chevron" style={{pointerEvents: 'none'}}></div>
           </div>
         </div>
       </section>
