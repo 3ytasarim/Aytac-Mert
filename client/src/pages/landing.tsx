@@ -118,7 +118,7 @@ export default function Landing() {
         <div className="container">
           <div className="who-are-we-content">
             <div className="who-are-we-header">
-              <h2 className="who-are-we-title">Kuruluş Amacı</h2>
+              <h2 className="who-are-we-title">Biz Kimiz?</h2>
               <div className="title-underline"></div>
             </div>
             
@@ -183,50 +183,13 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="about-section">
+      {/* Foundation Purpose Section */}
+      <section id="foundation" className="foundation-section">
         <div className="container">
-          <div className="about-content">
-            <div className="about-text">
-              <h2 className="section-title">Hakkımızda</h2>
-              <p className="about-description">
-                Bu sayfa diğer sayfalarda bulacağınız bilen köpeklere komut verilmesini içermez.
-                Bu sayfada hiç komutları bilmeyen sıfırdan çalışmaya başlayan köpeklerin eğitimlerinin nasıl yapıldığını,
-                köpeklerin duruşu, davranışlarına göre ödüllendirme sistemi ile nasıl eğitildiğini açıklamalı şekilde anlatır.
-              </p>
-              
-              <div className="approach-grid">
-                {[
-                  {
-                    number: "01",
-                    title: "Kişisel Eğitim",
-                    text: "Kendi köpeğini eğitmek isteyen köpek sahiplerinin sürekli yenileyen farklı çalışmalarla eğitim videolarını izleyerek kendi köpeklerini eğitebilmelerini sağlar."
-                  },
-                  {
-                    number: "02",
-                    title: "Profesyonel Gelişim",
-                    text: "Köpek eğitmenliğini meslek olarak yapmak isteyen arkadaşlarımızın farklı karakterdeki köpeklerle çalışarak tecrübe kazanmasını sağlar."
-                  },
-                  {
-                    number: "03",
-                    title: "Sertifikasyon",
-                    text: "18 yaş üzeri eğitmen adaylarına E-DEVLET'te geçerli ve uluslararası sertifika alma imkanı sunuyoruz."
-                  },
-                  {
-                    number: "04",
-                    title: "Sürekli Gelişim",
-                    text: "Sürekli güncellenen video içerikleri ve yeni eğitim metodları ile tecrübelerinize tecrübe katıyoruz."
-                  }
-                ].map((item, index) => (
-                  <div key={index} className="approach-card">
-                    <div className="approach-number">{item.number}</div>
-                    <div className="approach-content">
-                      <h3 className="approach-title">{item.title}</h3>
-                      <p className="approach-text">{item.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="foundation-content">
+            <div className="foundation-header">
+              <h2 className="foundation-title">Kuruluş Amacı</h2>
+              <div className="foundation-underline"></div>
             </div>
           </div>
         </div>
