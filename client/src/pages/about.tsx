@@ -10,16 +10,48 @@ export default function About() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-gray-800">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold text-white mb-6">
-            Hakkımızda
-          </h1>
-          <div className="w-24 h-1 bg-white mx-auto mb-6 opacity-80"></div>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-            Profesyonel köpek eğitimi alanında uzman kadromuz ile hizmet vermekteyiz
-          </p>
+      <section className="about-hero-section">
+        <div className="about-hero-background">
+          <div className="about-hero-overlay"></div>
+          <div className="about-hero-particles">
+            {Array.from({ length: 50 }).map((_, i) => (
+              <div key={i} className="particle" style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${3 + Math.random() * 4}s`
+              }}></div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="about-hero-content">
+          <div className="about-hero-container">
+            <h1 className="about-hero-title">
+              <span className="hero-title-line">Hakkımızda</span>
+            </h1>
+            <div className="about-hero-underline">
+              <div className="underline-gradient"></div>
+            </div>
+            <p className="about-hero-description">
+              Profesyonel köpek eğitimi alanında uzman kadromuz ile hizmet vermekteyiz
+            </p>
+            <div className="about-hero-stats">
+              <div className="stat-item">
+                <div className="stat-number">15+</div>
+                <div className="stat-label">Yıl Tecrübe</div>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <div className="stat-number">500+</div>
+                <div className="stat-label">Mutlu Köpek</div>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <div className="stat-number">50+</div>
+                <div className="stat-label">Sertifika</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
