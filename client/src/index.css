@@ -243,12 +243,12 @@
 /* Professional Slider */
 .professional-slider {
   position: relative;
-  width: 100%;
+  width: 100vw;
   height: 100%;
   border-radius: 0;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   background: #fff;
+  margin-left: calc(-50vw + 50%);
 }
 
 .slides-wrapper {
@@ -537,19 +537,14 @@
   position: relative;
   height: 80vh;
   min-height: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
+  width: 100%;
   margin-top: 2rem;
 }
 
 .hero-background {
   position: relative;
   width: 100%;
-  max-width: 1200px;
   height: 100%;
-  margin: 0 auto;
 }
 
 /* Hero content styles removed since hero now only contains slider */
