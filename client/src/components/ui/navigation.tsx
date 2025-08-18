@@ -25,24 +25,16 @@ export function Navigation() {
   }, []);
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out ${
-      isScrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-xl border-b border-gray-200' 
-        : 'bg-transparent'
-    }`}>
+    <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-xl border-b border-gray-200 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo/Brand */}
           <div className="flex-shrink-0 group cursor-pointer">
             <div className="transform transition-all duration-300 group-hover:scale-105">
-              <h1 className={`text-3xl font-bold transition-colors duration-300 ${
-                isScrolled ? 'text-black' : 'text-white'
-              }`} data-testid="brand-title">
+              <h1 className="text-3xl font-bold text-black transition-colors duration-300" data-testid="brand-title">
                 Aytaç Mert
               </h1>
-              <p className={`text-sm font-medium -mt-1 transition-colors duration-300 ${
-                isScrolled ? 'text-gray-600' : 'text-white/80'
-              }`} data-testid="brand-subtitle">
+              <p className="text-sm font-medium -mt-1 text-gray-600 transition-colors duration-300" data-testid="brand-subtitle">
                 Köpek Eğitimi Akademisi
               </p>
             </div>
@@ -53,9 +45,7 @@ export function Navigation() {
             <div className="flex items-center space-x-1">
               <a
                 href="#"
-                className={`nav-link relative px-4 py-2 rounded-lg text-base font-medium transition-all duration-300 transform hover:scale-105 ${
-                  isScrolled ? 'text-black hover:bg-black/5' : 'text-white hover:bg-white/10'
-                }`}
+                className="nav-link relative px-4 py-2 rounded-lg text-base font-medium text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                 data-testid="nav-home"
               >
                 Ana Sayfa
@@ -63,9 +53,7 @@ export function Navigation() {
               </a>
               <button
                 onClick={() => scrollToSection("courses")}
-                className={`nav-link relative px-4 py-2 rounded-lg text-base font-medium transition-all duration-300 transform hover:scale-105 ${
-                  isScrolled ? 'text-gray-700 hover:text-black hover:bg-black/5' : 'text-white/90 hover:text-white hover:bg-white/10'
-                }`}
+                className="nav-link relative px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                 data-testid="nav-courses"
               >
                 Kurslar
@@ -73,9 +61,7 @@ export function Navigation() {
               </button>
               <button
                 onClick={() => scrollToSection("about")}
-                className={`nav-link relative px-4 py-2 rounded-lg text-base font-medium transition-all duration-300 transform hover:scale-105 ${
-                  isScrolled ? 'text-gray-700 hover:text-black hover:bg-black/5' : 'text-white/90 hover:text-white hover:bg-white/10'
-                }`}
+                className="nav-link relative px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                 data-testid="nav-about"
               >
                 Hakkımızda
@@ -83,9 +69,7 @@ export function Navigation() {
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
-                className={`nav-link relative px-4 py-2 rounded-lg text-base font-medium transition-all duration-300 transform hover:scale-105 ${
-                  isScrolled ? 'text-gray-700 hover:text-black hover:bg-black/5' : 'text-white/90 hover:text-white hover:bg-white/10'
-                }`}
+                className="nav-link relative px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                 data-testid="nav-contact"
               >
                 İletişim
@@ -105,11 +89,7 @@ export function Navigation() {
               <Button
                 variant="outline"
                 onClick={() => window.location.href = "/api/logout"}
-                className={`auth-btn font-semibold px-6 py-3 rounded-xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                  isScrolled 
-                    ? 'border-black text-black hover:bg-black hover:text-white' 
-                    : 'border-white text-white hover:bg-white hover:text-black backdrop-blur-sm'
-                }`}
+                className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
                 data-testid="button-logout"
               >
                 Çıkış Yap
@@ -119,22 +99,14 @@ export function Navigation() {
                 <Button
                   variant="ghost"
                   onClick={() => window.location.href = "/api/login"}
-                  className={`auth-btn font-semibold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 ${
-                    isScrolled 
-                      ? 'text-gray-700 hover:text-black hover:bg-black/5' 
-                      : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
-                  }`}
+                  className="auth-btn font-semibold px-6 py-3 rounded-xl text-gray-700 hover:text-black hover:bg-black/5 transition-all duration-300 transform hover:scale-105"
                   data-testid="button-login"
                 >
                   Giriş Yap
                 </Button>
                 <Button
                   onClick={() => window.location.href = "/api/login"}
-                  className={`auth-btn font-semibold px-6 py-3 rounded-xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                    isScrolled 
-                      ? 'bg-black text-white hover:bg-gray-800 border-black hover:shadow-xl' 
-                      : 'bg-white text-black hover:bg-gray-100 border-white hover:shadow-xl backdrop-blur-sm'
-                  }`}
+                  className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 bg-black text-white hover:bg-gray-800 border-black hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
                   data-testid="button-register"
                 >
                   Üye Ol
@@ -147,23 +119,19 @@ export function Navigation() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                isScrolled 
-                  ? 'text-gray-600 hover:text-black hover:bg-black/5' 
-                  : 'text-white/90 hover:text-white hover:bg-white/10'
-              }`}
+              className="p-2 rounded-lg text-gray-600 hover:text-black hover:bg-black/5 transition-all duration-300"
               data-testid="button-mobile-menu"
             >
               <div className="space-y-1">
-                <div className={`w-6 h-0.5 transition-all duration-300 ${
+                <div className={`w-6 h-0.5 bg-black transition-all duration-300 ${
                   isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
-                } ${isScrolled ? 'bg-black' : 'bg-white'}`}></div>
-                <div className={`w-6 h-0.5 transition-all duration-300 ${
+                }`}></div>
+                <div className={`w-6 h-0.5 bg-black transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-0' : ''
-                } ${isScrolled ? 'bg-black' : 'bg-white'}`}></div>
-                <div className={`w-6 h-0.5 transition-all duration-300 ${
+                }`}></div>
+                <div className={`w-6 h-0.5 bg-black transition-all duration-300 ${
                   isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
-                } ${isScrolled ? 'bg-black' : 'bg-white'}`}></div>
+                }`}></div>
               </div>
             </button>
           </div>
