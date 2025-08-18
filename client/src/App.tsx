@@ -37,7 +37,10 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Landing} />
-          <Route component={NotFound} />
+          <Route path="/about" component={Landing} />
+          <Route path="/contact" component={Landing} />
+          <Route path="/courses" component={Landing} />
+          <Route component={Landing} />
         </>
       )}
     </Switch>
