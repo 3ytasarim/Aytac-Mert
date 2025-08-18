@@ -579,9 +579,13 @@
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
-  z-index: 200;
+  z-index: 9999;
   padding: 15px;
   transition: transform 0.2s ease;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .scroll-down-arrow:hover {
