@@ -525,6 +525,50 @@
   filter: brightness(0.6);
 }
 
+/* Landing Page Fixed Layout */
+.landing-container {
+  min-height: 100vh;
+  background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.hero-wrapper {
+  position: relative;
+  height: 100vh;
+  min-height: 800px;
+  max-height: 100vh;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.courses-section {
+  padding: 5rem 0;
+  background: white;
+  flex-shrink: 0;
+}
+
+.about-section {
+  padding: 5rem 0;
+  background: #f9fafb;
+  flex-shrink: 0;
+}
+
+.contact-section {
+  padding: 4rem 0;
+  background: white;
+  flex-shrink: 0;
+}
+
+.footer-section {
+  background: #111827;
+  color: white;
+  padding: 3rem 0;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -532,13 +576,15 @@
 
   html {
     overflow-x: hidden;
+    height: 100%;
   }
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
     overflow-x: hidden;
-    isolation: isolate;
-    contain: layout style;
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
   
   .line-clamp-2 {

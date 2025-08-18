@@ -16,6 +16,7 @@ import { CourseCard } from "@/components/ui/course-card";
 import { Navigation } from "@/components/ui/navigation";
 import type { Course } from "@shared/schema";
 import { z } from "zod";
+import resim1 from "@assets/resim1_1755508508622.jpg";
 import { ProfessionalSlider } from "@/components/ProfessionalSlider";
 
 const contactFormSchema = insertContactSchema.extend({
@@ -77,16 +78,28 @@ export default function Landing() {
   };
 
   return (
-    <div className="landing-container">
+    <div className="min-h-screen bg-background" style={{overflow: 'clip', contain: 'layout style paint'}}>
       <Navigation />
 
       {/* Hero Section with Professional Slider */}
-      <section className="hero-wrapper">
-        <ProfessionalSlider />
+      <section 
+        className="hero-section relative h-screen min-h-[800px] max-h-screen overflow-hidden" 
+        style={{
+          contain: 'strict',
+          isolation: 'isolate',
+          zIndex: 1,
+          position: 'relative',
+          height: '100vh',
+          maxHeight: '100vh'
+        }}
+      >
+        <div style={{height: '100%', width: '100%', overflow: 'hidden'}}>
+          <ProfessionalSlider />
+        </div>
       </section>
 
       {/* Courses Section */}
-      <section id="courses" className="courses-section">
+      <section id="courses" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fadeInUp">
@@ -129,7 +142,7 @@ export default function Landing() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="about-section">
+      <section id="about" className="py-20 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fadeInUp">
@@ -177,7 +190,7 @@ export default function Landing() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="contact-section">
+      <section id="contact" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -199,7 +212,16 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="footer-section">
+      <footer 
+        className="bg-gray-900 text-white py-12" 
+        style={{
+          position: 'relative', 
+          zIndex: 100, 
+          isolation: 'isolate',
+          contain: 'strict',
+          overflow: 'clip'
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-4">Aytaç Mert - Köpek Eğitimi Akademisi</h3>
