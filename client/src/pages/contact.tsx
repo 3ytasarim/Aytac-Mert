@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { SocialIcons } from "@/components/SocialIcons";
+import { Navigation } from "@/components/ui/navigation";
 import { insertContactSchema } from "@shared/schema";
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
 
@@ -110,10 +111,11 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navigation />
       <SocialIcons />
       
       {/* Hero Section */}
-      <section className="relative min-h-[700px] bg-gradient-to-br from-gray-900 via-black to-gray-800 overflow-hidden flex items-center">
+      <section className="relative min-h-[700px] bg-gradient-to-br from-gray-900 via-black to-gray-800 overflow-hidden flex items-center pt-20">
         {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"></div>
@@ -179,40 +181,7 @@ export default function Contact() {
               </p>
             </motion.div>
 
-            {/* Stats Cards */}
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <motion.div
-                className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20"
-                whileHover={{ scale: 1.05, y: -5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">7/24</div>
-                <div className="text-gray-300">Destek Hattı</div>
-              </motion.div>
-              
-              <motion.div
-                className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20"
-                whileHover={{ scale: 1.05, y: -5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">15+</div>
-                <div className="text-gray-300">Yıl Deneyim</div>
-              </motion.div>
-              
-              <motion.div
-                className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20"
-                whileHover={{ scale: 1.05, y: -5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">1000+</div>
-                <div className="text-gray-300">Mutlu Müşteri</div>
-              </motion.div>
-            </motion.div>
+
           </div>
         </div>
       </section>
