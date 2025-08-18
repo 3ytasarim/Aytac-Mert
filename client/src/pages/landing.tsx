@@ -77,7 +77,7 @@ export default function Landing() {
   };
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col overflow-hidden">
       <Navigation />
 
       {/* Hero Section */}
@@ -438,6 +438,6 @@ export default function Landing() {
         onClose={() => setPaymentModal({ isOpen: false, course: null })}
         course={paymentModal.course}
       />
-    </>
+    </div>
   );
 }
