@@ -191,6 +191,45 @@ export default function Landing() {
               <h2 className="foundation-title">Kuruluş Amacı</h2>
               <div className="foundation-underline"></div>
             </div>
+            
+            <div className="foundation-cards">
+              <div className="foundation-card animate-on-scroll">
+                <div className="card-number">01</div>
+                <p className="card-text">
+                  Kendi köpeğini eğitmek isteyen köpek sahiplerinin sürekli yenileyen farklı farklı 
+                  çalışmalarla eğitim videolarını izleyerek kendi köpeklerini çok rahat bir şekilde 
+                  eğitebilmelerini sağlar.
+                </p>
+              </div>
+              
+              <div className="foundation-card animate-on-scroll">
+                <div className="card-number">02</div>
+                <p className="card-text">
+                  Köpek eğitmenliğini meslek olarak yapmak isteyen arkadaşlarımızın sıfırdan 
+                  eğitim çalışmalarını farklı farklı karakterdeki köpekleri görerek ve kendi 
+                  köpeğinde uygulayarak <strong>Eğitmenlik Seviyesinde</strong> daha da tecrübe 
+                  sahibi olmasını sağlar.
+                </p>
+              </div>
+              
+              <div className="foundation-card animate-on-scroll">
+                <div className="card-number">03</div>
+                <p className="card-text">
+                  Gün ve şartlara bağlı olarak Eğitmenlik yapmak isteyen arkadaşlarımıza 18 
+                  yaşından büyük olması kaydıyla iletişime geçmeleri halinde <strong>E-DEVLET</strong> 
+                  te gözüken sertifika ve <strong>Uluslararası sertifikaya</strong> sahip 
+                  olabilme imkanı sağlar.
+                </p>
+              </div>
+              
+              <div className="foundation-card animate-on-scroll">
+                <div className="card-number">04</div>
+                <p className="card-text">
+                  Sürekli olarak farklı köpek çalışmaları ve sürekli güncellenen yeni video ve 
+                  anlatımlarla tecrübelerinize tecrübe katar.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

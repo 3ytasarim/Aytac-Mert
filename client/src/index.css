@@ -885,6 +885,111 @@
   animation: shimmer 3s ease-in-out infinite;
 }
 
+.foundation-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.foundation-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.foundation-card.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.foundation-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.card-number {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #1f2937 0%, #000000 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-number::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  animation: numberShine 4s ease-in-out infinite;
+}
+
+@keyframes numberShine {
+  0%, 100% {
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+}
+
+.card-text {
+  color: #374151;
+  line-height: 1.7;
+  font-size: 1rem;
+  text-align: center;
+  margin: 0;
+}
+
+.card-text strong {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+/* Responsive adjustments for foundation cards */
+@media (max-width: 768px) {
+  .foundation-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  
+  .foundation-card {
+    padding: 2rem 1.5rem;
+    border-radius: 15px;
+  }
+  
+  .card-number {
+    width: 50px;
+    height: 50px;
+    font-size: 1rem;
+  }
+}
+
 /* Courses Section */
 .courses-section {
   padding: 6rem 0;
