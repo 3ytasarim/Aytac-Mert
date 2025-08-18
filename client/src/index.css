@@ -206,6 +206,7 @@
 .slider-container {
   overflow: hidden;
   position: relative;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
 }
 
 .slider-track {
@@ -216,14 +217,13 @@
 }
 
 .slider-track img {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center center;
   filter: none;
   transition: all 0.3s ease;
   height: 100%;
   width: 100%;
-  /* Optimize for portrait images (1243x2048) */
-  min-width: 100%;
+  /* Show full image with empty sides for portrait images */
 }
 
 /* Responsive adjustments for portrait images */
@@ -241,8 +241,8 @@
   }
   
   .slider-track img {
-    object-fit: cover;
-    object-position: center 30%;
+    object-fit: contain;
+    object-position: center center;
   }
 }
 
@@ -253,8 +253,8 @@
   }
   
   .slider-track img {
-    object-fit: cover;
-    object-position: center 25%;
+    object-fit: contain;
+    object-position: center center;
   }
 }
 
