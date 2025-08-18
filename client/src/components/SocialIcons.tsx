@@ -63,7 +63,7 @@ export function SocialIcons() {
 
   if (isMobile) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-40">
+      <div className="fixed bottom-0 left-0 right-0 z-30">
         <div className="flex">
           {socialLinks.map((social, index) => (
             <a

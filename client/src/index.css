@@ -1327,14 +1327,16 @@
     margin-bottom: 0 !important;
   }
   
+  /* Remove any extra body padding that might cause scrolling issues */
   body {
-    padding-bottom: 4rem; /* Ensure content doesn't go behind social icons */
+    padding-bottom: 0;
+    overflow-x: hidden;
   }
   
-  /* Ensure social icons stay above footer */
+  /* Ensure footer content is visible above social icons */
   footer {
     position: relative;
-    z-index: 1;
+    z-index: 10;
   }
 }
 
