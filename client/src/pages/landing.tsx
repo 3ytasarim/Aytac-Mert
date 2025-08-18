@@ -17,11 +17,7 @@ import { Navigation } from "@/components/ui/navigation";
 import type { Course } from "@shared/schema";
 import { z } from "zod";
 import resim1 from "@assets/resim1_1755508508622.jpg";
-import resim2 from "@assets/resim2_1755508508623.jpg";
-import resim3 from "@assets/resim3_1755508508623.jpg";
-import resim4 from "@assets/resim4_1755508508623.jpg";
-import resim5 from "@assets/resim5_1755508508623.jpg";
-import resim6 from "@assets/resim6_1755508508623.jpg";
+import { ProfessionalSlider } from "@/components/ProfessionalSlider";
 
 const contactFormSchema = insertContactSchema.extend({
   fullName: z.string().min(2, "Ad soyad en az 2 karakter olmalıdır"),
@@ -151,28 +147,7 @@ export default function Landing() {
             </p>
           </div>
           
-          <div className="training-slider-container relative overflow-hidden rounded-2xl shadow-2xl">
-            <div className="training-slider-track">
-              <div className="training-slide">
-                <img src={resim1} alt="Köpek eğitimi 1" className="training-slide-img" />
-              </div>
-              <div className="training-slide">
-                <img src={resim2} alt="Köpek eğitimi 2" className="training-slide-img" />
-              </div>
-              <div className="training-slide">
-                <img src={resim3} alt="Köpek eğitimi 3" className="training-slide-img" />
-              </div>
-              <div className="training-slide">
-                <img src={resim4} alt="Köpek eğitimi 4" className="training-slide-img" />
-              </div>
-              <div className="training-slide">
-                <img src={resim5} alt="Köpek eğitimi 5" className="training-slide-img" />
-              </div>
-              <div className="training-slide">
-                <img src={resim6} alt="Köpek eğitimi 6" className="training-slide-img" />
-              </div>
-            </div>
-          </div>
+          <ProfessionalSlider />
         </div>
       </section>
 
