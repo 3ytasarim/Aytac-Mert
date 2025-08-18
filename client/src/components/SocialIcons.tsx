@@ -63,15 +63,15 @@ export function SocialIcons() {
 
   if (isMobile) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm p-4">
-        <div className="flex justify-center space-x-4">
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <div className="flex">
           {socialLinks.map((social, index) => (
             <a
               key={index}
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-12 h-12 ${social.bgColor} ${social.hoverColor} rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 shadow-lg`}
+              className={`flex-1 h-16 ${social.bgColor} ${social.hoverColor} flex items-center justify-center text-white transition-all duration-300 transform active:scale-95`}
               data-testid={`social-${social.name.toLowerCase()}`}
             >
               {social.icon}
@@ -83,18 +83,18 @@ export function SocialIcons() {
   }
 
   return (
-    <div className="fixed left-4 top-1/2 transform -translate-y-1/2 z-50 flex flex-col space-y-4">
+    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 flex flex-col space-y-4">
       {socialLinks.map((social, index) => (
         <a
           key={index}
           href={social.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={`w-14 h-14 ${social.bgColor} ${social.hoverColor} rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:translate-x-2 shadow-xl group`}
+          className={`w-14 h-14 ${social.bgColor} ${social.hoverColor} rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:-translate-x-2 shadow-xl group`}
           data-testid={`social-${social.name.toLowerCase()}`}
         >
           {social.icon}
-          <span className="absolute left-16 bg-black text-white px-3 py-1 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          <span className="absolute right-16 bg-black text-white px-3 py-1 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
             {social.name}
           </span>
         </a>

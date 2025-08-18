@@ -1320,6 +1320,17 @@
   }
 }
 
+/* Mobile footer spacing */
+@media (max-width: 768px) {
+  .mobile-footer {
+    padding-bottom: 5rem !important; /* Space for fixed social icons */
+  }
+  
+  body {
+    padding-bottom: 0;
+  }
+}
+
 /* Courses Section */
 .courses-section {
   padding: 6rem 0;

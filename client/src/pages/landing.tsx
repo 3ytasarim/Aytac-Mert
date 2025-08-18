@@ -246,7 +246,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer mobile-footer">
         <div className="container">
           <div className="footer-content">
             <div className="footer-main">
