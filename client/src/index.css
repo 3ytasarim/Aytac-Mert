@@ -1019,6 +1019,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding-top: 80px;
 }
 
 .about-hero-background {
@@ -1151,6 +1152,9 @@
   animation: fadeInUp 1s ease-out 1.2s forwards;
   opacity: 0;
   transform: translateY(30px);
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .stat-item {
@@ -1216,23 +1220,103 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .about-hero-section {
-    height: 80vh;
-    min-height: 500px;
+    height: 100vh;
+    min-height: 700px;
+    padding: 0 1rem;
+  }
+  
+  .about-hero-container {
+    padding: 0 1rem;
+  }
+  
+  .about-hero-title {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+  
+  .about-hero-description {
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    margin-bottom: 3rem;
+    padding: 0 1rem;
+    line-height: 1.5;
   }
   
   .about-hero-stats {
     flex-direction: column;
-    gap: 2rem;
+    gap: 2.5rem;
+    padding: 0 2rem;
+  }
+  
+  .stat-item {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
   }
   
   .stat-divider {
-    width: 60px;
+    width: 80px;
     height: 1px;
+    margin: 0 auto;
   }
   
   .stat-divider::before {
     top: 50%;
     left: 50%;
+  }
+  
+  .particle {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-hero-section {
+    min-height: 600px;
+    padding: 0 0.5rem;
+  }
+  
+  .about-hero-container {
+    padding: 0 0.5rem;
+  }
+  
+  .about-hero-title {
+    font-size: clamp(2rem, 15vw, 3rem);
+    margin-bottom: 1rem;
+  }
+  
+  .about-hero-description {
+    font-size: clamp(0.9rem, 5vw, 1.1rem);
+    margin-bottom: 2.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .about-hero-stats {
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .stat-number {
+    font-size: 1.8rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .stat-divider {
+    width: 60px;
   }
 }
 
