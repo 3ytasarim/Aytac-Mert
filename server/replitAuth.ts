@@ -129,28 +129,49 @@ export async function setupAuth(app: Express) {
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
+  console.log('Auth check:', { 
+    isAuth: req.isAuthenticated(), 
+    hasUser: !!user, 
+    userId: user?.claims?.sub || user?.id,
+    userRole: user?.role,
+    expires_at: user?.expires_at,
+    now: Math.floor(Date.now() / 1000)
+  });
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  // Check for custom login (admin users)
+  if (req.isAuthenticated() && user && user.id === 'admin-user-id') {
+    console.log('Admin user authenticated via custom login');
+    return next();
+  }
+
+  // Check for Replit Auth
+  if (!req.isAuthenticated() || !user?.expires_at) {
+    console.log('No auth or expires_at');
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
+    console.log('Token valid, proceeding');
     return next();
   }
 
   const refreshToken = user.refresh_token;
   if (!refreshToken) {
+    console.log('No refresh token available');
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
 
   try {
+    console.log('Attempting token refresh');
     const config = await getOidcConfig();
     const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
     updateUserSession(user, tokenResponse);
+    console.log('Token refreshed successfully');
     return next();
   } catch (error) {
+    console.log('Token refresh failed:', error);
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
