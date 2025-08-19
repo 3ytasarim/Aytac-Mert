@@ -26,9 +26,10 @@ import { useToast } from "@/hooks/use-toast";
 interface AdminSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  onMobileClose?: () => void;
 }
 
-export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
+export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSidebarProps) {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
@@ -117,6 +118,8 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+    // Close mobile menu when navigating
+    onMobileClose?.();
   };
 
   const toggleSubmenu = (title: string) => {
@@ -192,10 +195,10 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                       }
                     }}
                     className={`
-                      w-full flex items-center justify-between p-3 rounded-lg transition-colors relative group
+                      w-full flex items-center justify-between p-3 rounded-lg transition-all duration-300 relative group transform hover:scale-105
                       ${isActive 
-                        ? 'bg-blue-600 text-white' 
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white shadow-lg animate-pulse' 
+                        : 'text-gray-300 hover:bg-gradient-to-r hover:from-gray-700 hover:via-gray-600 hover:to-gray-700 hover:text-white hover:shadow-lg'
                       }
                     `}
                     title={isCollapsed ? item.title : undefined}
@@ -265,10 +268,10 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
           <Button 
             onClick={handleLogout}
             disabled={logoutMutation.isPending}
-            className={`w-full bg-red-600 hover:bg-red-700 text-white ${isCollapsed ? 'px-2' : ''}`}
+            className={`w-full bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group ${isCollapsed ? 'px-2' : ''}`}
             title={isCollapsed ? 'Çıkış Yap' : undefined}
           >
-            <LogOut className="h-4 w-4 mr-2 flex-shrink-0" />
+            <LogOut className="h-4 w-4 mr-2 flex-shrink-0 group-hover:animate-bounce" />
             {!isCollapsed && <span>Çıkış Yap</span>}
           </Button>
         </div>

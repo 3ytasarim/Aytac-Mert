@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, ArrowLeft, Mail, Calendar, Shield, UserPlus, Edit, Trash2, BookOpen, Plus } from "lucide-react";
+import { Users, ArrowLeft, Mail, Calendar, Shield, UserPlus, Edit, Trash2, BookOpen, Plus, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
@@ -160,40 +160,42 @@ export default function AdminUsers() {
           </div>
           <Link href="/admin/students/add">
             <Button
-              className="transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
+              className="transition-all duration-500 bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-110 hover:rotate-1 active:scale-95 group font-semibold"
               data-testid="button-add-student"
             >
-              <UserPlus className="h-4 w-4 mr-2" />
+              <UserPlus className="h-4 w-4 mr-2 group-hover:animate-pulse group-hover:rotate-12 transition-transform duration-300" />
               Öğrenci Ekle
             </Button>
           </Link>
         </div>
 
         {/* Users Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Users className="h-5 w-5 mr-2" />
-              Tüm Kullanıcılar ({allUsers ? (allUsers as User[]).length : 0})
+        <Card className="shadow-2xl border-0 bg-gradient-to-br from-white via-gray-50 to-blue-50 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white">
+            <CardTitle className="flex items-center space-x-3">
+              <Users className="h-6 w-6 animate-pulse" />
+              <span>Tüm Kullanıcılar ({allUsers ? (allUsers as User[]).length : 0})</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-blue-100">
               Sisteme kayıtlı tüm kullanıcılar ve detayları
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {allUsers && (allUsers as User[]).length > 0 ? (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>İsim</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Telefon</TableHead>
-                      <TableHead>Rol</TableHead>
-                      <TableHead>Kayıt Tarihi</TableHead>
-                      <TableHead>İşlemler</TableHead>
-                    </TableRow>
-                  </TableHeader>
+              <>
+                {/* Desktop Table */}
+                <div className="hidden lg:block overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-150 transition-all duration-300">
+                        <TableHead className="font-bold text-gray-800 py-4">İsim</TableHead>
+                        <TableHead className="font-bold text-gray-800 py-4">Email</TableHead>
+                        <TableHead className="font-bold text-gray-800 py-4">Telefon</TableHead>
+                        <TableHead className="font-bold text-gray-800 py-4">Rol</TableHead>
+                        <TableHead className="font-bold text-gray-800 py-4">Kayıt Tarihi</TableHead>
+                        <TableHead className="font-bold text-gray-800 py-4 text-center">İşlemler</TableHead>
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     {(allUsers as User[]).map((user) => (
                       <TableRow key={user.id}>
@@ -240,16 +242,17 @@ export default function AdminUsers() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex space-x-1">
+                          <div className="flex flex-col sm:flex-row gap-1 sm:gap-1">
                             <Button 
                               size="sm" 
                               variant="outline"
                               onClick={() => setEditingUser(user)}
-                              className="h-8 px-2 text-xs transition-all duration-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                              className="h-8 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-110 hover:shadow-lg bg-white border-2 border-blue-200 text-blue-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:border-blue-400 active:scale-95 group"
                               data-testid={`button-edit-user-${user.id}`}
                             >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Düzenle
+                              <Edit className="h-3 w-3 mr-1 group-hover:animate-pulse" />
+                              <span className="hidden sm:inline">Düzenle</span>
+                              <span className="sm:hidden">✏️</span>
                             </Button>
                             {user.role !== 'admin' && (
                               <>
@@ -259,11 +262,12 @@ export default function AdminUsers() {
                                     setAssigningCoursesUser(user);
                                     setSelectedCourses([]);
                                   }}
-                                  className="h-8 px-2 text-xs transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0"
+                                  className="h-8 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-110 hover:shadow-xl bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white border-0 active:scale-95 group shadow-md hover:shadow-green-200"
                                   data-testid={`button-assign-courses-${user.id}`}
                                 >
-                                  <Plus className="h-3 w-3 mr-1" />
-                                  Ders Ekle
+                                  <Plus className="h-3 w-3 mr-1 group-hover:rotate-180 transition-transform duration-300" />
+                                  <span className="hidden sm:inline">Ders Ekle</span>
+                                  <span className="sm:hidden">📚</span>
                                 </Button>
                                 <Button 
                                   size="sm" 
@@ -274,11 +278,12 @@ export default function AdminUsers() {
                                     }
                                   }}
                                   disabled={deleteUserMutation.isPending}
-                                  className="h-8 px-2 text-xs transition-all duration-300 hover:bg-red-600"
+                                  className="h-8 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-110 hover:shadow-xl bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white border-0 active:scale-95 group shadow-md hover:shadow-red-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                                   data-testid={`button-delete-user-${user.id}`}
                                 >
-                                  <Trash2 className="h-3 w-3 mr-1" />
-                                  Sil
+                                  <Trash2 className="h-3 w-3 mr-1 group-hover:animate-bounce" />
+                                  <span className="hidden sm:inline">Sil</span>
+                                  <span className="sm:hidden">🗑️</span>
                                 </Button>
                               </>
                             )}
@@ -286,9 +291,97 @@ export default function AdminUsers() {
                         </TableCell>
                       </TableRow>
                     ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {/* Mobile Cards */}
+                <div className="lg:hidden p-4 space-y-4">
+                  {(allUsers as User[]).map((user) => (
+                    <div 
+                      key={user.id} 
+                      className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                            <Users className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-gray-900">{user.firstName} {user.lastName || ''}</h3>
+                            <Badge 
+                              className={`
+                                mt-1 text-xs font-semibold
+                                ${user.role === 'admin' ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white' : 'bg-gradient-to-r from-green-500 to-green-600 text-white'}
+                              `}
+                            >
+                              {user.role === 'admin' ? 'Yönetici' : 'Öğrenci'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Mail className="h-4 w-4 mr-2 text-blue-500" />
+                          <span className="truncate">{user.email}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Phone className="h-4 w-4 mr-2 text-green-500" />
+                          <span>{user.phone || "Belirtilmemiş"}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Calendar className="h-4 w-4 mr-2 text-orange-500" />
+                          <span>{new Date(user.createdAt).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setEditingUser(user)}
+                          className="flex-1 h-9 text-xs font-medium transition-all duration-500 transform hover:scale-105 hover:shadow-lg bg-white border-2 border-blue-200 text-blue-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:border-blue-400 active:scale-95 group"
+                          data-testid={`button-edit-user-${user.id}`}
+                        >
+                          <Edit className="h-3 w-3 mr-1 group-hover:animate-pulse" />
+                          Düzenle
+                        </Button>
+                        {user.role !== 'admin' && (
+                          <>
+                            <Button 
+                              size="sm" 
+                              onClick={() => {
+                                setAssigningCoursesUser(user);
+                                setSelectedCourses([]);
+                              }}
+                              className="flex-1 h-9 text-xs font-medium transition-all duration-500 transform hover:scale-105 hover:shadow-xl bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white border-0 active:scale-95 group shadow-md hover:shadow-green-200"
+                              data-testid={`button-assign-courses-${user.id}`}
+                            >
+                              <Plus className="h-3 w-3 mr-1 group-hover:rotate-180 transition-transform duration-300" />
+                              Ders Ekle
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => {
+                                if (window.confirm('Bu öğrenciyi silmek istediğinizden emin misiniz?')) {
+                                  deleteUserMutation.mutate(user.id);
+                                }
+                              }}
+                              disabled={deleteUserMutation.isPending}
+                              className="h-9 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-105 hover:shadow-xl bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white border-0 active:scale-95 group shadow-md hover:shadow-red-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                              data-testid={`button-delete-user-${user.id}`}
+                            >
+                              <Trash2 className="h-3 w-3 group-hover:animate-bounce" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
               <div className="text-center py-16 text-gray-500">
                 <Users className="h-24 w-24 mx-auto mb-4 text-gray-300" />
