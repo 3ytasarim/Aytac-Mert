@@ -18,7 +18,7 @@ const courseSchema = z.object({
   title: z.string().min(1, "Eğitim başlığı gereklidir"),
   description: z.string().min(1, "Açıklama gereklidir"),
   price: z.number().min(0, "Fiyat 0'dan küçük olamaz"),
-  imageUrl: z.string().url("Geçerli bir URL giriniz").optional().or(z.literal("")),
+  imageUrl: z.string().optional().or(z.literal("")),
 });
 
 const lessonSchema = z.object({
@@ -357,34 +357,53 @@ export default function AdminAddCourse() {
                 )}
               </div>
 
-              {/* Course Image URL */}
+              {/* Course Image Upload */}
               <div className="space-y-2">
-                <Label htmlFor="imageUrl">Resim URL'si</Label>
-                <div className="flex items-center space-x-2">
-                  <Upload className="h-4 w-4 text-gray-400" />
-                  <Input
-                    id="imageUrl"
-                    type="url"
-                    placeholder="https://example.com/image.jpg"
-                    value={formData.imageUrl}
-                    onChange={(e) => handleInputChange("imageUrl", e.target.value)}
-                    className={errors.imageUrl ? "border-red-500" : ""}
-                    data-testid="input-image-url"
-                  />
+                <Label htmlFor="imageFile">Resim Ekleme</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                  <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-900">Resim dosyası seçin</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF formatları desteklenir (Maks: 5MB)</p>
+                    <input
+                      id="imageFile"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          // Convert file to base64 or handle upload
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            handleInputChange("imageUrl", reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="hidden"
+                      data-testid="input-image-file"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('imageFile')?.click()}
+                      className="mt-2"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Dosya Seç
+                    </Button>
+                  </div>
                 </div>
                 {errors.imageUrl && (
                   <p className="text-sm text-red-600">{errors.imageUrl}</p>
                 )}
-                <p className="text-sm text-gray-500">
-                  İsteğe bağlı: Eğitim için görsel eklemek istiyorsanız resim URL'sini giriniz
-                </p>
               </div>
 
               {/* Preview */}
               {formData.imageUrl && (
                 <div className="space-y-2">
                   <Label>Resim Önizleme</Label>
-                  <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="border rounded-lg p-4 bg-gray-50 relative">
                     <img
                       src={formData.imageUrl}
                       alt="Eğitim resmi önizleme"
@@ -393,6 +412,15 @@ export default function AdminAddCourse() {
                         e.currentTarget.style.display = 'none';
                       }}
                     />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleInputChange("imageUrl", "")}
+                      className="absolute top-2 right-2 bg-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               )}
