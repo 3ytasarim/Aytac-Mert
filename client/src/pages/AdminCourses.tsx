@@ -134,8 +134,7 @@ export default function AdminCourses() {
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Button
               onClick={() => navigate("/admin/courses/edit")}
-              variant="outline"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto transition-all duration-300 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
               data-testid="button-edit-courses"
             >
               <Edit className="h-4 w-4 mr-2" />
@@ -143,7 +142,7 @@ export default function AdminCourses() {
             </Button>
             <Button
               onClick={() => navigate("/admin/courses/add")}
-              className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+              className="w-full sm:w-auto transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
               data-testid="button-add-course"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -219,34 +218,31 @@ export default function AdminCourses() {
                     <div className="grid grid-cols-3 gap-1.5">
                       <Button
                         size="sm"
-                        variant="outline"
                         onClick={() => navigate(`/admin/courses/edit?id=${course.id}`)}
                         data-testid={`button-edit-${course.id}`}
-                        className="h-7 px-1.5 text-[11px] font-medium"
+                        className="h-8 px-2 text-xs font-semibold transition-all duration-300 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
                       >
-                        <Edit className="h-3 w-3 mr-0.5" />
+                        <Edit className="h-3 w-3 mr-1" />
                         <span>Düzenle</span>
                       </Button>
                       <Button
                         size="sm"
-                        variant="outline"
                         onClick={() => handleDeleteCourse(course.id, course.title)}
                         disabled={deleteCourseMapping.isPending}
                         data-testid={`button-delete-${course.id}`}
-                        className="h-7 px-1.5 text-[11px] font-medium text-red-600 border-red-300 hover:bg-red-50"
+                        className="h-8 px-2 text-xs font-semibold transition-all duration-300 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                       >
-                        <Trash2 className="h-3 w-3 mr-0.5" />
+                        <Trash2 className="h-3 w-3 mr-1" />
                         <span>Sil</span>
                       </Button>
                       <Button
                         size="sm"
-                        variant="outline"
                         onClick={() => navigate(`/admin/courses/${course.id}/lessons`)}
                         data-testid={`button-lessons-${course.id}`}
-                        className="h-7 px-1.5 text-[11px] font-medium text-green-600 border-green-300 hover:bg-green-50"
+                        className="h-8 px-2 text-xs font-semibold transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
                       >
-                        <PlusCircle className="h-3 w-3 mr-0.5" />
-                        <span>Ders Ekle</span>
+                        <PlusCircle className="h-3 w-3 mr-1" />
+                        <span>Ders+</span>
                       </Button>
                     </div>
                   </div>

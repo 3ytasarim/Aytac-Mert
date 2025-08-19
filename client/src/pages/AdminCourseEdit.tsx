@@ -35,6 +35,10 @@ export default function AdminCourseEdit() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Get course ID from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const courseIdFromUrl = urlParams.get('id');
+  
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [newLesson, setNewLesson] = useState({
@@ -66,6 +70,16 @@ export default function AdminCourseEdit() {
     queryKey: ["/api/admin/courses"],
     enabled: isAuthenticated && user?.role === 'admin',
   });
+
+  // Auto-select course if ID provided in URL
+  useEffect(() => {
+    if (courses && courseIdFromUrl) {
+      const courseToEdit = (courses as Course[]).find(c => c.id === courseIdFromUrl);
+      if (courseToEdit) {
+        setSelectedCourse(courseToEdit);
+      }
+    }
+  }, [courses, courseIdFromUrl]);
 
   const { data: lessons, isLoading: lessonsLoading } = useQuery({
     queryKey: ["/api/admin/courses", selectedCourse?.id, "lessons"],

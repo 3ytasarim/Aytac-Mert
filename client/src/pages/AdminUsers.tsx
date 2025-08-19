@@ -118,8 +118,16 @@ export default function AdminUsers() {
                           {user.phone || "Belirtilmemiş"}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                            <Shield className="h-3 w-3 mr-1" />
+                          <Badge 
+                            className={`
+                              transition-all duration-300 transform hover:scale-105 cursor-pointer font-semibold
+                              ${user.role === 'admin' 
+                                ? 'bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white border-0 shadow-md hover:shadow-lg' 
+                                : 'bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white border-0 shadow-md hover:shadow-lg'
+                              }
+                            `}
+                          >
+                            <Shield className="h-3 w-3 mr-1 animate-pulse" />
                             {user.role === 'admin' ? 'Yönetici' : 'Öğrenci'}
                           </Badge>
                         </TableCell>
