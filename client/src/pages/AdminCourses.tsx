@@ -99,19 +99,30 @@ export default function AdminCourses() {
     <AdminLayout title="Eğitim Yönetimi" description="Tüm eğitimleri görüntüleyin ve yönetin">
       <div className="space-y-6">
         {/* Header Actions */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center space-x-4">
             <BookOpen className="h-6 w-6 text-blue-600" />
             <h2 className="text-xl font-semibold">Tüm Eğitimler</h2>
           </div>
-          <Button
-            onClick={() => navigate("/admin/courses/add")}
-            className="bg-blue-600 hover:bg-blue-700"
-            data-testid="button-add-course"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Yeni Eğitim Ekle
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button
+              onClick={() => navigate("/admin/courses/edit")}
+              variant="outline"
+              className="w-full sm:w-auto"
+              data-testid="button-edit-courses"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Eğitim Düzenle
+            </Button>
+            <Button
+              onClick={() => navigate("/admin/courses/add")}
+              className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+              data-testid="button-add-course"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Yeni Eğitim Ekle
+            </Button>
+          </div>
         </div>
 
         {/* Courses Grid */}
@@ -167,9 +178,9 @@ export default function AdminCourses() {
                   </p>
 
                   {/* Course Price */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-blue-600">
-                      ₺{course.price}
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <span className="text-xl sm:text-2xl font-bold text-blue-600">
+                      ₺{course.price.toLocaleString('tr-TR')}
                     </span>
                     <div className="text-sm text-gray-500">
                       {new Date(course.createdAt).toLocaleDateString('tr-TR')}
@@ -177,24 +188,28 @@ export default function AdminCourses() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex space-x-2 pt-2 border-t">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/admin/courses/edit`)}
+                      data-testid={`button-edit-${course.id}`}
+                      className="flex-1 min-h-9"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">Düzenle</span>
+                      <span className="sm:hidden">Düzenle</span>
+                    </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => navigate(`/admin/courses/${course.id}`)}
                       data-testid={`button-view-${course.id}`}
+                      className="flex-1 min-h-9"
                     >
-                      <Eye className="h-3 w-3 mr-1" />
-                      Görüntüle
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/admin/courses/${course.id}/edit`)}
-                      data-testid={`button-edit-${course.id}`}
-                    >
-                      <Edit className="h-3 w-3 mr-1" />
-                      Düzenle
+                      <Eye className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">Görüntüle</span>
+                      <span className="sm:hidden">Görüntüle</span>
                     </Button>
                     <Button
                       size="sm"
@@ -202,9 +217,15 @@ export default function AdminCourses() {
                       onClick={() => handleToggleStatus(course.id, course.isActive)}
                       disabled={toggleCourseStatusMutation.isPending}
                       data-testid={`button-toggle-${course.id}`}
+                      className="flex-1 min-h-9"
                     >
-                      <Archive className="h-3 w-3 mr-1" />
-                      {course.isActive ? "Pasifleştir" : "Aktifleştir"}
+                      <Archive className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">
+                        {course.isActive ? "Pasifleştir" : "Aktifleştir"}
+                      </span>
+                      <span className="sm:hidden">
+                        {course.isActive ? "Pasif" : "Aktif"}
+                      </span>
                     </Button>
                   </div>
                 </CardContent>
