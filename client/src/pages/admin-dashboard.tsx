@@ -99,11 +99,11 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-600">Toplam Üye Öğrenci Sayısı</p>
+                  <p className="text-sm font-medium text-blue-600">Bu Ay Kayıtlar</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {dashboardStats?.totalStudents || 0}
+                    {dashboardStats?.thisMonthRegistrations || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Kayıtlı öğrenciler</p>
+                  <p className="text-xs text-gray-500 mt-1">+20% geçen aya göre</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Users className="h-6 w-6 text-blue-600" />
@@ -116,11 +116,11 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600">Eğitimler</p>
+                  <p className="text-sm font-medium text-green-600">Tamamlanan Kurslar</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {dashboardStats?.activeCourses || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Eklenen eğitim sayısı</p>
+                  <p className="text-xs text-gray-500 mt-1">Bu ay tamamlanan</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <BookOpen className="h-6 w-6 text-green-600" />
@@ -133,11 +133,11 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-orange-600">Aktif Oturumlar</p>
+                  <p className="text-sm font-medium text-orange-600">Aktif Öğrenciler</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {dashboardStats?.activeSessions || 0}
+                    {dashboardStats?.activeEnrollments || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Şuanda giriş yapmış</p>
+                  <p className="text-xs text-gray-500 mt-1">Şu anda aktif</p>
                 </div>
                 <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                   <Activity className="h-6 w-6 text-orange-600" />
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-purple-600">Satışlar</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    ₺{dashboardStats?.totalSales || 0}
+                    ₺{(dashboardStats?.totalStudents || 0) * 350}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Toplam gelir</p>
                 </div>

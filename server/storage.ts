@@ -258,33 +258,38 @@ export class DatabaseStorage implements IStorage {
   async getDashboardStats(): Promise<{
     totalStudents: number;
     activeCourses: number;
-    totalEnrollments: number;
-    recentContacts: number;
+    activeEnrollments: number;
+    thisMonthRegistrations: number;
   }> {
+    // Total students (excluding admin)
     const [totalStudents] = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
       .where(eq(users.role, "student"));
 
+    // Active courses
     const [activeCourses] = await db
       .select({ count: sql<number>`count(*)` })
       .from(courses)
       .where(eq(courses.isActive, true));
 
-    const [totalEnrollments] = await db
+    // Active enrollments (enrolled or in progress)
+    const [activeEnrollments] = await db
       .select({ count: sql<number>`count(*)` })
-      .from(enrollments);
+      .from(enrollments)
+      .where(sql`${enrollments.status} IN ('enrolled', 'in_progress')`);
 
-    const [recentContacts] = await db
+    // This month registrations
+    const [thisMonthRegistrations] = await db
       .select({ count: sql<number>`count(*)` })
-      .from(contacts)
-      .where(eq(contacts.status, "new"));
+      .from(users)
+      .where(sql`${users.role} = 'student' AND ${users.createdAt} >= date_trunc('month', CURRENT_DATE)`);
 
     return {
       totalStudents: totalStudents.count,
       activeCourses: activeCourses.count,
-      totalEnrollments: totalEnrollments.count,
-      recentContacts: recentContacts.count,
+      activeEnrollments: activeEnrollments.count,
+      thisMonthRegistrations: thisMonthRegistrations.count,
     };
   }
 
