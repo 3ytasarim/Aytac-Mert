@@ -49,20 +49,29 @@ export default function AdminAddCourse() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [lessonErrors, setLessonErrors] = useState<Record<number, Record<string, string>>>({});
 
-  // Redirect to home if not authenticated or not admin
+  // Redirect if not authenticated or not admin
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || user?.role !== 'admin')) {
+    if (!isLoading && (!isAuthenticated || !user)) {
       toast({
-        title: "Yetkisiz Erişim",
-        description: "Admin paneline erişim yetkiniz yok.",
+        title: "Yetkisiz Erişim", 
+        description: "Oturum süreniz dolmuş. Tekrar giriş yapılıyor...",
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/api/login";
       }, 500);
       return;
     }
-  }, [isAuthenticated, isLoading, user, toast]);
+    if (!isLoading && user && user.role !== 'admin') {
+      toast({
+        title: "Yetkisiz Erişim",
+        description: "Bu sayfaya erişim yetkiniz bulunmuyor.",
+        variant: "destructive",
+      });
+      navigate("/");
+      return;
+    }
+  }, [isAuthenticated, isLoading, user, toast, navigate]);
 
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: CourseFormData) => {
@@ -91,11 +100,23 @@ export default function AdminAddCourse() {
       setCurrentStep(2);
     },
     onError: (error: Error) => {
-      toast({
-        title: "Hata",
-        description: error.message || "Eğitim eklenirken bir hata oluştu",
-        variant: "destructive",
-      });
+      // Check if it's an authentication error
+      if (error.message.includes("Unauthorized")) {
+        toast({
+          title: "Oturum Süresi Doldu",
+          description: "Tekrar giriş yapılıyor...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 1000);
+      } else {
+        toast({
+          title: "Hata",
+          description: error.message || "Eğitim eklenirken bir hata oluştu",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -127,11 +148,23 @@ export default function AdminAddCourse() {
       navigate("/admin/courses");
     },
     onError: (error: Error) => {
-      toast({
-        title: "Hata",
-        description: error.message || "Bölümler eklenirken bir hata oluştu",
-        variant: "destructive",
-      });
+      // Check if it's an authentication error
+      if (error.message.includes("Unauthorized")) {
+        toast({
+          title: "Oturum Süresi Doldu",
+          description: "Tekrar giriş yapılıyor...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 1000);
+      } else {
+        toast({
+          title: "Hata",
+          description: error.message || "Bölümler eklenirken bir hata oluştu",
+          variant: "destructive",
+        });
+      }
     },
   });
 
