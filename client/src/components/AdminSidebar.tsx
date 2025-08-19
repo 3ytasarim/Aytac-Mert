@@ -24,11 +24,11 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface AdminSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isCollapsed: boolean;
+  onToggle: () => void;
 }
 
-export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
+export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
@@ -116,7 +116,6 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
   const handleNavigation = (path: string) => {
     navigate(path);
-    onClose();
   };
 
   const toggleSubmenu = (title: string) => {
@@ -132,50 +131,43 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   };
 
   return (
-    <>
-      {/* Mobile backdrop */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
-      
-      {/* Sidebar */}
-      <div className={`
-        fixed top-0 left-0 h-full w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out z-50
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:z-auto
-      `}>
+    <div className={`
+      fixed top-0 left-0 h-full bg-gray-900 text-white transition-all duration-300 ease-in-out z-50
+      ${isCollapsed ? 'w-16' : 'w-64'}
+    `}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <div className="flex items-center">
-            <Shield className="h-8 w-8 text-blue-400 mr-3" />
-            <div>
-              <h1 className="text-lg font-bold">Admin Panel</h1>
-              <p className="text-xs text-gray-400">Aytaç Mert Akademisi</p>
-            </div>
+          <div className="flex items-center overflow-hidden">
+            <Shield className="h-8 w-8 text-blue-400 mr-3 flex-shrink-0" />
+            {!isCollapsed && (
+              <div className="transition-opacity duration-300">
+                <h1 className="text-lg font-bold whitespace-nowrap">Admin Panel</h1>
+                <p className="text-xs text-gray-400 whitespace-nowrap">Aytaç Mert Akademisi</p>
+              </div>
+            )}
           </div>
           <Button 
             variant="ghost" 
             size="sm" 
-            className="lg:hidden text-white hover:bg-gray-700"
-            onClick={onClose}
+            className="text-white hover:bg-gray-700 flex-shrink-0"
+            onClick={onToggle}
           >
-            <X className="h-4 w-4" />
+            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>
         </div>
 
         {/* Admin Info */}
         <div className="p-4 border-b border-gray-700">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
               <Users className="h-5 w-5 text-white" />
             </div>
-            <div>
-              <p className="font-medium">Administrator</p>
-              <p className="text-xs text-gray-400">info@aytacmert.com</p>
-            </div>
+            {!isCollapsed && (
+              <div className="transition-opacity duration-300 overflow-hidden">
+                <p className="font-medium whitespace-nowrap">Administrator</p>
+                <p className="text-xs text-gray-400 whitespace-nowrap">info@aytacmert.com</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -192,40 +184,57 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 <div key={item.title}>
                   <button
                     onClick={() => {
-                      if (hasSubmenu) {
+                      if (hasSubmenu && !isCollapsed) {
                         toggleSubmenu(item.title);
                       } else {
                         handleNavigation(item.path);
                       }
                     }}
                     className={`
-                      w-full flex items-center justify-between p-3 rounded-lg transition-colors
+                      w-full flex items-center justify-between p-3 rounded-lg transition-colors relative group
                       ${isActive 
                         ? 'bg-blue-600 text-white' 
                         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                       }
                     `}
+                    title={isCollapsed ? item.title : undefined}
                   >
-                    <div className="flex items-center">
-                      <Icon className="h-5 w-5 mr-3" />
-                      <span className="text-sm font-medium">{item.title}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      {item.badge && (
-                        <Badge variant="destructive" className="text-xs">
-                          {item.badge}
-                        </Badge>
-                      )}
-                      {hasSubmenu && (
-                        isExpanded ? 
-                          <ChevronDown className="h-4 w-4" /> : 
-                          <ChevronRight className="h-4 w-4" />
+                    <div className="flex items-center overflow-hidden">
+                      <Icon className="h-5 w-5 mr-3 flex-shrink-0" />
+                      {!isCollapsed && (
+                        <span className="text-sm font-medium whitespace-nowrap">{item.title}</span>
                       )}
                     </div>
+                    {!isCollapsed && (
+                      <div className="flex items-center space-x-2">
+                        {item.badge && (
+                          <Badge variant="destructive" className="text-xs">
+                            {item.badge}
+                          </Badge>
+                        )}
+                        {hasSubmenu && (
+                          isExpanded ? 
+                            <ChevronDown className="h-4 w-4" /> : 
+                            <ChevronRight className="h-4 w-4" />
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Tooltip for collapsed state */}
+                    {isCollapsed && (
+                      <div className="absolute left-full top-0 ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                        {item.title}
+                        {item.badge && (
+                          <Badge variant="destructive" className="ml-2 text-xs">
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
                   </button>
                   
-                  {/* Submenu */}
-                  {hasSubmenu && isExpanded && (
+                  {/* Submenu - only show when not collapsed */}
+                  {hasSubmenu && isExpanded && !isCollapsed && (
                     <div className="ml-6 mt-1 space-y-1">
                       {item.submenu.map((subItem) => (
                         <button
@@ -255,13 +264,13 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           <Button 
             onClick={handleLogout}
             disabled={logoutMutation.isPending}
-            className="w-full bg-red-600 hover:bg-red-700 text-white"
+            className={`w-full bg-red-600 hover:bg-red-700 text-white ${isCollapsed ? 'px-2' : ''}`}
+            title={isCollapsed ? 'Çıkış Yap' : undefined}
           >
-            <LogOut className="h-4 w-4 mr-2" />
-            Çıkış Yap
+            <LogOut className="h-4 w-4 mr-2 flex-shrink-0" />
+            {!isCollapsed && <span>Çıkış Yap</span>}
           </Button>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
