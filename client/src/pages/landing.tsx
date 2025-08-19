@@ -10,7 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertContactSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { PaymentModal } from "@/components/ui/payment-modal";
+import { LoginModal } from "@/components/LoginModal";
+import { RegistrationModal } from "@/components/RegistrationModal";
 import { CourseCard } from "@/components/ui/course-card";
 import { Navigation } from "@/components/ui/navigation";
 import type { Course } from "@shared/schema";
@@ -32,7 +35,12 @@ export default function Landing() {
     isOpen: false,
     course: null,
   });
+  const [authModal, setAuthModal] = useState<{ type: 'login' | 'register' | null; isOpen: boolean }>({
+    type: null,
+    isOpen: false,
+  });
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
@@ -67,7 +75,23 @@ export default function Landing() {
   };
 
   const handlePurchaseCourse = (course: Course) => {
+    if (!isAuthenticated) {
+      setAuthModal({ type: 'login', isOpen: true });
+      return;
+    }
     setPaymentModal({ isOpen: true, course });
+  };
+
+  const handleAuthModalClose = () => {
+    setAuthModal({ type: null, isOpen: false });
+  };
+
+  const showRegistrationModal = () => {
+    setAuthModal({ type: 'register', isOpen: true });
+  };
+
+  const showLoginModal = () => {
+    setAuthModal({ type: 'login', isOpen: true });
   };
 
   const scrollToSection = (sectionId: string) => {
@@ -383,6 +407,18 @@ export default function Landing() {
         isOpen={paymentModal.isOpen}
         onClose={() => setPaymentModal({ isOpen: false, course: null })}
         course={paymentModal.course}
+      />
+
+      {/* Authentication Modals */}
+      <LoginModal 
+        isOpen={authModal.isOpen && authModal.type === 'login'} 
+        onClose={handleAuthModalClose}
+        onSwitchToRegister={showRegistrationModal}
+      />
+      <RegistrationModal 
+        isOpen={authModal.isOpen && authModal.type === 'register'} 
+        onClose={handleAuthModalClose}
+        onSwitchToLogin={showLoginModal}
       />
     </div>
   );

@@ -23,9 +23,10 @@ type LoginData = z.infer<typeof loginSchema>;
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSwitchToRegister?: () => void;
 }
 
-export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
@@ -182,6 +183,23 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </Button>
           </form>
         </Form>
+
+        {/* Kayıt Ol Bağlantısı */}
+        {onSwitchToRegister && (
+          <div className="text-center mt-6 pt-4 border-t border-gray-200">
+            <p className="text-gray-600">
+              Hesabınız yok mu?{" "}
+              <button
+                type="button"
+                onClick={onSwitchToRegister}
+                className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                data-testid="button-switch-to-register"
+              >
+                Kayıt Ol
+              </button>
+            </p>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

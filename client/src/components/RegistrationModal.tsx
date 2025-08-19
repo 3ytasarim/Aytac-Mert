@@ -15,9 +15,10 @@ import { PrivacyModal } from "./PrivacyModal";
 interface RegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSwitchToLogin?: () => void;
 }
 
-export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
+export function RegistrationModal({ isOpen, onClose, onSwitchToLogin }: RegistrationModalProps) {
   const [captchaCode] = useState(() => generateCaptcha());
   const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
   const { toast } = useToast();
@@ -273,6 +274,23 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
             </Button>
           </form>
         </Form>
+
+        {/* Giriş Yap Bağlantısı */}
+        {onSwitchToLogin && (
+          <div className="text-center mt-6 pt-4 border-t border-gray-200">
+            <p className="text-gray-600">
+              Zaten hesabınız var mı?{" "}
+              <button
+                type="button"
+                onClick={onSwitchToLogin}
+                className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                data-testid="button-switch-to-login"
+              >
+                Giriş Yap
+              </button>
+            </p>
+          </div>
+        )}
       </DialogContent>
       
       <PrivacyModal 
