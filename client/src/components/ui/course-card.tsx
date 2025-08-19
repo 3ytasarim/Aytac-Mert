@@ -9,12 +9,7 @@ interface CourseCardProps {
 
 export function CourseCard({ course, onPurchase }: CourseCardProps) {
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'currency',
-      currency: 'TRY',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price / 100);
+    return `₺${price.toLocaleString('tr-TR')}`;
   };
 
   return (
@@ -33,13 +28,10 @@ export function CourseCard({ course, onPurchase }: CourseCardProps) {
         <p className="text-gray-600 mb-6 text-lg leading-relaxed" data-testid="text-course-description">
           {course.description}
         </p>
-        <div className="flex items-center justify-between">
-          <div className="text-3xl font-bold text-black" data-testid="text-course-price">
-            {formatPrice(course.price)}
-          </div>
+        <div className="flex justify-center">
           <Button
             onClick={() => onPurchase(course)}
-            className="bg-black text-white hover:bg-gray-800 transition-colors font-semibold px-6 py-3 hover-lift"
+            className="bg-black text-white hover:bg-gray-800 transition-colors font-semibold px-8 py-3 hover-lift rounded-full"
             data-testid={`button-purchase-${course.id}`}
           >
             Satın Al

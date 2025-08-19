@@ -10,6 +10,10 @@ This is a full-stack web application for a dog training academy (Aytaç Mert Kö
 - Integrated email service using info@aytacmert.com SMTP for welcome emails
 - Added comprehensive privacy policy modal with KVKK compliance
 - Set up admin dashboard with user management, contact handling, and statistics
+- Implemented object storage system with PC file upload capability for course images
+- Fixed pricing display format (admin prices shown directly without /100 conversion)
+- Redesigned course cards with centered "Satın Al" buttons and removed price display from main page
+- Enhanced image sizing for better visibility across admin and public pages
 
 # User Preferences
 
