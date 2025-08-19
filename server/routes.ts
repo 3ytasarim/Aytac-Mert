@@ -551,6 +551,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/admin/lessons/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { id } = req.params;
+      const { title, videoEmbedCode } = req.body;
+      
+      const updatedLesson = await storage.updateLesson(id, { title, videoEmbedCode });
+      res.json(updatedLesson);
+    } catch (error) {
+      console.error("Error updating lesson:", error);
+      res.status(500).json({ message: "Failed to update lesson" });
+    }
+  });
+
+  app.delete("/api/admin/lessons/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { id } = req.params;
+      await storage.deleteLesson(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting lesson:", error);
+      res.status(500).json({ message: "Failed to delete lesson" });
+    }
+  });
+
   app.patch("/api/admin/contacts/:id", isAuthenticated, async (req: any, res) => {
     try {
       const sessionUser = (req.session as any)?.user;

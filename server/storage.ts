@@ -160,6 +160,25 @@ export class DatabaseStorage implements IStorage {
       .orderBy(lessons.orderIndex);
   }
 
+  async updateLesson(lessonId: string, updateData: { title: string; videoEmbedCode: string }): Promise<any> {
+    const [updatedLesson] = await db
+      .update(lessons)
+      .set({
+        title: updateData.title,
+        videoEmbedCode: updateData.videoEmbedCode,
+        updatedAt: new Date()
+      })
+      .where(eq(lessons.id, lessonId))
+      .returning();
+    return updatedLesson;
+  }
+
+  async deleteLesson(lessonId: string): Promise<void> {
+    await db
+      .delete(lessons)
+      .where(eq(lessons.id, lessonId));
+  }
+
   // Enrollment operations
   async createEnrollment(enrollment: InsertEnrollment): Promise<Enrollment> {
     const [newEnrollment] = await db

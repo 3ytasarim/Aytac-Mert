@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Edit, Plus, Trash2, Video, Save, X } from "lucide-react";
+import { Edit, Plus, Trash2, Video, Save, X, Check } from "lucide-react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 
 interface Course {
@@ -37,6 +37,11 @@ export default function AdminCourseEdit() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [newLesson, setNewLesson] = useState({
+    title: "",
+    videoEmbedCode: ""
+  });
+  const [editLessonForm, setEditLessonForm] = useState({
+    id: "",
     title: "",
     videoEmbedCode: ""
   });
@@ -157,6 +162,89 @@ export default function AdminCourseEdit() {
     },
   });
 
+  const updateLessonMutation = useMutation({
+    mutationFn: async (lessonData: { id: string; title: string; videoEmbedCode: string }) => {
+      const response = await fetch(`/api/admin/lessons/${lessonData.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: lessonData.title,
+          videoEmbedCode: lessonData.videoEmbedCode
+        }),
+      });
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`${response.status}: ${error}`);
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı",
+        description: "Bölüm güncellendi.",
+      });
+      setEditingLesson(null);
+      setEditLessonForm({ id: "", title: "", videoEmbedCode: "" });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/courses", selectedCourse?.id, "lessons"] });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Oturum Süresi Doldu",
+          description: "Tekrar giriş yapılıyor...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Hata",
+        description: "Bölüm güncellenirken bir hata oluştu.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteLessonMutation = useMutation({
+    mutationFn: async (lessonId: string) => {
+      const response = await fetch(`/api/admin/lessons/${lessonId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`${response.status}: ${error}`);
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı",
+        description: "Bölüm silindi.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/courses", selectedCourse?.id, "lessons"] });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Oturum Süresi Doldu",
+          description: "Tekrar giriş yapılıyor...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Hata",
+        description: "Bölüm silinirken bir hata oluştu.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleCourseUpdate = (course: Course) => {
     updateCourseMutation.mutate({
       id: course.id,
@@ -181,6 +269,39 @@ export default function AdminCourseEdit() {
       title: newLesson.title,
       videoEmbedCode: newLesson.videoEmbedCode
     });
+  };
+
+  const handleEditLesson = (lesson: Lesson) => {
+    setEditingLesson(lesson);
+    setEditLessonForm({
+      id: lesson.id,
+      title: lesson.title,
+      videoEmbedCode: lesson.videoEmbedCode
+    });
+  };
+
+  const handleUpdateLesson = () => {
+    if (!editLessonForm.title || !editLessonForm.videoEmbedCode) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Bölüm başlığı ve video kodu gereklidir.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateLessonMutation.mutate(editLessonForm);
+  };
+
+  const handleDeleteLesson = (lessonId: string) => {
+    if (window.confirm("Bu bölümü silmek istediğinizden emin misiniz?")) {
+      deleteLessonMutation.mutate(lessonId);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingLesson(null);
+    setEditLessonForm({ id: "", title: "", videoEmbedCode: "" });
   };
 
   if (isLoading) {
@@ -278,6 +399,26 @@ export default function AdminCourseEdit() {
                         />
                       </div>
                       <div>
+                        <Label>Kurs Resmi URL</Label>
+                        <Input
+                          value={selectedCourse.imageUrl || ""}
+                          onChange={(e) => setSelectedCourse({...selectedCourse, imageUrl: e.target.value})}
+                          placeholder="https://example.com/image.jpg"
+                        />
+                        {selectedCourse.imageUrl && (
+                          <div className="mt-2">
+                            <img 
+                              src={selectedCourse.imageUrl} 
+                              alt="Kurs önizlemesi"
+                              className="w-32 h-20 object-cover rounded border"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div>
                         <Label>Fiyat (₺)</Label>
                         <Input
                           type="number"
@@ -312,12 +453,79 @@ export default function AdminCourseEdit() {
                             className="p-3 border rounded-lg"
                             data-testid={`lesson-item-${lesson.id}`}
                           >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-medium">{lesson.title}</h4>
-                                <p className="text-sm text-gray-600">Bölüm {index + 1}</p>
+                            {editingLesson?.id === lesson.id ? (
+                              <div className="space-y-3">
+                                <div>
+                                  <Label>Bölüm Başlığı</Label>
+                                  <Input
+                                    value={editLessonForm.title}
+                                    onChange={(e) => setEditLessonForm({...editLessonForm, title: e.target.value})}
+                                    placeholder="Bölüm başlığını girin"
+                                  />
+                                </div>
+                                <div>
+                                  <Label>YouTube Video URL'si</Label>
+                                  <Input
+                                    value={editLessonForm.videoEmbedCode}
+                                    onChange={(e) => setEditLessonForm({...editLessonForm, videoEmbedCode: e.target.value})}
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button 
+                                    size="sm"
+                                    onClick={handleUpdateLesson}
+                                    disabled={updateLessonMutation.isPending}
+                                  >
+                                    <Check className="h-3 w-3 mr-1" />
+                                    {updateLessonMutation.isPending ? "Kaydediliyor..." : "Kaydet"}
+                                  </Button>
+                                  <Button 
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={cancelEdit}
+                                  >
+                                    <X className="h-3 w-3 mr-1" />
+                                    İptal
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <h4 className="font-medium">{lesson.title}</h4>
+                                  <p className="text-sm text-gray-600">Bölüm {index + 1}</p>
+                                  {lesson.videoEmbedCode && (
+                                    <p className="text-xs text-blue-600 mt-1 truncate">
+                                      {lesson.videoEmbedCode.length > 50 
+                                        ? lesson.videoEmbedCode.substring(0, 50) + "..." 
+                                        : lesson.videoEmbedCode
+                                      }
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="flex gap-2 ml-4">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleEditLesson(lesson)}
+                                    data-testid={`edit-lesson-${lesson.id}`}
+                                  >
+                                    <Edit className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleDeleteLesson(lesson.id)}
+                                    disabled={deleteLessonMutation.isPending}
+                                    className="text-red-600 hover:text-red-700"
+                                    data-testid={`delete-lesson-${lesson.id}`}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
