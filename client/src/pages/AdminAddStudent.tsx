@@ -58,7 +58,7 @@ export default function AdminAddStudent() {
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
-      navigate("/admin/users");
+      navigate("/admin");
     },
     onError: (error: Error) => {
       toast({
@@ -155,7 +155,7 @@ export default function AdminAddStudent() {
           </div>
           <Button
             variant="outline"
-            onClick={() => navigate("/admin/users")}
+            onClick={() => navigate("/admin")}
             className="transition-all duration-300 hover:bg-gray-50"
           >
             <X className="h-4 w-4 mr-2" />
@@ -397,7 +397,7 @@ export default function AdminAddStudent() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/admin/users")}
+              onClick={() => navigate("/admin")}
               className="px-6 py-2 transition-all duration-300 hover:bg-gray-50"
               disabled={createStudentMutation.isPending}
             >
