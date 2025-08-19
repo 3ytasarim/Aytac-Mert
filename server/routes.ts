@@ -2,9 +2,16 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertContactSchema, insertEnrollmentSchema, registrationSchema } from "@shared/schema";
-import { sendWelcomeEmail } from "./emailService";
+import { 
+  insertContactSchema, 
+  insertEnrollmentSchema, 
+  registrationSchema,
+  requestPasswordResetSchema,
+  resetPasswordSchema 
+} from "@shared/schema";
+import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 import { z } from "zod";
+import { randomBytes } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -171,6 +178,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Logout error:", error);
       res.status(500).json({ message: "Çıkış işlemi başarısız" });
+    }
+  });
+
+  // Password reset routes
+  app.post("/api/request-password-reset", async (req, res) => {
+    try {
+      const { email } = requestPasswordResetSchema.parse(req.body);
+      
+      // Check if user exists
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if email exists or not for security
+        return res.json({ message: "Şifre sıfırlama e-postası gönderildi (eğer hesap mevcutsa)" });
+      }
+
+      // Generate reset token
+      const resetToken = randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+      // Save token to database
+      await storage.createPasswordResetToken(email, resetToken, expiresAt);
+
+      // Send reset email
+      const emailSent = await sendPasswordResetEmail(email, resetToken);
+      
+      if (emailSent) {
+        res.json({ message: "Şifre sıfırlama e-postası gönderildi" });
+      } else {
+        res.status(500).json({ message: "E-posta gönderilirken hata oluştu" });
+      }
+    } catch (error) {
+      console.error("Password reset request error:", error);
+      res.status(500).json({ message: "Şifre sıfırlama talebinde hata oluştu" });
+    }
+  });
+
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { token, password } = resetPasswordSchema.parse(req.body);
+      
+      // Verify token
+      const passwordResetToken = await storage.getPasswordResetToken(token);
+      if (!passwordResetToken) {
+        return res.status(400).json({ message: "Geçersiz veya süresi dolmuş şifre sıfırlama bağlantısı" });
+      }
+
+      // Update user password
+      const updatedUser = await storage.updateUserPassword(passwordResetToken.email, password);
+      if (!updatedUser) {
+        return res.status(400).json({ message: "Kullanıcı bulunamadı" });
+      }
+
+      // Mark token as used
+      await storage.markTokenAsUsed(passwordResetToken.id);
+
+      res.json({ message: "Şifre başarıyla değiştirildi" });
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ message: "Şifre sıfırlama sırasında hata oluştu" });
     }
   });
 

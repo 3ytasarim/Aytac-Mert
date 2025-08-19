@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
+import { ForgotPasswordModal } from "./ForgotPasswordModal";
 
 const loginSchema = z.object({
   email: z.string().email("Geçerli bir email adresi giriniz"),
@@ -30,6 +31,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -120,12 +122,8 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
                     <button
                       type="button"
                       className="text-sm text-blue-500 hover:text-blue-700"
-                      onClick={() => {
-                        toast({
-                          title: "Şifre Sıfırlama",
-                          description: "Lütfen info@aytacmert.com adresine email gönderiniz.",
-                        });
-                      }}
+                      onClick={() => setShowForgotPassword(true)}
+                      data-testid="button-forgot-password"
                     >
                       Şifremi Unuttum
                     </button>
@@ -206,6 +204,12 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
           </div>
         )}
       </DialogContent>
+      
+      <ForgotPasswordModal 
+        isOpen={showForgotPassword} 
+        onClose={() => setShowForgotPassword(false)}
+        onBackToLogin={() => setShowForgotPassword(false)}
+      />
     </Dialog>
   );
 }

@@ -86,6 +86,16 @@ export const lessons = pgTable("lessons", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Password reset tokens table
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").notNull(),
+  token: varchar("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  used: boolean("used").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   enrollments: many(enrollments),
@@ -168,6 +178,20 @@ export const registrationSchema = createInsertSchema(users).pick({
   path: ["passwordConfirm"],
 });
 
+// Password reset schemas
+export const requestPasswordResetSchema = z.object({
+  email: z.string().email("Geçerli bir email adresi giriniz"),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token gereklidir"),
+  password: z.string().min(6, "Şifre en az 6 karakter olmalıdır"),
+  confirmPassword: z.string().min(6, "Şifre tekrarı en az 6 karakter olmalıdır"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Şifreler eşleşmiyor",
+  path: ["confirmPassword"],
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
@@ -181,3 +205,6 @@ export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Lesson = typeof lessons.$inferSelect;
 export type InsertLesson = typeof lessons.$inferInsert;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type RequestPasswordReset = z.infer<typeof requestPasswordResetSchema>;
+export type ResetPassword = z.infer<typeof resetPasswordSchema>;

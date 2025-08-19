@@ -16,6 +16,7 @@ import AdminAddStudent from "@/pages/AdminAddStudent";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
+import ResetPassword from "@/pages/ResetPassword";
 import { SocialIcons } from "@/components/SocialIcons";
 import { ScrollUpButton } from "@/components/ScrollUpButton";
 
@@ -72,6 +73,7 @@ function Router() {
           <Route path="/iletisim" component={Contact} />
         </>
       )}
+      <Route path="/reset-password" component={ResetPassword} />
       <Route component={NotFound} />
     </Switch>
   );
