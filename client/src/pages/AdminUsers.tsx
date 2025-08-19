@@ -296,23 +296,23 @@ export default function AdminUsers() {
                 </div>
                 
                 {/* Mobile Cards */}
-                <div className="lg:hidden p-4 space-y-4">
+                <div className="lg:hidden p-2 space-y-3">
                   {(allUsers as User[]).map((user) => (
                     <div 
                       key={user.id} 
-                      className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl"
+                      className="bg-white rounded-lg shadow-md border border-gray-200 p-3 transition-all duration-300 transform hover:scale-[1.01] hover:shadow-lg"
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                            <Users className="h-5 w-5 text-white" />
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2 min-w-0 flex-1">
+                          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Users className="h-4 w-4 text-white" />
                           </div>
-                          <div>
-                            <h3 className="font-bold text-gray-900">{user.firstName} {user.lastName || ''}</h3>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold text-gray-900 text-sm truncate">{user.firstName} {user.lastName || ''}</h3>
                             <Badge 
                               className={`
-                                mt-1 text-xs font-semibold
-                                ${user.role === 'admin' ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white' : 'bg-gradient-to-r from-green-500 to-green-600 text-white'}
+                                mt-1 text-xs font-medium
+                                ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}
                               `}
                             >
                               {user.role === 'admin' ? 'Yönetici' : 'Öğrenci'}
@@ -321,30 +321,30 @@ export default function AdminUsers() {
                         </div>
                       </div>
                       
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Mail className="h-4 w-4 mr-2 text-blue-500" />
+                      <div className="space-y-1 mb-3">
+                        <div className="flex items-center text-xs text-gray-600">
+                          <Mail className="h-3 w-3 mr-2 text-blue-500 flex-shrink-0" />
                           <span className="truncate">{user.email}</span>
                         </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Phone className="h-4 w-4 mr-2 text-green-500" />
+                        <div className="flex items-center text-xs text-gray-600">
+                          <Phone className="h-3 w-3 mr-2 text-green-500 flex-shrink-0" />
                           <span>{user.phone || "Belirtilmemiş"}</span>
                         </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Calendar className="h-4 w-4 mr-2 text-orange-500" />
+                        <div className="flex items-center text-xs text-gray-600">
+                          <Calendar className="h-3 w-3 mr-2 text-orange-500 flex-shrink-0" />
                           <span>{new Date(user.createdAt).toLocaleDateString('tr-TR')}</span>
                         </div>
                       </div>
                       
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex gap-1">
                         <Button 
                           size="sm" 
                           variant="outline"
                           onClick={() => setEditingUser(user)}
-                          className="flex-1 h-9 text-xs font-medium transition-all duration-500 transform hover:scale-105 hover:shadow-lg bg-white border-2 border-blue-200 text-blue-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:border-blue-400 active:scale-95 group"
+                          className="flex-1 h-8 text-xs font-medium border border-blue-300 text-blue-700 hover:bg-blue-50"
                           data-testid={`button-edit-user-${user.id}`}
                         >
-                          <Edit className="h-3 w-3 mr-1 group-hover:animate-pulse" />
+                          <Edit className="h-3 w-3 mr-1" />
                           Düzenle
                         </Button>
                         {user.role !== 'admin' && (
@@ -355,10 +355,10 @@ export default function AdminUsers() {
                                 setAssigningCoursesUser(user);
                                 setSelectedCourses([]);
                               }}
-                              className="flex-1 h-9 text-xs font-medium transition-all duration-500 transform hover:scale-105 hover:shadow-xl bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white border-0 active:scale-95 group shadow-md hover:shadow-green-200"
+                              className="flex-1 h-8 text-xs font-medium bg-green-600 hover:bg-green-700 text-white"
                               data-testid={`button-assign-courses-${user.id}`}
                             >
-                              <Plus className="h-3 w-3 mr-1 group-hover:rotate-180 transition-transform duration-300" />
+                              <Plus className="h-3 w-3 mr-1" />
                               Ders Ekle
                             </Button>
                             <Button 
@@ -370,10 +370,10 @@ export default function AdminUsers() {
                                 }
                               }}
                               disabled={deleteUserMutation.isPending}
-                              className="h-9 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-105 hover:shadow-xl bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white border-0 active:scale-95 group shadow-md hover:shadow-red-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                              className="h-8 w-8 p-0 bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
                               data-testid={`button-delete-user-${user.id}`}
                             >
-                              <Trash2 className="h-3 w-3 group-hover:animate-bounce" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                           </>
                         )}

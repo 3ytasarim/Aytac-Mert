@@ -136,24 +136,24 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
 
   return (
     <div className={`
-      fixed top-0 left-0 h-full bg-gray-900 text-white transition-all duration-300 ease-in-out z-50
+      h-full bg-gray-900 text-white transition-all duration-300 ease-in-out z-50
       ${isCollapsed ? 'w-16' : 'w-64'}
     `}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <div className="flex items-center overflow-hidden">
-            <Shield className="h-8 w-8 text-blue-400 mr-3 flex-shrink-0" />
+        <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-700">
+          <div className="flex items-center overflow-hidden min-w-0">
+            <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-blue-400 flex-shrink-0" />
             {!isCollapsed && (
-              <div className="transition-opacity duration-300">
-                <h1 className="text-lg font-bold whitespace-nowrap">Admin Panel</h1>
-                <p className="text-xs text-gray-400 whitespace-nowrap">Aytaç Mert Akademisi</p>
+              <div className="ml-2 lg:ml-3 transition-opacity duration-300 min-w-0 flex-1">
+                <h1 className="text-sm lg:text-lg font-bold truncate">Admin Panel</h1>
+                <p className="text-xs text-gray-400 truncate hidden lg:block">Aytaç Mert Akademisi</p>
               </div>
             )}
           </div>
           <Button 
             variant="ghost" 
             size="sm" 
-            className="text-white hover:bg-gray-700 flex-shrink-0"
+            className="text-white hover:bg-gray-700 flex-shrink-0 hidden lg:flex p-1"
             onClick={onToggle}
           >
             {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -161,22 +161,22 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
         </div>
 
         {/* Admin Info */}
-        <div className="p-4 border-b border-gray-700">
+        <div className="p-3 lg:p-4 border-b border-gray-700">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Users className="h-5 w-5 text-white" />
+            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <Users className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
             </div>
             {!isCollapsed && (
-              <div className="transition-opacity duration-300 overflow-hidden">
-                <p className="font-medium whitespace-nowrap">Administrator</p>
-                <p className="text-xs text-gray-400 whitespace-nowrap">info@aytacmert.com</p>
+              <div className="ml-2 lg:ml-3 transition-opacity duration-300 overflow-hidden min-w-0 flex-1">
+                <p className="font-medium truncate text-sm lg:text-base">Administrator</p>
+                <p className="text-xs text-gray-400 truncate">info@aytacmert.com</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Menu Items */}
-        <nav className="flex-1 p-4">
+        <nav className="flex-1 p-3 lg:p-4">
           <div className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -195,18 +195,18 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
                       }
                     }}
                     className={`
-                      w-full flex items-center justify-between p-3 rounded-lg transition-all duration-300 relative group transform hover:scale-105
+                      w-full flex items-center justify-between p-2 lg:p-3 rounded-lg transition-all duration-300 relative group transform hover:scale-105
                       ${isActive 
-                        ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white shadow-lg animate-pulse' 
+                        ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white shadow-lg' 
                         : 'text-gray-300 hover:bg-gradient-to-r hover:from-gray-700 hover:via-gray-600 hover:to-gray-700 hover:text-white hover:shadow-lg'
                       }
                     `}
                     title={isCollapsed ? item.title : undefined}
                   >
                     <div className="flex items-center overflow-hidden">
-                      <Icon className="h-5 w-5 mr-3 flex-shrink-0" />
+                      <Icon className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3 flex-shrink-0" />
                       {!isCollapsed && (
-                        <span className="text-sm font-medium whitespace-nowrap">{item.title}</span>
+                        <span className="text-xs lg:text-sm font-medium whitespace-nowrap">{item.title}</span>
                       )}
                     </div>
                     {!isCollapsed && (
@@ -264,7 +264,7 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
         </nav>
 
         {/* Logout Button */}
-        <div className="p-4 border-t border-gray-700">
+        <div className="p-3 lg:p-4 border-t border-gray-700">
           <Button 
             onClick={handleLogout}
             disabled={logoutMutation.isPending}

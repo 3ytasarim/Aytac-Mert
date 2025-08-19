@@ -38,7 +38,7 @@ export function AdminLayout({ children, title, description }: AdminLayoutProps) 
       {/* Sidebar - Desktop always visible, Mobile slide-in */}
       <div className={`
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
-        lg:translate-x-0 fixed lg:relative z-50 transition-transform duration-300 ease-in-out
+        lg:translate-x-0 fixed lg:relative z-50 transition-transform duration-300 ease-in-out h-full
       `}>
         <AdminSidebar 
           isCollapsed={sidebarCollapsed} 
@@ -61,14 +61,10 @@ export function AdminLayout({ children, title, description }: AdminLayoutProps) 
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden p-2 transition-all duration-300 hover:bg-gray-100 hover:scale-110"
+                className="lg:hidden p-2 transition-all duration-300 hover:bg-gray-100"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
-                {mobileMenuOpen ? (
-                  <X className="h-5 w-5 transition-transform duration-300 rotate-180" />
-                ) : (
-                  <Menu className="h-5 w-5 transition-transform duration-300 hover:rotate-180" />
-                )}
+                <Menu className="h-5 w-5" />
               </Button>
               
               {/* Title and description */}
