@@ -580,6 +580,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updateData = req.body;
       
       const updatedCourse = await storage.updateCourse(id, updateData);
+      
+      // Handle enrollment status changes
+      if (updateData.hasOwnProperty('isActive')) {
+        if (!updateData.isActive) {
+          await storage.deactivateCourseEnrollments(id);
+        } else {
+          await storage.reactivateCourseEnrollments(id);
+        }
+      }
+      
       res.json(updatedCourse);
     } catch (error) {
       console.error("Error updating course:", error);
@@ -821,6 +831,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to seed courses" });
     }
   });
+
+
 
   const httpServer = createServer(app);
   return httpServer;

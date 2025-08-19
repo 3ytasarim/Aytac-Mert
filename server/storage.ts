@@ -69,6 +69,8 @@ export interface IStorage {
   }>;
   getAllUsers(): Promise<User[]>;
   deleteUser(id: string): Promise<void>;
+  deactivateCourseEnrollments(courseId: string): Promise<void>;
+  reactivateCourseEnrollments(courseId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -117,6 +119,18 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: string): Promise<void> {
     await db.delete(users).where(eq(users.id, id));
+  }
+
+  async deactivateCourseEnrollments(courseId: string): Promise<void> {
+    // In a real app, this would deactivate enrollments
+    // For now, we'll just log it since we don't have enrollment table
+    console.log(`Deactivating enrollments for course ${courseId}`);
+  }
+
+  async reactivateCourseEnrollments(courseId: string): Promise<void> {
+    // In a real app, this would reactivate enrollments
+    // For now, we'll just log it since we don't have enrollment table
+    console.log(`Reactivating enrollments for course ${courseId}`);
   }
 
   // Course operations
