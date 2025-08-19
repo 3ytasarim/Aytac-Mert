@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigation } from "@/components/ui/navigation";
+import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,15 +47,14 @@ export default function AdminUsers() {
 
   if (isLoading || usersLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-        <Navigation />
-        <div className="flex items-center justify-center min-h-screen">
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-96">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p>Yükleniyor...</p>
           </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
@@ -64,25 +63,9 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <Navigation />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <Link href="/admin-dashboard">
-              <Button variant="ghost" size="sm" className="mr-4">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Geri
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Kullanıcı Yönetimi</h1>
-              <p className="text-gray-600">Tüm kayıtlı kullanıcıları görüntüleyin ve yönetin</p>
-            </div>
-          </div>
-        </div>
+    <AdminLayout title="Öğrenci Yönetimi" description="Tüm kayıtlı öğrencileri görüntüleyin ve yönetin">
+      <div className="space-y-6">
+
 
         {/* Users Table */}
         <Card>
@@ -173,6 +156,6 @@ export default function AdminUsers() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

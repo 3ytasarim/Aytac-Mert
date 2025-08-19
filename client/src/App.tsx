@@ -34,8 +34,17 @@ function Router() {
           {user?.role === "admin" ? (
             <>
               <Route path="/" component={AdminDashboard} />
-              <Route path="/admin/users" component={AdminUsers} />
+              <Route path="/admin/students" component={AdminUsers} />
+              <Route path="/admin/students/add" component={AdminUsers} />
+              <Route path="/admin/students/active" component={AdminUsers} />
+              <Route path="/admin/students/import" component={AdminUsers} />
               <Route path="/admin/contacts" component={AdminContacts} />
+              <Route path="/admin/courses" component={AdminContacts} />
+              <Route path="/admin/courses/add" component={AdminContacts} />
+              <Route path="/admin/categories" component={AdminContacts} />
+              <Route path="/admin/invoices" component={AdminContacts} />
+              <Route path="/admin/reports" component={AdminContacts} />
+              <Route path="/admin/settings" component={AdminContacts} />
             </>
           ) : (
             <Route path="/" component={StudentDashboard} />

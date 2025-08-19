@@ -12,7 +12,9 @@ import {
   Shield,
   BarChart3,
   FileText,
-  Calendar
+  Calendar,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +31,7 @@ interface AdminSidebarProps {
 export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -55,61 +58,73 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       title: "Ana Sayfa",
       icon: Home,
       path: "/",
-      badge: null
+      badge: null,
+      submenu: []
     },
     {
-      title: "Kullanıcılar",
-      icon: Users,
-      path: "/admin/users",
-      badge: null
-    },
-    {
-      title: "İletişim Mesajları",
-      icon: MessageSquare,
-      path: "/admin/contacts",
-      badge: "Yeni"
-    },
-    {
-      title: "Kurs Yönetimi",
+      title: "Eğitimler",
       icon: BookOpen,
       path: "/admin/courses",
-      badge: null
+      badge: null,
+      submenu: [
+        { title: "Yeni Eğitim Ekleme", path: "/admin/courses/add" },
+        { title: "Tüm Eğitimler", path: "/admin/courses" },
+        { title: "Kategoriler", path: "/admin/categories" }
+      ]
     },
     {
-      title: "Kayıt Yönetimi",
+      title: "Öğrenciler",
+      icon: Users,
+      path: "/admin/students",
+      badge: null,
+      submenu: [
+        { title: "Öğrenci Ekleme", path: "/admin/students/add" },
+        { title: "Tüm Öğrenciler", path: "/admin/students" },
+        { title: "Aktif Öğrenciler", path: "/admin/students/active" },
+        { title: "Toplu Öğrenci Aktarımı", path: "/admin/students/import" }
+      ]
+    },
+    {
+      title: "Faturalar",
       icon: FileText,
-      path: "/admin/enrollments",
-      badge: null
+      path: "/admin/invoices",
+      badge: null,
+      submenu: []
     },
     {
-      title: "İstatistikler",
-      icon: BarChart3,
-      path: "/admin/statistics",
-      badge: null
+      title: "İletişim",
+      icon: MessageSquare,
+      path: "/admin/contacts",
+      badge: "Yeni",
+      submenu: []
     },
     {
       title: "Raporlar",
-      icon: TrendingUp,
+      icon: BarChart3,
       path: "/admin/reports",
-      badge: null
-    },
-    {
-      title: "Takvim",
-      icon: Calendar,
-      path: "/admin/calendar",
-      badge: null
+      badge: null,
+      submenu: []
     },
     {
       title: "Ayarlar",
       icon: Settings,
       path: "/admin/settings",
-      badge: null
+      badge: null,
+      submenu: []
     }
   ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
     onClose();
+  };
+
+  const toggleSubmenu = (title: string) => {
+    setExpandedMenus(prev => 
+      prev.includes(title) 
+        ? prev.filter(item => item !== title)
+        : [...prev, title]
+    );
   };
 
   const handleLogout = () => {
@@ -166,33 +181,70 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
         {/* Menu Items */}
         <nav className="flex-1 p-4">
-          <div className="space-y-2">
+          <div className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location === item.path;
+              const hasSubmenu = item.submenu && item.submenu.length > 0;
+              const isExpanded = expandedMenus.includes(item.title);
               
               return (
-                <button
-                  key={item.path}
-                  onClick={() => handleNavigation(item.path)}
-                  className={`
-                    w-full flex items-center justify-between p-3 rounded-lg transition-colors
-                    ${isActive 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                    }
-                  `}
-                >
-                  <div className="flex items-center">
-                    <Icon className="h-5 w-5 mr-3" />
-                    <span className="text-sm font-medium">{item.title}</span>
-                  </div>
-                  {item.badge && (
-                    <Badge variant="destructive" className="text-xs">
-                      {item.badge}
-                    </Badge>
+                <div key={item.title}>
+                  <button
+                    onClick={() => {
+                      if (hasSubmenu) {
+                        toggleSubmenu(item.title);
+                      } else {
+                        handleNavigation(item.path);
+                      }
+                    }}
+                    className={`
+                      w-full flex items-center justify-between p-3 rounded-lg transition-colors
+                      ${isActive 
+                        ? 'bg-blue-600 text-white' 
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                      }
+                    `}
+                  >
+                    <div className="flex items-center">
+                      <Icon className="h-5 w-5 mr-3" />
+                      <span className="text-sm font-medium">{item.title}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {item.badge && (
+                        <Badge variant="destructive" className="text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                      {hasSubmenu && (
+                        isExpanded ? 
+                          <ChevronDown className="h-4 w-4" /> : 
+                          <ChevronRight className="h-4 w-4" />
+                      )}
+                    </div>
+                  </button>
+                  
+                  {/* Submenu */}
+                  {hasSubmenu && isExpanded && (
+                    <div className="ml-6 mt-1 space-y-1">
+                      {item.submenu.map((subItem) => (
+                        <button
+                          key={subItem.path}
+                          onClick={() => handleNavigation(subItem.path)}
+                          className={`
+                            w-full text-left px-3 py-2 rounded-md text-sm transition-colors
+                            ${location === subItem.path
+                              ? 'bg-blue-500 text-white'
+                              : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                            }
+                          `}
+                        >
+                          {subItem.title}
+                        </button>
+                      ))}
+                    </div>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>

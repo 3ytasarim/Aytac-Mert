@@ -93,17 +93,17 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - PDF'deki gibi 4 ana kart */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Toplam Öğrenci</p>
+                  <p className="text-sm font-medium text-blue-600">Toplam Üye Öğrenci Sayısı</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {dashboardStats?.totalStudents || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Kayıtlı kullanıcılar</p>
+                  <p className="text-xs text-gray-500 mt-1">Kayıtlı öğrenciler</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Users className="h-6 w-6 text-blue-600" />
@@ -112,15 +112,15 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-green-500">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Aktif Kurslar</p>
+                  <p className="text-sm font-medium text-green-600">Eğitimler</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {dashboardStats?.activeCourses || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Mevcut eğitimler</p>
+                  <p className="text-xs text-gray-500 mt-1">Eklenen eğitim sayısı</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <BookOpen className="h-6 w-6 text-green-600" />
@@ -129,35 +129,35 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-orange-500">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Toplam Kayıt</p>
+                  <p className="text-sm font-medium text-orange-600">Aktif Oturumlar</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {dashboardStats?.totalEnrollments || 0}
+                    {dashboardStats?.activeSessions || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Kurs kayıtları</p>
+                  <p className="text-xs text-gray-500 mt-1">Şuanda giriş yapmış</p>
                 </div>
                 <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-orange-600" />
+                  <Activity className="h-6 w-6 text-orange-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-purple-500">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Yeni Mesajlar</p>
+                  <p className="text-sm font-medium text-purple-600">Satışlar</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {dashboardStats?.recentContacts || 0}
+                    ₺{dashboardStats?.totalSales || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">İletişim talepleri</p>
+                  <p className="text-xs text-gray-500 mt-1">Toplam gelir</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-purple-600" />
+                  <TrendingUp className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </CardContent>
