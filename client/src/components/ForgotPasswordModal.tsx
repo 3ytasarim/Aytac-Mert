@@ -90,7 +90,7 @@ export function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: ForgotPa
         <DialogHeader>
           <DialogTitle>Şifre Sıfırlama</DialogTitle>
           <DialogDescription>
-            Lütfen info@aytacmert.com adresine email gönderiniz.
+            Email adresinizi girin. Şifre yenileme bağlantısı gönderilecektir.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
