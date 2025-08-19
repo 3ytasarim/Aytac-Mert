@@ -35,6 +35,11 @@ export const users = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   role: varchar("role").notNull().default("student"), // student or admin
   phone: varchar("phone"),
+  tcNumber: varchar("tc_number"), // T.C. Kimlik No
+  password: varchar("password"), // Şifre
+  passwordConfirm: varchar("password_confirm"), // Şifre Tekrarı
+  birthDate: varchar("birth_date"), // Doğrulama (Captcha equivalent)
+  termsAccepted: boolean("terms_accepted").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -120,9 +125,34 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   createdAt: true,
 });
 
+// Registration schema for the popup form
+export const registrationSchema = createInsertSchema(users).pick({
+  firstName: true,
+  tcNumber: true,
+  email: true,
+  phone: true,
+  password: true,
+  passwordConfirm: true,
+  birthDate: true,
+  termsAccepted: true,
+}).extend({
+  firstName: z.string().min(2, "Ad en az 2 karakter olmalıdır"),
+  tcNumber: z.string().length(11, "T.C. Kimlik No 11 haneli olmalıdır"),
+  email: z.string().email("Geçerli bir email adresi giriniz"),
+  phone: z.string().min(10, "Telefon numarası en az 10 haneli olmalıdır"),
+  password: z.string().min(6, "Şifre en az 6 karakter olmalıdır"),
+  passwordConfirm: z.string().min(6, "Şifre tekrarı en az 6 karakter olmalıdır"),
+  birthDate: z.string().min(1, "Doğrulama alanı gereklidir"),
+  termsAccepted: z.boolean().refine((val) => val === true, "Gizlilik sözleşmesini kabul etmelisiniz"),
+}).refine((data) => data.password === data.passwordConfirm, {
+  message: "Şifreler eşleşmiyor",
+  path: ["passwordConfirm"],
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
+export type Registration = z.infer<typeof registrationSchema>;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Course = typeof courses.$inferSelect;
 export type InsertCourse = z.infer<typeof insertCourseSchema>;

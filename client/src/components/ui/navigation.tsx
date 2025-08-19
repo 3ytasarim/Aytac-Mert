@@ -1,6 +1,24 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { RegistrationModal } from "@/components/RegistrationModal";
+
+function RegistrationButton() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <>
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 bg-black text-white hover:bg-gray-800 border-black hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+        data-testid="button-register"
+      >
+        Üye Ol
+      </Button>
+      <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+}
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -104,13 +122,7 @@ export function Navigation() {
                 >
                   Giriş Yap
                 </Button>
-                <Button
-                  onClick={() => window.location.href = "/api/login"}
-                  className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 bg-black text-white hover:bg-gray-800 border-black hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                  data-testid="button-register"
-                >
-                  Üye Ol
-                </Button>
+                <RegistrationButton />
               </>
             )}
           </div>
@@ -192,6 +204,7 @@ export function Navigation() {
                 </Button>
               ) : (
                 <div className="space-y-3">
+                  <RegistrationButton />
                   <Button
                     variant="outline"
                     className="w-full py-3 font-semibold border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-black rounded-xl transition-all duration-300"

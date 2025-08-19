@@ -2,7 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertContactSchema, insertEnrollmentSchema } from "@shared/schema";
+import { insertContactSchema, insertEnrollmentSchema, registrationSchema } from "@shared/schema";
+import { sendWelcomeEmail } from "./emailService";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -43,6 +44,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         console.error("Error creating contact:", error);
         res.status(500).json({ message: "Failed to create contact" });
+      }
+    }
+  });
+
+  // Registration endpoint
+  app.post("/api/register", async (req, res) => {
+    try {
+      const registrationData = registrationSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(registrationData.email);
+      if (existingUser) {
+        return res.status(400).json({ message: "Bu email adresi zaten kayıtlı" });
+      }
+
+      // Create user
+      const newUser = await storage.createRegisteredUser({
+        firstName: registrationData.firstName,
+        email: registrationData.email,
+        phone: registrationData.phone,
+        tcNumber: registrationData.tcNumber,
+        password: registrationData.password,
+        role: "student"
+      });
+
+      // Send welcome email
+      try {
+        await sendWelcomeEmail({
+          firstName: registrationData.firstName,
+          email: registrationData.email,
+          password: registrationData.password
+        });
+        console.log("Welcome email sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+        // Don't fail registration if email fails
+      }
+
+      res.json({ 
+        message: "Kayıt başarılı", 
+        user: { 
+          id: newUser.id, 
+          email: newUser.email, 
+          firstName: newUser.firstName 
+        }
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Geçersiz kayıt bilgileri", errors: error.errors });
+      } else {
+        console.error("Error creating user:", error);
+        res.status(500).json({ message: "Kayıt işlemi başarısız" });
       }
     }
   });
