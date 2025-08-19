@@ -56,6 +56,7 @@ export interface IStorage {
     totalEnrollments: number;
     recentContacts: number;
   }>;
+  getAllUsers(): Promise<User[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -285,6 +286,13 @@ export class DatabaseStorage implements IStorage {
       totalEnrollments: totalEnrollments.count,
       recentContacts: recentContacts.count,
     };
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
+      .orderBy(desc(users.createdAt));
   }
 }
 

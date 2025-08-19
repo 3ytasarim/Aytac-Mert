@@ -1,48 +1,42 @@
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { Navigation } from "@/components/ui/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Users, BookOpen, MessageSquare, TrendingUp, Calendar, Mail, Phone, Shield } from "lucide-react";
+import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { SocialIcons } from "@/components/SocialIcons";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import type { Enrollment, Course, User, Contact } from "@shared/schema";
 
-type EnrollmentWithUserAndCourse = Enrollment & { user: User; course: Course };
+interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  role: string;
+  createdAt: string;
+}
 
-interface AdminStats {
-  totalStudents: number;
-  activeCourses: number;
-  totalEnrollments: number;
-  recentContacts: number;
+interface Contact {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  message: string;
+  status: string;
+  createdAt: string;
 }
 
 export default function AdminDashboard() {
-  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-
-  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery<AdminStats>({
-    queryKey: ["/api/admin/stats"],
-    enabled: isAuthenticated && user?.role === "admin",
-  });
-
-  const { data: enrollments = [], isLoading: enrollmentsLoading, error: enrollmentsError } = useQuery<EnrollmentWithUserAndCourse[]>({
-    queryKey: ["/api/admin/enrollments"],
-    enabled: isAuthenticated && user?.role === "admin",
-  });
-
-  const { data: contacts = [], isLoading: contactsLoading, error: contactsError } = useQuery<Contact[]>({
-    queryKey: ["/api/admin/contacts"],
-    enabled: isAuthenticated && user?.role === "admin",
-  });
 
   // Redirect to home if not authenticated or not admin
   useEffect(() => {
-    if (!authLoading && (!isAuthenticated || (user && user.role !== "admin"))) {
+    if (!isLoading && (!isAuthenticated || user?.role !== 'admin')) {
       toast({
         title: "Yetkisiz Erişim",
-        description: "Admin yetkisi gerekiyor. Ana sayfaya yönlendiriliyorsunuz...",
+        description: "Admin paneline erişim yetkiniz yok.",
         variant: "destructive",
       });
       setTimeout(() => {
@@ -50,356 +44,259 @@ export default function AdminDashboard() {
       }, 500);
       return;
     }
-  }, [isAuthenticated, user, authLoading, toast]);
+  }, [isAuthenticated, isLoading, user, toast]);
 
-  // Handle API errors
-  useEffect(() => {
-    const errors = [statsError, enrollmentsError, contactsError];
-    const unauthorizedError = errors.find(error => error && isUnauthorizedError(error as Error));
-    
-    if (unauthorizedError) {
-      toast({
-        title: "Oturum Süresi Doldu",
-        description: "Tekrar giriş yapmanız gerekiyor...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-    }
-  }, [statsError, enrollmentsError, contactsError, toast]);
+  const { data: dashboardStats } = useQuery({
+    queryKey: ["/api/admin/stats"],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
 
-  if (authLoading) {
+  const { data: recentContacts } = useQuery({
+    queryKey: ["/api/admin/contacts"],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  const { data: allUsers } = useQuery({
+    queryKey: ["/api/admin/users"],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <Navigation />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+            <p>Yükleniyor...</p>
+          </div>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated || user?.role !== "admin") {
+  if (!isAuthenticated || user?.role !== 'admin') {
     return null; // Will redirect via useEffect
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'currency',
-      currency: 'TRY',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price / 100);
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "active":
-        return <Badge className="bg-green-100 text-green-800">Aktif</Badge>;
-      case "completed":
-        return <Badge className="bg-blue-100 text-blue-800">Tamamlandı</Badge>;
-      case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800">Beklemede</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <SocialIcons />
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900" data-testid="title-admin-dashboard">
-                Admin Paneli
-              </h1>
-              <p className="text-sm text-gray-600">Sistem yönetimi ve içerik düzenleme</p>
-            </div>
-            <Button
-              variant="ghost"
-              onClick={() => window.location.href = "/api/logout"}
-              data-testid="button-logout"
-            >
-              <i className="fas fa-sign-out-alt mr-2"></i>
-              Çıkış
-            </Button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 pt-24 pb-12">
+        {/* Welcome Section */}
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center">
+              <Shield className="h-10 w-10 mr-3 text-blue-600" />
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-600 text-lg">
+              AYTAÇ MERT EĞİTİM KURUMLARI yönetim paneli
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-500">Hoşgeldiniz,</p>
+            <p className="text-lg font-semibold">{user?.firstName} ({user?.email})</p>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <div className="grid lg:grid-cols-4 gap-6 mb-8">
-          {statsLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardContent className="p-6">
-                  <div className="animate-pulse">
-                    <div className="w-12 h-12 bg-gray-200 rounded-lg mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-8 bg-gray-200 rounded"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-users text-primary text-xl"></i>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Toplam Öğrenci</p>
-                      <p className="text-2xl font-bold text-gray-900" data-testid="stat-total-students">
-                        {stats?.totalStudents || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="border-l-4 border-l-blue-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Toplam Öğrenci</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {dashboardStats?.totalStudents || 0}
+                  </p>
+                </div>
+                <Users className="h-12 w-12 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-book text-green-600 text-xl"></i>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Aktif Kurslar</p>
-                      <p className="text-2xl font-bold text-gray-900" data-testid="stat-active-courses">
-                        {stats?.activeCourses || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          <Card className="border-l-4 border-l-green-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Aktif Kurslar</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {dashboardStats?.activeCourses || 0}
+                  </p>
+                </div>
+                <BookOpen className="h-12 w-12 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-chart-line text-yellow-600 text-xl"></i>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Toplam Kayıt</p>
-                      <p className="text-2xl font-bold text-gray-900" data-testid="stat-total-enrollments">
-                        {stats?.totalEnrollments || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          <Card className="border-l-4 border-l-orange-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Toplam Kayıt</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {dashboardStats?.totalEnrollments || 0}
+                  </p>
+                </div>
+                <TrendingUp className="h-12 w-12 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-envelope text-purple-600 text-xl"></i>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Yeni Mesaj</p>
-                      <p className="text-2xl font-bold text-gray-900" data-testid="stat-recent-contacts">
-                        {stats?.recentContacts || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </>
-          )}
+          <Card className="border-l-4 border-l-purple-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Yeni Mesajlar</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {dashboardStats?.recentContacts || 0}
+                  </p>
+                </div>
+                <MessageSquare className="h-12 w-12 text-purple-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Recent Contacts */}
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Yönetim</CardTitle>
+                <CardTitle className="flex items-center">
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  Son İletişim Mesajları
+                </CardTitle>
+                <CardDescription>
+                  Müşterilerden gelen son mesajlar
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <nav className="space-y-2">
-                  <a
-                    href="#"
-                    className="flex items-center px-3 py-2 text-primary bg-blue-50 rounded-lg"
-                    data-testid="nav-dashboard"
-                  >
-                    <i className="fas fa-tachometer-alt mr-3"></i> Dashboard
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg"
-                    data-testid="nav-students"
-                  >
-                    <i className="fas fa-users mr-3"></i> Öğrenciler
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg"
-                    data-testid="nav-courses"
-                  >
-                    <i className="fas fa-book mr-3"></i> Kurslar
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg"
-                    data-testid="nav-videos"
-                  >
-                    <i className="fas fa-video mr-3"></i> Videolar
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg"
-                    data-testid="nav-payments"
-                  >
-                    <i className="fas fa-credit-card mr-3"></i> Ödemeler
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg"
-                    data-testid="nav-settings"
-                  >
-                    <i className="fas fa-cog mr-3"></i> Ayarlar
-                  </a>
-                </nav>
+                {recentContacts && (recentContacts as Contact[]).length > 0 ? (
+                  <div className="space-y-4">
+                    {(recentContacts as Contact[]).slice(0, 5).map((contact: Contact) => (
+                      <div key={contact.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-semibold text-gray-900">{contact.fullName}</h3>
+                          <Badge variant={contact.status === 'new' ? 'default' : 'secondary'}>
+                            {contact.status === 'new' ? 'Yeni' : 'Yanıtlandı'}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center text-sm text-gray-600 mb-2">
+                          <Mail className="h-4 w-4 mr-2" />
+                          <span className="mr-4">{contact.email}</span>
+                          <Phone className="h-4 w-4 mr-2" />
+                          <span>{contact.phone}</span>
+                        </div>
+                        <p className="text-sm text-gray-700 line-clamp-2">{contact.message}</p>
+                        <div className="flex justify-between items-center mt-3">
+                          <span className="text-xs text-gray-500">
+                            {new Date(contact.createdAt).toLocaleDateString('tr-TR')}
+                          </span>
+                          <Button size="sm" variant="outline">
+                            Yanıtla
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                    <p>Henüz mesaj bulunmuyor</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <div className="space-y-6">
-              {/* Recent Enrollments */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Son Kayıtlar</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {enrollmentsLoading ? (
-                    <div className="space-y-3">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="flex items-center justify-between py-3 border-b border-gray-100">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 bg-gray-200 rounded-full mr-3 animate-pulse"></div>
-                            <div>
-                              <div className="h-4 bg-gray-200 rounded w-24 mb-1 animate-pulse"></div>
-                              <div className="h-3 bg-gray-200 rounded w-32 animate-pulse"></div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="h-4 bg-gray-200 rounded w-20 mb-1 animate-pulse"></div>
-                            <div className="h-3 bg-gray-200 rounded w-16 animate-pulse"></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : enrollments.length === 0 ? (
-                    <div className="text-center py-8" data-testid="empty-enrollments">
-                      <i className="fas fa-users text-4xl text-gray-300 mb-4"></i>
-                      <p className="text-gray-600">Henüz kayıt bulunmuyor.</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {enrollments.slice(0, 5).map((enrollment, index) => (
-                        <div
-                          key={enrollment.id}
-                          className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0"
-                          data-testid={`enrollment-${index}`}
-                        >
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                              <i className="fas fa-user text-gray-600"></i>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900" data-testid="text-user-name">
-                                {enrollment.user.firstName || enrollment.user.email}
-                              </p>
-                              <p className="text-sm text-gray-600" data-testid="text-user-email">
-                                {enrollment.user.email}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm text-gray-900" data-testid="text-enrollment-course">
-                              {enrollment.course.title}
-                            </p>
-                            <div className="flex items-center gap-2">
-                              {getStatusBadge(enrollment.status)}
-                              <p className="text-xs text-gray-500" data-testid="text-enrollment-date">
-                                {new Date(enrollment.enrolledAt!).toLocaleDateString('tr-TR')}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+          {/* Quick Actions & Recent Users */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Hızlı İşlemler</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Yeni Kurs Ekle
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Users className="h-4 w-4 mr-2" />
+                  Öğrenci Listesi
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Tüm Mesajlar
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  İstatistikler
+                </Button>
+              </CardContent>
+            </Card>
 
-              {/* Recent Contacts */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Son Mesajlar</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {contactsLoading ? (
-                    <div className="space-y-3">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="border-b border-gray-100 pb-3">
-                          <div className="h-4 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
-                          <div className="h-3 bg-gray-200 rounded w-full mb-1 animate-pulse"></div>
-                          <div className="h-3 bg-gray-200 rounded w-24 animate-pulse"></div>
+            {/* Recent Users */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Users className="h-5 w-5 mr-2" />
+                  Son Kayıt Olanlar
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {allUsers && (allUsers as User[]).length > 0 ? (
+                  <div className="space-y-4">
+                    {(allUsers as User[]).slice(0, 3).map((user: User) => (
+                      <div key={user.id} className="flex items-center space-x-3 p-3 border rounded-lg">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          <Users className="h-5 w-5 text-gray-600" />
                         </div>
-                      ))}
-                    </div>
-                  ) : contacts.length === 0 ? (
-                    <div className="text-center py-8" data-testid="empty-contacts">
-                      <i className="fas fa-envelope text-4xl text-gray-300 mb-4"></i>
-                      <p className="text-gray-600">Henüz mesaj bulunmuyor.</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {contacts.slice(0, 5).map((contact, index) => (
-                        <div
-                          key={contact.id}
-                          className="border-b border-gray-100 pb-3 last:border-b-0"
-                          data-testid={`contact-${index}`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="font-medium text-gray-900" data-testid="text-contact-name">
-                              {contact.fullName}
-                            </p>
-                            <Badge variant={contact.status === "new" ? "default" : "secondary"}>
-                              {contact.status === "new" ? "Yeni" : "Yanıtlandı"}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-gray-600 line-clamp-2" data-testid="text-contact-message">
-                            {contact.message}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1" data-testid="text-contact-date">
-                            {new Date(contact.createdAt!).toLocaleDateString('tr-TR')} - {contact.email}
-                          </p>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">{user.firstName}</p>
+                          <p className="text-sm text-gray-500">{user.email}</p>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+                        <Badge variant="outline">
+                          {user.role === 'admin' ? 'Admin' : 'Öğrenci'}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    <Users className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                    <p className="text-sm">Henüz kullanıcı yok</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* System Info */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-3">
+                  <Calendar className="h-5 w-5 text-blue-600 mr-2" />
+                  <h3 className="font-semibold text-blue-900">Sistem Durumu</h3>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-blue-700">Son güncelleme:</span>
+                    <span className="text-blue-900 font-medium">
+                      {new Date().toLocaleDateString('tr-TR')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-blue-700">Durum:</span>
+                    <Badge className="bg-green-100 text-green-800">
+                      Aktif
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

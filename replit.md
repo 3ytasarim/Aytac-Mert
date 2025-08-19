@@ -1,6 +1,15 @@
 # Overview
 
-This is a full-stack web application for a dog training academy (Aytaç Mert Köpek Eğitimi Akademisi) built with modern web technologies. The application serves as a learning management system where students can enroll in courses, track their progress, and administrators can manage courses, enrollments, and contact requests. The system features role-based access control, course management, payment processing through bank transfers, and a responsive design optimized for both desktop and mobile devices.
+This is a full-stack web application for a dog training academy (Aytaç Mert Köpek Eğitimi Akademisi) built with modern web technologies. The application serves as a learning management system where students can enroll in courses, track their progress, and administrators can manage courses, enrollments, and contact requests. The system features role-based access control, course management, custom login/registration system with popup modals, automatic email notifications, and a responsive design optimized for both desktop and mobile devices.
+
+## Recent Changes (August 19, 2025)
+
+- Implemented complete user authentication system with popup modals for login and registration
+- Added custom login system with info@aytacmert.com / Administrator admin credentials
+- Created student and admin dashboards with role-based routing
+- Integrated email service using info@aytacmert.com SMTP for welcome emails
+- Added comprehensive privacy policy modal with KVKK compliance
+- Set up admin dashboard with user management, contact handling, and statistics
 
 # User Preferences
 

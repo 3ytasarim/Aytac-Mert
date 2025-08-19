@@ -48,6 +48,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Login endpoint
+  app.post("/api/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email ve şifre gereklidir" });
+      }
+
+      // Check for admin user
+      if (email === "info@aytacmert.com" && password === "Administrator") {
+        // Create admin session (mock)
+        const adminUser = await storage.upsertUser({
+          id: "admin-user-id",
+          email: "info@aytacmert.com",
+          firstName: "Admin",
+          role: "admin"
+        });
+        
+        // Set session or token here if needed
+        res.json({ 
+          message: "Giriş başarılı", 
+          user: adminUser
+        });
+        return;
+      }
+
+      // Check registered users
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(401).json({ message: "Email veya şifre hatalı" });
+      }
+
+      // Simple password check (in real app, use bcrypt)
+      if (user.password !== password) {
+        return res.status(401).json({ message: "Email veya şifre hatalı" });
+      }
+
+      // Set session or token here if needed
+      res.json({ 
+        message: "Giriş başarılı", 
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          role: user.role
+        }
+      });
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ message: "Giriş işlemi başarısız" });
+    }
+  });
+
   // Registration endpoint
   app.post("/api/register", async (req, res) => {
     try {
@@ -97,6 +151,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("Error creating user:", error);
         res.status(500).json({ message: "Kayıt işlemi başarısız" });
       }
+    }
+  });
+
+  // Admin routes
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const stats = await storage.getDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  app.get("/api/admin/contacts", async (req, res) => {
+    try {
+      const contacts = await storage.getAllContacts();
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+      res.status(500).json({ message: "Failed to fetch contacts" });
+    }
+  });
+
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
     }
   });
 
