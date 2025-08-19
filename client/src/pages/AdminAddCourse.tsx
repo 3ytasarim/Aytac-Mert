@@ -66,11 +66,21 @@ export default function AdminAddCourse() {
 
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: CourseFormData) => {
-      const response = await apiRequest("/api/admin/courses", {
+      const response = await fetch("/api/admin/courses", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(courseData),
+        credentials: "include",
       });
-      return response;
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Eğitim oluşturulamadı");
+      }
+      
+      return await response.json();
     },
     onSuccess: (data: any) => {
       toast({
@@ -91,11 +101,21 @@ export default function AdminAddCourse() {
 
   const addLessonsMutation = useMutation({
     mutationFn: async (lessonsData: { courseId: string; lessons: LessonFormData[] }) => {
-      const response = await apiRequest("/api/admin/lessons", {
+      const response = await fetch("/api/admin/lessons", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(lessonsData),
+        credentials: "include",
       });
-      return response;
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Bölümler oluşturulamadı");
+      }
+      
+      return await response.json();
     },
     onSuccess: () => {
       toast({
