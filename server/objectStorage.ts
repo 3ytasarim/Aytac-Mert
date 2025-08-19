@@ -120,7 +120,7 @@ export class ObjectStorageService {
   }
 
   // Gets the upload URL for an image
-  async getImageUploadURL(): Promise<string> {
+  async getImageUploadURL(): Promise<{ uploadURL: string; imageId: string }> {
     const publicSearchPaths = this.getPublicObjectSearchPaths();
     if (publicSearchPaths.length === 0) {
       throw new Error("No public search paths configured");
@@ -132,12 +132,14 @@ export class ObjectStorageService {
     const { bucketName, objectName } = parseObjectPath(fullPath);
 
     // Sign URL for PUT method with TTL
-    return signObjectURL({
+    const uploadURL = await signObjectURL({
       bucketName,
       objectName,
       method: "PUT",
       ttlSec: 900,
     });
+
+    return { uploadURL, imageId };
   }
 
   // Get public URL for an uploaded image

@@ -71,8 +71,8 @@ export function ImageUploader({ currentImageUrl, onImageChange, label = "Resim" 
         throw new Error('Dosya yüklenemedi');
       }
 
-      // Get the public URL for the uploaded image
-      const publicURL = `/public-objects/images/${imageId}`;
+      // Get the public URL for the uploaded image with timestamp to avoid cache
+      const publicURL = `/public-objects/images/${imageId}?t=${Date.now()}`;
       onImageChange(publicURL);
 
       toast({
