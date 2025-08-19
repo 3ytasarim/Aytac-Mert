@@ -16,6 +16,8 @@ import AdminAddStudent from "@/pages/AdminAddStudent";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
+import { SocialIcons } from "@/components/SocialIcons";
+import { ScrollUpButton } from "@/components/ScrollUpButton";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -81,6 +83,8 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <SocialIcons />
+        <ScrollUpButton />
       </TooltipProvider>
     </QueryClientProvider>
   );
