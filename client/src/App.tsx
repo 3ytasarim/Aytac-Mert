@@ -11,6 +11,7 @@ import AdminUsers from "@/pages/AdminUsers";
 import AdminContacts from "@/pages/AdminContacts";
 import AdminCourses from "@/pages/AdminCourses";
 import AdminAddCourse from "@/pages/AdminAddCourse";
+import AdminCourseEdit from "@/pages/AdminCourseEdit";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
@@ -43,6 +44,7 @@ function Router() {
               <Route path="/admin/contacts" component={AdminContacts} />
               <Route path="/admin/courses" component={AdminCourses} />
               <Route path="/admin/courses/add" component={AdminAddCourse} />
+              <Route path="/admin/courses/edit" component={AdminCourseEdit} />
               <Route path="/admin/categories" component={AdminContacts} />
               <Route path="/admin/invoices" component={AdminContacts} />
               <Route path="/admin/reports" component={AdminContacts} />

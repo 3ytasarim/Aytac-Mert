@@ -68,6 +68,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
       badge: null,
       submenu: [
         { title: "Yeni Eğitim Ekleme", path: "/admin/courses/add" },
+        { title: "Eğitim Düzenle", path: "/admin/courses/edit" },
         { title: "Tüm Eğitimler", path: "/admin/courses" },
         { title: "Kategoriler", path: "/admin/categories" }
       ]
