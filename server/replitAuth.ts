@@ -129,18 +129,27 @@ export async function setupAuth(app: Express) {
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
+  const sessionUser = (req.session as any)?.user;
+  
   console.log('Auth check:', { 
     isAuth: req.isAuthenticated(), 
     hasUser: !!user, 
-    userId: user?.claims?.sub || user?.id,
-    userRole: user?.role,
+    hasSessionUser: !!sessionUser,
+    userId: user?.claims?.sub || user?.id || sessionUser?.id,
+    userRole: user?.role || sessionUser?.role,
     expires_at: user?.expires_at,
     now: Math.floor(Date.now() / 1000)
   });
 
-  // Check for custom login (admin users)
+  // Check for custom login (session-based admin users)
+  if (sessionUser && sessionUser.id === 'admin-user-id' && sessionUser.role === 'admin') {
+    console.log('Admin user authenticated via session');
+    return next();
+  }
+
+  // Check for passport login (admin users)
   if (req.isAuthenticated() && user && user.id === 'admin-user-id') {
-    console.log('Admin user authenticated via custom login');
+    console.log('Admin user authenticated via passport');
     return next();
   }
 

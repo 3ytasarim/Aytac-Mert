@@ -78,20 +78,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check for admin user
       if (email === "info@aytacmert.com" && password === "Administrator") {
-        // Create admin session (mock)
-        const adminUser = await storage.upsertUser({
+        // Create admin session
+        const adminUser = {
           id: "admin-user-id",
           email: "info@aytacmert.com",
           firstName: "Admin",
-          role: "admin"
-        });
+          lastName: "User",
+          role: "admin",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          profileImageUrl: null
+        };
         
         // Store user in session
         (req.session as any).user = adminUser;
         
-        res.json({ 
-          message: "Giriş başarılı", 
-          user: adminUser
+        // Also login via passport for consistency
+        req.login(adminUser, (err) => {
+          if (err) {
+            console.error("Passport login error:", err);
+          }
+        });
+        
+        // Ensure session is saved
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+          }
+          
+          console.log('Admin logged in, session saved');
+          res.json({ 
+            message: "Giriş başarılı", 
+            user: adminUser
+          });
         });
         return;
       }
