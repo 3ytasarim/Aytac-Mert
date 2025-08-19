@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { registrationSchema, type Registration } from "@shared/schema";
+import { PrivacyModal } from "./PrivacyModal";
 
 interface RegistrationModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ interface RegistrationModalProps {
 
 export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
   const [captchaCode] = useState(() => generateCaptcha());
+  const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -80,6 +82,9 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
           <DialogTitle className="text-2xl font-bold text-center text-gray-800">
             Kayıt Ol
           </DialogTitle>
+          <DialogDescription>
+            AYTAÇ MERT EĞİTİM KURUMLARI Akademisi'ne üye olmak için formu doldurun
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -242,9 +247,13 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                   <div className="space-y-1 leading-none">
                     <FormLabel>
                       Kabul Ediyorum{" "}
-                      <a href="#" className="text-blue-500 underline">
+                      <button 
+                        type="button"
+                        onClick={() => setPrivacyModalOpen(true)}
+                        className="text-blue-500 underline hover:text-blue-700"
+                      >
                         Gizlilik Sözleşmesi
-                      </a>
+                      </button>
                     </FormLabel>
                     <FormMessage />
                   </div>
@@ -264,6 +273,11 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
           </form>
         </Form>
       </DialogContent>
+      
+      <PrivacyModal 
+        isOpen={privacyModalOpen} 
+        onClose={() => setPrivacyModalOpen(false)} 
+      />
     </Dialog>
   );
 }
