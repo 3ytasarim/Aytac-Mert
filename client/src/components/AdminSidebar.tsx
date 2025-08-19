@@ -135,7 +135,7 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
   };
 
   return (
-    <div className="w-full h-full bg-slate-900 text-white flex flex-col">
+    <div className={`h-full bg-slate-900 text-white flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
       {/* Header */}
       <div className="flex items-center justify-between p-3 lg:p-4 border-b border-gray-700">
         <div className="flex items-center overflow-hidden min-w-0 flex-1">
@@ -159,9 +159,9 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
 
         {/* Admin Info */}
         <div className="p-3 lg:p-4 border-b border-gray-700">
-          <div className="flex items-center">
-            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <Users className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+          <div className={`flex items-center ${isCollapsed ? 'justify-center' : ''}`}>
+            <div className={`bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8 lg:w-10 lg:h-10'}`}>
+              <Users className={`text-white ${isCollapsed ? 'h-5 w-5' : 'h-4 w-4 lg:h-5 lg:w-5'}`} />
             </div>
             {!isCollapsed && (
               <div className="ml-2 lg:ml-3 transition-opacity duration-300 overflow-hidden min-w-0 flex-1">
@@ -192,7 +192,8 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
                       }
                     }}
                     className={`
-                      w-full flex items-center justify-between p-2 lg:p-3 rounded-lg transition-all duration-300 relative group transform hover:scale-105
+                      w-full flex items-center justify-between rounded-lg transition-all duration-300 relative group transform hover:scale-105
+                      ${isCollapsed ? 'p-3 justify-center' : 'p-2 lg:p-3'}
                       ${isActive 
                         ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white shadow-lg' 
                         : 'text-gray-300 hover:bg-gradient-to-r hover:from-gray-700 hover:via-gray-600 hover:to-gray-700 hover:text-white hover:shadow-lg'
@@ -200,8 +201,8 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
                     `}
                     title={isCollapsed ? item.title : undefined}
                   >
-                    <div className="flex items-center overflow-hidden">
-                      <Icon className="h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3 flex-shrink-0" />
+                    <div className={`flex items-center overflow-hidden ${isCollapsed ? 'justify-center' : ''}`}>
+                      <Icon className={`flex-shrink-0 ${isCollapsed ? 'h-5 w-5' : 'h-4 w-4 lg:h-5 lg:w-5 mr-2 lg:mr-3'}`} />
                       {!isCollapsed && (
                         <span className="text-xs lg:text-sm font-medium whitespace-nowrap">{item.title}</span>
                       )}
@@ -265,10 +266,13 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
           <Button 
             onClick={handleLogout}
             disabled={logoutMutation.isPending}
-            className={`w-full bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group ${isCollapsed ? 'px-2' : ''}`}
+            className={`
+              w-full bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group
+              ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-2'}
+            `}
             title={isCollapsed ? 'Çıkış Yap' : undefined}
           >
-            <LogOut className="h-4 w-4 mr-2 flex-shrink-0 group-hover:animate-bounce" />
+            <LogOut className={`flex-shrink-0 group-hover:animate-bounce ${isCollapsed ? 'h-5 w-5' : 'h-4 w-4 mr-2'}`} />
             {!isCollapsed && <span>Çıkış Yap</span>}
           </Button>
         </div>
