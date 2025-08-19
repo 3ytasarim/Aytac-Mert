@@ -213,7 +213,7 @@ export default function AdminCourses() {
                     </Button>
                     <Button
                       size="sm"
-                      variant={course.isActive ? "outline" : "default"}
+                      variant="outline"
                       onClick={() => handleToggleStatus(course.id, course.isActive)}
                       disabled={toggleCourseStatusMutation.isPending}
                       data-testid={`button-toggle-${course.id}`}
