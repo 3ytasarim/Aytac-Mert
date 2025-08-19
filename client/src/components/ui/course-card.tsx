@@ -22,7 +22,7 @@ export function CourseCard({ course, onPurchase }: CourseCardProps) {
       <img
         src={course.imageUrl || "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400"}
         alt={course.title}
-        className="w-full h-48 object-cover grayscale hover:grayscale-0 transition-all duration-500"
+        className="w-full h-64 object-cover grayscale hover:grayscale-0 transition-all duration-500"
         data-testid="img-course"
       />
       

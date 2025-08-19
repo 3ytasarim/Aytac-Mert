@@ -123,7 +123,7 @@ export default function AdminCourses() {
         </div>
 
         {/* Courses Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="courses-grid">
           {coursesLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
               <Card key={index} className="animate-pulse">
@@ -157,11 +157,11 @@ export default function AdminCourses() {
                 <CardContent className="space-y-4">
                   {/* Course Image */}
                   {course.imageUrl && (
-                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden">
                       <img
                         src={course.imageUrl}
                         alt={course.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
