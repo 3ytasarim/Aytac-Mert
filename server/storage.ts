@@ -294,6 +294,22 @@ export class DatabaseStorage implements IStorage {
       .from(users)
       .orderBy(desc(users.createdAt));
   }
+
+  async getAllContacts(): Promise<Contact[]> {
+    return await db
+      .select()
+      .from(contacts)
+      .orderBy(desc(contacts.createdAt));
+  }
+
+  async updateContactStatus(contactId: string, status: string): Promise<Contact> {
+    const [updatedContact] = await db
+      .update(contacts)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(contacts.id, contactId))
+      .returning();
+    return updatedContact;
+  }
 }
 
 export const storage = new DatabaseStorage();

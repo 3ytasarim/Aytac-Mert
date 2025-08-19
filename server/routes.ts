@@ -21,8 +21,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Fallback to Replit Auth if available
-      if (req.user && req.user.claims) {
-        const userId = req.user.claims.sub;
+      if (req.user && (req.user as any).claims) {
+        const userId = (req.user as any).claims.sub;
         storage.getUser(userId).then(user => {
           if (user) {
             res.json(user);
@@ -139,6 +139,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Logout error:", error);
       res.status(500).json({ message: "Çıkış işlemi başarısız" });
+    }
+  });
+
+  // Admin-only routes
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      }
+      
+      const stats = await storage.getDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      res.status(500).json({ message: "İstatistik verileri alınamadı" });
+    }
+  });
+
+  app.get("/api/admin/contacts", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      }
+      
+      const contacts = await storage.getAllContacts();
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+      res.status(500).json({ message: "İletişim mesajları alınamadı" });
+    }
+  });
+
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      }
+      
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Kullanıcı listesi alınamadı" });
+    }
+  });
+
+  app.patch("/api/admin/contacts/:id", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      }
+      
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      const updatedContact = await storage.updateContactStatus(id, status);
+      res.json(updatedContact);
+    } catch (error) {
+      console.error("Error updating contact:", error);
+      res.status(500).json({ message: "İletişim durumu güncellenemedi" });
     }
   });
 

@@ -220,21 +220,21 @@ export default function AdminDashboard() {
                 <CardTitle>Hızlı İşlemler</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Yeni Kurs Ekle
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href = '/admin/users'}>
                   <Users className="h-4 w-4 mr-2" />
-                  Öğrenci Listesi
+                  Kullanıcı Listesi
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href = '/admin/contacts'}>
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Tüm Mesajlar
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Kurs Yönetimi
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
                   <TrendingUp className="h-4 w-4 mr-2" />
-                  İstatistikler
+                  Raporlar
                 </Button>
               </CardContent>
             </Card>

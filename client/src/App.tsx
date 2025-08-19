@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import StudentDashboard from "@/pages/student-dashboard";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminUsers from "@/pages/AdminUsers";
+import AdminContacts from "@/pages/AdminContacts";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
@@ -30,7 +32,11 @@ function Router() {
       {isAuthenticated ? (
         <>
           {user?.role === "admin" ? (
-            <Route path="/" component={AdminDashboard} />
+            <>
+              <Route path="/" component={AdminDashboard} />
+              <Route path="/admin/users" component={AdminUsers} />
+              <Route path="/admin/contacts" component={AdminContacts} />
+            </>
           ) : (
             <Route path="/" component={StudentDashboard} />
           )}
