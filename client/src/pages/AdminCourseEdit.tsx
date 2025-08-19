@@ -73,14 +73,15 @@ export default function AdminCourseEdit() {
   });
 
   const updateCourseMutation = useMutation({
-    mutationFn: async (data: { id: string; title: string; description: string; price: number }) => {
+    mutationFn: async (data: { id: string; title: string; description: string; price: number; imageUrl?: string | null }) => {
       const response = await fetch(`/api/admin/courses/${data.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: data.title,
           description: data.description,
-          price: data.price
+          price: data.price,
+          imageUrl: data.imageUrl
         }),
       });
       if (!response.ok) {
@@ -95,6 +96,7 @@ export default function AdminCourseEdit() {
         description: "Kurs bilgileri güncellendi.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] }); // Public courses cache
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -247,12 +249,26 @@ export default function AdminCourseEdit() {
   });
 
   const handleCourseUpdate = (course: Course) => {
+    // Add timestamp to image URL to bust cache if image exists
+    const imageUrlWithTimestamp = course.imageUrl && !course.imageUrl.includes('?t=') 
+      ? `${course.imageUrl}${course.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}`
+      : course.imageUrl;
+      
     updateCourseMutation.mutate({
       id: course.id,
       title: course.title,
       description: course.description,
-      price: course.price
+      price: course.price,
+      imageUrl: imageUrlWithTimestamp
     });
+    
+    // Update local state with timestamped URL
+    if (selectedCourse?.id === course.id) {
+      setSelectedCourse({
+        ...course,
+        imageUrl: imageUrlWithTimestamp
+      });
+    }
   };
 
   const handleAddLesson = () => {
