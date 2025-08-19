@@ -195,8 +195,7 @@ export default function AdminCourses() {
                         className="h-7 px-1.5 text-[11px] font-medium"
                       >
                         <Edit className="h-3 w-3 mr-0.5" />
-                        <span className="hidden xs:inline">Düzenle</span>
-                        <span className="xs:hidden">Edit</span>
+                        <span>Düzenle</span>
                       </Button>
                       <Button
                         size="sm"
@@ -206,8 +205,7 @@ export default function AdminCourses() {
                         className="h-7 px-1.5 text-[11px] font-medium"
                       >
                         <Eye className="h-3 w-3 mr-0.5" />
-                        <span className="hidden xs:inline">Görüntüle</span>
-                        <span className="xs:hidden">View</span>
+                        <span>Görüntüle</span>
                       </Button>
                       <Button
                         size="sm"
@@ -219,7 +217,7 @@ export default function AdminCourses() {
                       >
                         <Archive className="h-3 w-3 mr-0.5" />
                         <span className="truncate">
-                          {course.isActive ? "Pasif" : "Aktif"}
+                          {course.isActive ? "Pasif Yap" : "Aktif Yap"}
                         </span>
                       </Button>
                     </div>
