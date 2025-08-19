@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { BookOpen, Plus, Edit, Eye, Archive, Users, Trash2, PlusCircle } from "lucide-react";
+import { BookOpen, Plus, Edit, Eye, Archive, Users, Trash2, PlusCircle, Save, X } from "lucide-react";
 
 interface Course {
   id: string;
@@ -26,6 +30,16 @@ export default function AdminCourses() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
+
+  // State for edit dialog
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    price: 0,
+    isActive: true
+  });
 
   // Redirect to home if not authenticated or not admin
   useEffect(() => {
@@ -103,6 +117,57 @@ export default function AdminCourses() {
     if (window.confirm(`"${courseTitle}" eğitimini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
       deleteCourseMapping.mutate(courseId);
     }
+  };
+
+  const handleEditCourse = (course: Course) => {
+    setEditingCourse(course);
+    setEditForm({
+      title: course.title,
+      description: course.description,
+      price: course.price,
+      isActive: course.isActive
+    });
+    setEditDialogOpen(true);
+  };
+
+  const updateCourseMutation = useMutation({
+    mutationFn: async (data: { id: string; title: string; description: string; price: number; isActive: boolean }) => {
+      return await apiRequest(`/api/admin/courses/${data.id}`, "PATCH", {
+        title: data.title,
+        description: data.description,
+        price: data.price,
+        isActive: data.isActive
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı",
+        description: "Eğitim güncellendi",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+      setEditDialogOpen(false);
+      setEditingCourse(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Hata",
+        description: error.message || "Eğitim güncellenirken bir hata oluştu",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSaveEdit = () => {
+    if (!editingCourse) return;
+    
+    updateCourseMutation.mutate({
+      id: editingCourse.id,
+      title: editForm.title,
+      description: editForm.description,
+      price: editForm.price,
+      isActive: editForm.isActive
+    });
   };
 
   if (isLoading) {
@@ -218,7 +283,7 @@ export default function AdminCourses() {
                     <div className="grid grid-cols-3 gap-1.5">
                       <Button
                         size="sm"
-                        onClick={() => navigate(`/admin/courses/edit?id=${course.id}`)}
+                        onClick={() => handleEditCourse(course)}
                         data-testid={`button-edit-${course.id}`}
                         className="h-8 px-2 text-xs font-semibold transition-all duration-300 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
                       >
@@ -296,6 +361,85 @@ export default function AdminCourses() {
             </CardContent>
           </Card>
         )}
+
+        {/* Edit Course Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Edit className="h-5 w-5 text-blue-600" />
+                Eğitimi Düzenle
+              </DialogTitle>
+            </DialogHeader>
+            
+            {editingCourse && (
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="edit-title">Eğitim Başlığı</Label>
+                  <Input
+                    id="edit-title"
+                    value={editForm.title}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Eğitim başlığını girin"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="edit-description">Açıklama</Label>
+                  <Textarea
+                    id="edit-description"
+                    value={editForm.description}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Eğitim açıklamasını girin"
+                    rows={4}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="edit-price">Fiyat (₺)</Label>
+                  <Input
+                    id="edit-price"
+                    type="number"
+                    value={editForm.price}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, price: Number(e.target.value) }))}
+                    placeholder="0"
+                    min="0"
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="edit-active"
+                    checked={editForm.isActive}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, isActive: e.target.checked }))}
+                    className="rounded"
+                  />
+                  <Label htmlFor="edit-active">Eğitim aktif</Label>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setEditDialogOpen(false)}
+                disabled={updateCourseMutation.isPending}
+              >
+                <X className="h-4 w-4 mr-2" />
+                İptal
+              </Button>
+              <Button
+                onClick={handleSaveEdit}
+                disabled={updateCourseMutation.isPending}
+                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {updateCourseMutation.isPending ? "Kaydediliyor..." : "Kaydet"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );
