@@ -52,9 +52,14 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
       });
       form.reset();
       onClose();
+      // Invalidate auth query to trigger re-fetch and route change
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      // Refresh page to load dashboard
-      window.location.reload();
+      
+      // Small delay to ensure query invalidation processes
+      setTimeout(() => {
+        // Force refetch to ensure immediate route change
+        queryClient.refetchQueries({ queryKey: ["/api/auth/user"] });
+      }, 100);
     },
     onError: (error: Error) => {
       toast({

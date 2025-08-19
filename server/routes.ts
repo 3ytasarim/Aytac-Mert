@@ -15,8 +15,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Check custom session first
     try {
       const sessionUser = (req.session as any).user;
+      const hasSessionUser = sessionUser ? true : false;
+      const userId = sessionUser?.id;
+      const userRole = sessionUser?.role;
+      
+      console.log('Auth check:', { 
+        isAuth: req.isAuthenticated ? req.isAuthenticated() : false,
+        hasUser: req.user ? true : false,
+        hasSessionUser,
+        userId,
+        userRole,
+        expires_at: (req.user as any)?.expires_at,
+        now: Math.floor(Date.now() / 1000)
+      });
       
       if (sessionUser) {
+        console.log(`${sessionUser.role === 'admin' ? 'Admin' : 'User'} user authenticated via session`);
         return res.json(sessionUser);
       }
       
@@ -25,6 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const userId = (req.user as any).claims.sub;
         storage.getUser(userId).then(user => {
           if (user) {
+            console.log('User authenticated via Replit Auth');
             res.json(user);
           } else {
             res.status(401).json({ message: "Unauthorized" });
