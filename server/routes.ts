@@ -348,9 +348,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Protected admin routes
   app.get("/api/admin/stats", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      // Check for session-based admin
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        // Check for Replit auth admin
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const stats = await storage.getDashboardStats();
@@ -363,9 +372,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/enrollments", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const enrollments = await storage.getAllEnrollments();
@@ -378,9 +394,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/contacts", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const contacts = await storage.getAllContacts();
@@ -394,9 +417,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin course routes
   app.get("/api/admin/courses", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const courses = await storage.getAllCoursesForAdmin();
@@ -409,9 +439,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/courses", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      // Get user ID from either session or Replit auth
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      console.log('Creating course, userId:', userId, 'sessionUser:', !!sessionUser);
+      
+      // Check for session-based admin
+      if (sessionUser && sessionUser.role === 'admin') {
+        console.log('Admin user authorized via session');
+      } else {
+        // Check for Replit auth admin
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const courseData = req.body;
@@ -423,6 +465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isActive: true,
       });
 
+      console.log('Course created successfully:', newCourse.id);
       res.json(newCourse);
     } catch (error) {
       console.error("Error creating course:", error);
@@ -432,9 +475,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/admin/courses/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const { id } = req.params;
@@ -451,13 +501,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin lesson management routes
   app.post("/api/admin/lessons", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      // Get user ID from either session or Replit auth
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      console.log('Creating lessons, userId:', userId, 'sessionUser:', !!sessionUser);
+      
+      // Check for session-based admin
+      if (sessionUser && sessionUser.role === 'admin') {
+        console.log('Admin user authorized via session for lessons');
+      } else {
+        // Check for Replit auth admin
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const { courseId, lessons } = req.body;
       await storage.createLessons(courseId, lessons);
+      console.log('Lessons created successfully for course:', courseId);
       res.json({ success: true });
     } catch (error) {
       console.error("Error creating lessons:", error);
@@ -467,9 +530,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/courses/:id/lessons", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const { id } = req.params;
@@ -483,9 +553,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/admin/contacts/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const { id } = req.params;
@@ -502,9 +579,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Seed default courses if they don't exist
   app.post("/api/admin/seed", isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user || user.role !== "admin") {
-        return res.status(403).json({ message: "Admin access required" });
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
 
       const existingCourses = await storage.getAllCourses();
