@@ -135,21 +135,18 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
   };
 
   return (
-    <div className={`
-      h-full bg-gray-900 text-white transition-all duration-300 ease-in-out z-50
-      ${isCollapsed ? 'w-16' : 'w-64'}
-    `}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-700">
-          <div className="flex items-center overflow-hidden min-w-0">
-            <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-blue-400 flex-shrink-0" />
-            {!isCollapsed && (
-              <div className="ml-2 lg:ml-3 transition-opacity duration-300 min-w-0 flex-1">
-                <h1 className="text-sm lg:text-lg font-bold truncate">Admin Panel</h1>
-                <p className="text-xs text-gray-400 truncate hidden lg:block">Aytaç Mert Akademisi</p>
-              </div>
-            )}
-          </div>
+    <div className="w-full h-full bg-slate-900 text-white flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 lg:p-4 border-b border-gray-700">
+        <div className="flex items-center overflow-hidden min-w-0 flex-1">
+          <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-blue-400 flex-shrink-0" />
+          {!isCollapsed && (
+            <div className="ml-2 lg:ml-3 min-w-0 flex-1">
+              <h1 className="text-sm lg:text-lg font-bold truncate text-white">Admin Panel</h1>
+              <p className="text-xs text-gray-400 truncate hidden lg:block">Aytaç Mert Akademisi</p>
+            </div>
+          )}
+        </div>
           <Button 
             variant="ghost" 
             size="sm" 
