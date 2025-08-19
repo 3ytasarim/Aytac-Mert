@@ -3,6 +3,7 @@ import {
   courses,
   enrollments,
   contacts,
+  lessons,
   type User,
   type UpsertUser,
   type Course,
@@ -11,6 +12,8 @@ import {
   type InsertEnrollment,
   type Contact,
   type InsertContact,
+  type Lesson,
+  type InsertLesson,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -135,6 +138,26 @@ export class DatabaseStorage implements IStorage {
       .where(eq(courses.id, id))
       .returning();
     return updatedCourse;
+  }
+
+  // Lesson operations
+  async createLessons(courseId: string, lessonsData: { title: string; videoEmbedCode: string; orderIndex: number }[]): Promise<void> {
+    const lessonsToInsert = lessonsData.map(lesson => ({
+      courseId,
+      title: lesson.title,
+      videoEmbedCode: lesson.videoEmbedCode,
+      orderIndex: lesson.orderIndex,
+    }));
+    
+    await db.insert(lessons).values(lessonsToInsert);
+  }
+
+  async getCourseLessons(courseId: string): Promise<any[]> {
+    return await db
+      .select()
+      .from(lessons)
+      .where(eq(lessons.courseId, courseId))
+      .orderBy(lessons.orderIndex);
   }
 
   // Enrollment operations

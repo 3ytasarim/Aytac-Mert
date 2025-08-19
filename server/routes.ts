@@ -429,6 +429,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin lesson management routes
+  app.post("/api/admin/lessons", isAuthenticated, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { courseId, lessons } = req.body;
+      await storage.createLessons(courseId, lessons);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error creating lessons:", error);
+      res.status(500).json({ message: "Failed to create lessons" });
+    }
+  });
+
+  app.get("/api/admin/courses/:id/lessons", isAuthenticated, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { id } = req.params;
+      const lessons = await storage.getCourseLessons(id);
+      res.json(lessons);
+    } catch (error) {
+      console.error("Error fetching course lessons:", error);
+      res.status(500).json({ message: "Failed to fetch lessons" });
+    }
+  });
+
   app.patch("/api/admin/contacts/:id", isAuthenticated, async (req: any, res) => {
     try {
       const user = await storage.getUser(req.user.claims.sub);

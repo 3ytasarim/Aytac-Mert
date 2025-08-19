@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { BookOpen, Upload, Save, ArrowLeft } from "lucide-react";
+import { BookOpen, Upload, Save, ArrowLeft, ArrowRight, Plus, X, Video, GripVertical } from "lucide-react";
 import { z } from "zod";
 
 const courseSchema = z.object({
@@ -20,7 +21,14 @@ const courseSchema = z.object({
   imageUrl: z.string().url("Geçerli bir URL giriniz").optional().or(z.literal("")),
 });
 
+const lessonSchema = z.object({
+  title: z.string().min(1, "Bölüm başlığı gereklidir"),
+  videoEmbedCode: z.string().min(1, "Video embed kodu gereklidir"),
+  orderIndex: z.number().min(0, "Sıra numarası 0'dan küçük olamaz"),
+});
+
 type CourseFormData = z.infer<typeof courseSchema>;
+type LessonFormData = z.infer<typeof lessonSchema>;
 
 export default function AdminAddCourse() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -28,14 +36,18 @@ export default function AdminAddCourse() {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
 
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<CourseFormData>({
     title: "",
     description: "",
     price: 0,
     imageUrl: "",
   });
+  const [lessons, setLessons] = useState<LessonFormData[]>([]);
+  const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [lessonErrors, setLessonErrors] = useState<Record<number, Record<string, string>>>({});
 
   // Redirect to home if not authenticated or not admin
   useEffect(() => {
@@ -54,15 +66,41 @@ export default function AdminAddCourse() {
 
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: CourseFormData) => {
-      return await apiRequest("/api/admin/courses", {
+      const response = await apiRequest("/api/admin/courses", {
         method: "POST",
         body: JSON.stringify(courseData),
       });
+      return response;
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Başarılı",
+        description: "Eğitim temel bilgileri kaydedildi, şimdi bölümleri ekleyin",
+      });
+      setCreatedCourseId(data.id);
+      setCurrentStep(2);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Hata",
+        description: error.message || "Eğitim eklenirken bir hata oluştu",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const addLessonsMutation = useMutation({
+    mutationFn: async (lessonsData: { courseId: string; lessons: LessonFormData[] }) => {
+      const response = await apiRequest("/api/admin/lessons", {
+        method: "POST",
+        body: JSON.stringify(lessonsData),
+      });
+      return response;
     },
     onSuccess: () => {
       toast({
         title: "Başarılı",
-        description: "Yeni eğitim başarıyla eklendi",
+        description: "Eğitim ve bölümler başarıyla eklendi",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
@@ -71,7 +109,7 @@ export default function AdminAddCourse() {
     onError: (error: Error) => {
       toast({
         title: "Hata",
-        description: error.message || "Eğitim eklenirken bir hata oluştu",
+        description: error.message || "Bölümler eklenirken bir hata oluştu",
         variant: "destructive",
       });
     },
@@ -84,7 +122,55 @@ export default function AdminAddCourse() {
     }
   };
 
-  const validateForm = (): boolean => {
+  const handleLessonChange = (index: number, field: keyof LessonFormData, value: string | number) => {
+    setLessons(prev => prev.map((lesson, i) => 
+      i === index ? { ...lesson, [field]: value } : lesson
+    ));
+    if (lessonErrors[index]?.[field]) {
+      setLessonErrors(prev => ({
+        ...prev,
+        [index]: { ...prev[index], [field]: "" }
+      }));
+    }
+  };
+
+  const addLesson = () => {
+    setLessons(prev => [...prev, {
+      title: "",
+      videoEmbedCode: "",
+      orderIndex: prev.length
+    }]);
+  };
+
+  const removeLesson = (index: number) => {
+    setLessons(prev => prev.filter((_, i) => i !== index).map((lesson, i) => ({
+      ...lesson,
+      orderIndex: i
+    })));
+    setLessonErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[index];
+      return newErrors;
+    });
+  };
+
+  const moveLesson = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index > 0) {
+      setLessons(prev => {
+        const newLessons = [...prev];
+        [newLessons[index], newLessons[index - 1]] = [newLessons[index - 1], newLessons[index]];
+        return newLessons.map((lesson, i) => ({ ...lesson, orderIndex: i }));
+      });
+    } else if (direction === 'down' && index < lessons.length - 1) {
+      setLessons(prev => {
+        const newLessons = [...prev];
+        [newLessons[index], newLessons[index + 1]] = [newLessons[index + 1], newLessons[index]];
+        return newLessons.map((lesson, i) => ({ ...lesson, orderIndex: i }));
+      });
+    }
+  };
+
+  const validateCourseForm = (): boolean => {
     try {
       courseSchema.parse(formData);
       setErrors({});
@@ -103,10 +189,53 @@ export default function AdminAddCourse() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateLessons = (): boolean => {
+    let isValid = true;
+    const newErrors: Record<number, Record<string, string>> = {};
+    
+    lessons.forEach((lesson, index) => {
+      try {
+        lessonSchema.parse(lesson);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const lessonErrors: Record<string, string> = {};
+          error.errors.forEach((err) => {
+            if (err.path[0]) {
+              lessonErrors[err.path[0] as string] = err.message;
+              isValid = false;
+            }
+          });
+          newErrors[index] = lessonErrors;
+        }
+      }
+    });
+    
+    setLessonErrors(newErrors);
+    return isValid;
+  };
+
+  const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
+    if (validateCourseForm()) {
       createCourseMutation.mutate(formData);
+    }
+  };
+
+  const handleStep2Submit = () => {
+    if (lessons.length === 0) {
+      toast({
+        title: "Uyarı",
+        description: "En az bir bölüm eklemelisiniz",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (validateLessons() && createdCourseId) {
+      addLessonsMutation.mutate({
+        courseId: createdCourseId,
+        lessons: lessons
+      });
     }
   };
 
@@ -129,28 +258,52 @@ export default function AdminAddCourse() {
 
   return (
     <AdminLayout title="Yeni Eğitim Ekle" description="Sisteme yeni bir eğitim kursu ekleyin">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        {/* Progress Steps */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center">
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                currentStep >= 1 ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 text-gray-500'
+              }`}>
+                1
+              </div>
+              <span className="ml-2 text-sm font-medium">Temel Bilgiler</span>
+            </div>
+            <div className={`w-20 h-1 mx-4 ${currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+            <div className="flex items-center">
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                currentStep >= 2 ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 text-gray-500'
+              }`}>
+                2
+              </div>
+              <span className="ml-2 text-sm font-medium">Bölümler</span>
+            </div>
+          </div>
+        </div>
+
         <div className="mb-6">
           <Button
             variant="outline"
-            onClick={() => navigate("/admin/courses")}
+            onClick={() => currentStep === 1 ? navigate("/admin/courses") : setCurrentStep(1)}
             className="flex items-center"
             data-testid="button-back"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Geri Dön
+            {currentStep === 1 ? 'Geri Dön' : 'Önceki Adım'}
           </Button>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <BookOpen className="h-5 w-5 mr-2" />
-              Eğitim Bilgileri
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+        {currentStep === 1 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BookOpen className="h-5 w-5 mr-2" />
+                Eğitim Bilgileri
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleStep1Submit} className="space-y-6">
               {/* Course Title */}
               <div className="space-y-2">
                 <Label htmlFor="title">Eğitim Başlığı *</Label>
@@ -244,38 +397,212 @@ export default function AdminAddCourse() {
                 </div>
               )}
 
-              {/* Submit Button */}
-              <div className="flex justify-end space-x-4 pt-6 border-t">
+                {/* Submit Button */}
+                <div className="flex justify-end space-x-4 pt-6 border-t">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate("/admin/courses")}
+                    data-testid="button-cancel"
+                  >
+                    İptal
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={createCourseMutation.isPending}
+                    className="bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-next"
+                  >
+                    {createCourseMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Kaydediliyor...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowRight className="h-4 w-4 mr-2" />
+                        İleri - Bölümler
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Video className="h-5 w-5 mr-2" />
+                Eğitim Bölümleri
+              </CardTitle>
+              <div className="text-sm text-gray-600 mt-2">
+                Eğitim: <strong>{formData.title}</strong>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Add Lesson Button */}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addLesson}
+                className="w-full border-dashed"
+                data-testid="button-add-lesson"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Yeni Bölüm Ekle
+              </Button>
+
+              {/* Lessons List */}
+              {lessons.length > 0 && (
+                <div className="space-y-4">
+                  {lessons.map((lesson, index) => (
+                    <Card key={index} className="border-l-4 border-l-blue-500">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-4">
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                            Bölüm {index + 1}
+                          </Badge>
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => moveLesson(index, 'up')}
+                              disabled={index === 0}
+                              data-testid={`button-move-up-${index}`}
+                            >
+                              ↑
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => moveLesson(index, 'down')}
+                              disabled={index === lessons.length - 1}
+                              data-testid={`button-move-down-${index}`}
+                            >
+                              ↓
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeLesson(index)}
+                              className="text-red-600 hover:text-red-700"
+                              data-testid={`button-remove-${index}`}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
+                          {/* Lesson Title */}
+                          <div className="space-y-2">
+                            <Label htmlFor={`lesson-title-${index}`}>Bölüm Başlığı</Label>
+                            <Input
+                              id={`lesson-title-${index}`}
+                              type="text"
+                              placeholder="Örn: Temel Komutlar"
+                              value={lesson.title}
+                              onChange={(e) => handleLessonChange(index, "title", e.target.value)}
+                              className={lessonErrors[index]?.title ? "border-red-500" : ""}
+                              data-testid={`input-lesson-title-${index}`}
+                            />
+                            {lessonErrors[index]?.title && (
+                              <p className="text-sm text-red-600">{lessonErrors[index].title}</p>
+                            )}
+                          </div>
+
+                          {/* Video Embed Code */}
+                          <div className="space-y-2">
+                            <Label htmlFor={`lesson-video-${index}`}>Video Embed Kodu</Label>
+                            <Textarea
+                              id={`lesson-video-${index}`}
+                              placeholder="YouTube iframe embed kodunu buraya yapıştırın..."
+                              value={lesson.videoEmbedCode}
+                              onChange={(e) => handleLessonChange(index, "videoEmbedCode", e.target.value)}
+                              rows={3}
+                              className={lessonErrors[index]?.videoEmbedCode ? "border-red-500" : ""}
+                              data-testid={`textarea-lesson-video-${index}`}
+                            />
+                            {lessonErrors[index]?.videoEmbedCode && (
+                              <p className="text-sm text-red-600">{lessonErrors[index].videoEmbedCode}</p>
+                            )}
+                            <p className="text-xs text-gray-500">
+                              Video paylaşım hizmetinizden HTML kodunu yapıştırın.
+                            </p>
+                          </div>
+
+                          {/* Order Index */}
+                          <div className="space-y-2">
+                            <Label htmlFor={`lesson-order-${index}`}>Sırala (İsteğe Bağlı)</Label>
+                            <Input
+                              id={`lesson-order-${index}`}
+                              type="number"
+                              min="0"
+                              placeholder="Sadece Rakam"
+                              value={lesson.orderIndex}
+                              onChange={(e) => handleLessonChange(index, "orderIndex", parseInt(e.target.value) || 0)}
+                              className={lessonErrors[index]?.orderIndex ? "border-red-500" : ""}
+                              data-testid={`input-lesson-order-${index}`}
+                            />
+                            {lessonErrors[index]?.orderIndex && (
+                              <p className="text-sm text-red-600">{lessonErrors[index].orderIndex}</p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {lessons.length === 0 && (
+                <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+                  <Video className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz bölüm eklenmedi</h3>
+                  <p className="text-gray-600 mb-4">
+                    Eğitiminize video bölümleri eklemek için yukarıdaki butonu kullanın.
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex justify-between pt-6 border-t">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate("/admin/courses")}
-                  data-testid="button-cancel"
+                  onClick={() => setCurrentStep(1)}
+                  data-testid="button-back-to-step1"
                 >
-                  İptal
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Geri - Temel Bilgiler
                 </Button>
                 <Button
-                  type="submit"
-                  disabled={createCourseMutation.isPending}
-                  className="bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-save"
+                  type="button"
+                  onClick={handleStep2Submit}
+                  disabled={addLessonsMutation.isPending || lessons.length === 0}
+                  className="bg-green-600 hover:bg-green-700"
+                  data-testid="button-finish"
                 >
-                  {createCourseMutation.isPending ? (
+                  {addLessonsMutation.isPending ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Kaydediliyor...
+                      Tamamlanıyor...
                     </>
                   ) : (
                     <>
                       <Save className="h-4 w-4 mr-2" />
-                      Eğitimi Kaydet
+                      Eğitimi Tamamla
                     </>
                   )}
                 </Button>
               </div>
-            </form>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </AdminLayout>
   );
