@@ -399,24 +399,68 @@ export default function AdminCourseEdit() {
                         />
                       </div>
                       <div>
-                        <Label>Kurs Resmi URL</Label>
-                        <Input
-                          value={selectedCourse.imageUrl || ""}
-                          onChange={(e) => setSelectedCourse({...selectedCourse, imageUrl: e.target.value})}
-                          placeholder="https://example.com/image.jpg"
-                        />
-                        {selectedCourse.imageUrl && (
-                          <div className="mt-2">
-                            <img 
-                              src={selectedCourse.imageUrl} 
-                              alt="Kurs önizlemesi"
-                              className="w-32 h-20 object-cover rounded border"
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                              }}
+                        <Label>Kurs Resmi</Label>
+                        <div className="space-y-3">
+                          {selectedCourse.imageUrl ? (
+                            <div className="relative">
+                              <img 
+                                src={selectedCourse.imageUrl} 
+                                alt="Kurs resmi"
+                                className="w-full max-w-xs h-32 object-cover rounded border"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedCourse({...selectedCourse, imageUrl: null})}
+                                className="absolute top-2 right-2 h-8 w-8 p-0"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                              <div className="text-gray-500 mb-2">Henüz resim eklenmemiş</div>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  const url = prompt("Resim URL'sini girin:", "https://");
+                                  if (url && url.trim() && url !== "https://") {
+                                    setSelectedCourse({...selectedCourse, imageUrl: url.trim()});
+                                  }
+                                }}
+                              >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Resim Ekle
+                              </Button>
+                            </div>
+                          )}
+                          <div className="flex gap-2">
+                            <Input
+                              value={selectedCourse.imageUrl || ""}
+                              onChange={(e) => setSelectedCourse({...selectedCourse, imageUrl: e.target.value})}
+                              placeholder="veya URL'yi buraya yapıştırın"
+                              className="text-sm"
                             />
+                            {selectedCourse.imageUrl && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  const url = prompt("Yeni resim URL'sini girin:", selectedCourse.imageUrl || "https://");
+                                  if (url && url.trim() && url !== selectedCourse.imageUrl) {
+                                    setSelectedCourse({...selectedCourse, imageUrl: url.trim()});
+                                  }
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </div>
                       <div>
                         <Label>Fiyat (₺)</Label>
