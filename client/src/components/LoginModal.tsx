@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -27,6 +28,7 @@ interface LoginModalProps {
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -123,13 +125,26 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </button>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      {...field} 
-                      type="password" 
-                      placeholder="Şifrenizi giriniz"
-                      data-testid="input-login-password"
-                      className="h-12"
-                    />
+                    <div className="relative">
+                      <Input 
+                        {...field} 
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Şifrenizi giriniz"
+                        data-testid="input-login-password"
+                        className="h-12 pr-10"
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
