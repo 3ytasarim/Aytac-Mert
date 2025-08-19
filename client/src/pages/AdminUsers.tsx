@@ -247,7 +247,7 @@ export default function AdminUsers() {
                               size="sm" 
                               variant="outline"
                               onClick={() => setEditingUser(user)}
-                              className="h-8 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-110 hover:shadow-lg bg-white border-2 border-blue-200 text-blue-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:border-blue-400 active:scale-95 group"
+                              className="h-8 px-3 text-xs font-medium transition-all duration-500 transform hover:scale-110 hover:shadow-lg bg-white border-2 border-blue-200 text-blue-700 hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 hover:text-white hover:border-blue-600 active:scale-95 group"
                               data-testid={`button-edit-user-${user.id}`}
                             >
                               <Edit className="h-3 w-3 mr-1 group-hover:animate-pulse" />
@@ -341,7 +341,7 @@ export default function AdminUsers() {
                           size="sm" 
                           variant="outline"
                           onClick={() => setEditingUser(user)}
-                          className="flex-1 h-8 text-xs font-medium border border-blue-300 text-blue-700 hover:bg-blue-50"
+                          className="flex-1 h-8 text-xs font-medium border border-blue-300 text-blue-700 hover:bg-blue-500 hover:text-white hover:border-blue-600 transition-colors duration-300"
                           data-testid={`button-edit-user-${user.id}`}
                         >
                           <Edit className="h-3 w-3 mr-1" />
