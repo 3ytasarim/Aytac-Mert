@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { BookOpen, Plus, Edit, Eye, Archive, Users } from "lucide-react";
+import { BookOpen, Plus, Edit, Eye, Archive, Users, Trash2, PlusCircle } from "lucide-react";
 
 interface Course {
   id: string;
@@ -47,6 +47,9 @@ export default function AdminCourses() {
     enabled: isAuthenticated && user?.role === 'admin',
   });
 
+  // Type assertion helper
+  const courseList = courses as Course[] | undefined;
+
   const toggleCourseStatusMutation = useMutation({
     mutationFn: async ({ courseId, isActive }: { courseId: string; isActive: boolean }) => {
       return await apiRequest(`/api/admin/courses/${courseId}`, "PATCH", { isActive });
@@ -73,6 +76,33 @@ export default function AdminCourses() {
       courseId,
       isActive: !currentStatus,
     });
+  };
+
+  const deleteCourseMapping = useMutation({
+    mutationFn: async (courseId: string) => {
+      return await apiRequest(`/api/admin/courses/${courseId}`, "DELETE");
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı", 
+        description: "Eğitim başarıyla silindi",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Hata",
+        description: error.message || "Eğitim silinirken bir hata oluştu",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteCourse = (courseId: string, courseTitle: string) => {
+    if (window.confirm(`"${courseTitle}" eğitimini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+      deleteCourseMapping.mutate(courseId);
+    }
   };
 
   if (isLoading) {
@@ -140,8 +170,8 @@ export default function AdminCourses() {
                 </CardContent>
               </Card>
             ))
-          ) : courses && (courses as Course[]).length > 0 ? (
-            (courses as Course[]).map((course) => (
+          ) : courseList && courseList.length > 0 ? (
+            courseList.map((course) => (
               <Card key={course.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
@@ -190,7 +220,7 @@ export default function AdminCourses() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => navigate(`/admin/courses/edit`)}
+                        onClick={() => navigate(`/admin/courses/edit?id=${course.id}`)}
                         data-testid={`button-edit-${course.id}`}
                         className="h-7 px-1.5 text-[11px] font-medium"
                       >
@@ -200,25 +230,23 @@ export default function AdminCourses() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => navigate(`/admin/courses/${course.id}`)}
-                        data-testid={`button-view-${course.id}`}
-                        className="h-7 px-1.5 text-[11px] font-medium"
+                        onClick={() => handleDeleteCourse(course.id, course.title)}
+                        disabled={deleteCourseMapping.isPending}
+                        data-testid={`button-delete-${course.id}`}
+                        className="h-7 px-1.5 text-[11px] font-medium text-red-600 border-red-300 hover:bg-red-50"
                       >
-                        <Eye className="h-3 w-3 mr-0.5" />
-                        <span>Görüntüle</span>
+                        <Trash2 className="h-3 w-3 mr-0.5" />
+                        <span>Sil</span>
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleToggleStatus(course.id, course.isActive)}
-                        disabled={toggleCourseStatusMutation.isPending}
-                        data-testid={`button-toggle-${course.id}`}
-                        className="h-7 px-1 text-[11px] font-medium"
+                        onClick={() => navigate(`/admin/courses/${course.id}/lessons`)}
+                        data-testid={`button-lessons-${course.id}`}
+                        className="h-7 px-1.5 text-[11px] font-medium text-green-600 border-green-300 hover:bg-green-50"
                       >
-                        <Archive className="h-3 w-3 mr-0.5" />
-                        <span className="truncate">
-                          {course.isActive ? "Pasif Yap" : "Aktif Yap"}
-                        </span>
+                        <PlusCircle className="h-3 w-3 mr-0.5" />
+                        <span>Ders Ekle</span>
                       </Button>
                     </div>
                   </div>
@@ -245,7 +273,7 @@ export default function AdminCourses() {
         </div>
 
         {/* Summary Card */}
-        {courses && (courses as Course[]).length > 0 && (
+        {courseList && courseList.length > 0 && (
           <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -256,16 +284,16 @@ export default function AdminCourses() {
                   <div>
                     <h3 className="font-semibold text-blue-900">Eğitim İstatistikleri</h3>
                     <p className="text-blue-700">
-                      Toplam {(courses as Course[]).length} eğitim • 
-                      {(courses as Course[]).filter(c => c.isActive).length} aktif •
-                      {(courses as Course[]).filter(c => !c.isActive).length} pasif
+                      Toplam {courseList.length} eğitim • 
+                      {courseList.filter(c => c.isActive).length} aktif •
+                      {courseList.filter(c => !c.isActive).length} pasif
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-blue-600">Ortalama Fiyat</p>
                   <p className="text-2xl font-bold text-blue-900">
-                    ₺{Math.round((courses as Course[]).reduce((sum, course) => sum + course.price, 0) / (courses as Course[]).length)}
+                    ₺{Math.round(courseList.reduce((sum, course) => sum + course.price, 0) / courseList.length)}
                   </p>
                 </div>
               </div>

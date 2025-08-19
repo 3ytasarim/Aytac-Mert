@@ -36,9 +36,11 @@ export interface IStorage {
   
   // Course operations
   getAllCourses(): Promise<Course[]>;
+  getAllCoursesForAdmin(): Promise<Course[]>;
   getCourse(id: string): Promise<Course | undefined>;
   createCourse(course: InsertCourse): Promise<Course>;
   updateCourse(id: string, course: Partial<InsertCourse>): Promise<Course>;
+  deleteCourse(id: string): Promise<void>;
   
   // Enrollment operations
   createEnrollment(enrollment: InsertEnrollment): Promise<Enrollment>;
@@ -52,12 +54,18 @@ export interface IStorage {
   getAllContacts(): Promise<Contact[]>;
   updateContactStatus(id: string, status: string): Promise<Contact>;
   
+  // Lesson operations
+  createLessons(courseId: string, lessonsData: { title: string; videoEmbedCode: string; orderIndex: number }[]): Promise<void>;
+  getCourseLessons(courseId: string): Promise<any[]>;
+  updateLesson(lessonId: string, updateData: { title: string; videoEmbedCode: string }): Promise<any>;
+  deleteLesson(lessonId: string): Promise<void>;
+
   // Admin operations
   getDashboardStats(): Promise<{
-    totalStudents: number;
-    activeCourses: number;
-    totalEnrollments: number;
-    recentContacts: number;
+    totalStudents: string;
+    activeCourses: string;
+    totalEnrollments: string;
+    recentContacts: string;
   }>;
   getAllUsers(): Promise<User[]>;
 }
@@ -138,6 +146,15 @@ export class DatabaseStorage implements IStorage {
       .where(eq(courses.id, id))
       .returning();
     return updatedCourse;
+  }
+
+  async deleteCourse(id: string): Promise<void> {
+    // First delete related enrollments
+    await db.delete(enrollments).where(eq(enrollments.courseId, id));
+    // Then delete related lessons
+    await db.delete(lessons).where(eq(lessons.courseId, id));
+    // Finally delete the course
+    await db.delete(courses).where(eq(courses.id, id));
   }
 
   // Lesson operations
@@ -305,10 +322,10 @@ export class DatabaseStorage implements IStorage {
 
   // Admin operations
   async getDashboardStats(): Promise<{
-    totalStudents: number;
-    activeCourses: number;
-    activeEnrollments: number;
-    thisMonthRegistrations: number;
+    totalStudents: string;
+    activeCourses: string;
+    totalEnrollments: string;
+    recentContacts: string;
   }> {
     // Total students (excluding admin)
     const [totalStudents] = await db
@@ -334,11 +351,17 @@ export class DatabaseStorage implements IStorage {
       .from(users)
       .where(sql`${users.role} = 'student' AND ${users.createdAt} >= date_trunc('month', CURRENT_DATE)`);
 
+    // Recent contacts (last 30 days)
+    const [recentContacts] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(contacts)
+      .where(sql`${contacts.createdAt} >= CURRENT_DATE - INTERVAL '30 days'`);
+
     return {
-      totalStudents: totalStudents.count,
-      activeCourses: activeCourses.count,
-      activeEnrollments: activeEnrollments.count,
-      thisMonthRegistrations: thisMonthRegistrations.count,
+      totalStudents: totalStudents.count.toString(),
+      activeCourses: activeCourses.count.toString(),
+      totalEnrollments: activeEnrollments.count.toString(),
+      recentContacts: recentContacts.count.toString(),
     };
   }
 
@@ -349,21 +372,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(users.createdAt));
   }
 
-  async getAllContacts(): Promise<Contact[]> {
-    return await db
-      .select()
-      .from(contacts)
-      .orderBy(desc(contacts.createdAt));
-  }
 
-  async updateContactStatus(contactId: string, status: string): Promise<Contact> {
-    const [updatedContact] = await db
-      .update(contacts)
-      .set({ status, updatedAt: new Date() })
-      .where(eq(contacts.id, contactId))
-      .returning();
-    return updatedContact;
-  }
 }
 
 export const storage = new DatabaseStorage();

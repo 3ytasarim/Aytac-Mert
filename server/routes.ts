@@ -511,6 +511,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/admin/courses/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { id } = req.params;
+      
+      await storage.deleteCourse(id);
+      res.json({ message: "Course deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      res.status(500).json({ message: "Failed to delete course" });
+    }
+  });
+
   // Admin lesson management routes
   app.post("/api/admin/lessons", isAuthenticated, async (req: any, res) => {
     try {
