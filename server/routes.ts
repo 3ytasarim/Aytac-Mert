@@ -468,6 +468,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete student endpoint
+  app.delete("/api/admin/users/:userId", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { userId: targetUserId } = req.params;
+      
+      // Get user to check if it's admin
+      const targetUser = await storage.getUser(targetUserId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+      }
+      
+      if (targetUser.role === 'admin') {
+        return res.status(403).json({ message: "Admin kullanıcı silinemez" });
+      }
+
+      await storage.deleteUser(targetUserId);
+      res.json({ message: "Kullanıcı başarıyla silindi" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ message: "Kullanıcı silinirken hata oluştu" });
+    }
+  });
+
   // Admin course routes
   app.get("/api/admin/courses", isAuthenticated, async (req: any, res) => {
     try {

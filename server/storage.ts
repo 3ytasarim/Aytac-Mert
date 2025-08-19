@@ -68,6 +68,7 @@ export interface IStorage {
     recentContacts: string;
   }>;
   getAllUsers(): Promise<User[]>;
+  deleteUser(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -112,6 +113,10 @@ export class DatabaseStorage implements IStorage {
       .values(userData)
       .returning();
     return user;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
   }
 
   // Course operations
