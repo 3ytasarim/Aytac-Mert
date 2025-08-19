@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, ArrowLeft, Mail, Calendar, Shield } from "lucide-react";
+import { Users, ArrowLeft, Mail, Calendar, Shield, UserPlus } from "lucide-react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
@@ -65,7 +65,22 @@ export default function AdminUsers() {
   return (
     <AdminLayout title="Öğrenci Yönetimi" description="Tüm kayıtlı öğrencileri görüntüleyin ve yönetin">
       <div className="space-y-6">
-
+        {/* Header with Add Button */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <Users className="h-6 w-6 text-blue-600" />
+            <h2 className="text-xl font-semibold">Öğrenci Listesi</h2>
+          </div>
+          <Link href="/admin/students/add">
+            <Button
+              className="transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
+              data-testid="button-add-student"
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Öğrenci Ekle
+            </Button>
+          </Link>
+        </div>
 
         {/* Users Table */}
         <Card>

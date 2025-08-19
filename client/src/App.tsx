@@ -12,6 +12,7 @@ import AdminContacts from "@/pages/AdminContacts";
 import AdminCourses from "@/pages/AdminCourses";
 import AdminAddCourse from "@/pages/AdminAddCourse";
 import AdminCourseEdit from "@/pages/AdminCourseEdit";
+import AdminAddStudent from "@/pages/AdminAddStudent";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
@@ -39,7 +40,7 @@ function Router() {
               <Route path="/" component={Landing} />
               <Route path="/admin" component={AdminDashboard} />
               <Route path="/admin/students" component={AdminUsers} />
-              <Route path="/admin/students/add" component={AdminUsers} />
+              <Route path="/admin/students/add" component={AdminAddStudent} />
               <Route path="/admin/students/active" component={AdminUsers} />
               <Route path="/admin/students/import" component={AdminUsers} />
               <Route path="/admin/contacts" component={AdminContacts} />
@@ -47,6 +48,7 @@ function Router() {
               <Route path="/admin/courses/add" component={AdminAddCourse} />
               <Route path="/admin/courses/edit" component={AdminCourseEdit} />
               <Route path="/admin/courses/:id/lessons" component={AdminCourseEdit} />
+              <Route path="/admin/students/add" component={AdminAddStudent} />
               <Route path="/admin/categories" component={AdminContacts} />
               <Route path="/admin/invoices" component={AdminContacts} />
               <Route path="/admin/reports" component={AdminContacts} />

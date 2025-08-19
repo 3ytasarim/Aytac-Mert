@@ -427,6 +427,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Students management endpoint
+  app.post("/api/admin/students", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { firstName, lastName, email, phone, tcNumber, status } = req.body;
+      
+      // Check if email already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "Bu email adresi zaten kayıtlı" });
+      }
+
+      const newStudent = await storage.createRegisteredUser({
+        firstName,
+        lastName,
+        email,
+        phone,
+        tcNumber,
+        password: "student123", // Default password
+        role: 'student',
+        status: status || 'active',
+      });
+      
+      res.json(newStudent);
+    } catch (error) {
+      console.error("Error creating student:", error);
+      res.status(500).json({ message: "Öğrenci oluşturulurken hata oluştu" });
+    }
+  });
+
   // Admin course routes
   app.get("/api/admin/courses", isAuthenticated, async (req: any, res) => {
     try {
