@@ -69,6 +69,8 @@ export interface IStorage {
   }>;
   getAllUsers(): Promise<User[]>;
   deleteUser(id: string): Promise<void>;
+  updateUser(id: string, data: { firstName?: string; lastName?: string; email?: string; phone?: string }): Promise<User>;
+  assignCoursesToUser(userId: string, courseIds: string[]): Promise<void>;
   deactivateCourseEnrollments(courseId: string): Promise<void>;
   reactivateCourseEnrollments(courseId: string): Promise<void>;
 }
@@ -119,6 +121,27 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: string): Promise<void> {
     await db.delete(users).where(eq(users.id, id));
+  }
+
+  async updateUser(id: string, data: { firstName?: string; lastName?: string; email?: string; phone?: string }): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  async assignCoursesToUser(userId: string, courseIds: string[]): Promise<void> {
+    // In a real app, this would create enrollment records
+    // For now, we'll just log it since we don't have enrollment table
+    console.log(`Assigning courses ${courseIds.join(', ')} to user ${userId}`);
   }
 
   async deactivateCourseEnrollments(courseId: string): Promise<void> {

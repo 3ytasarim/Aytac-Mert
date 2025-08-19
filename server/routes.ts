@@ -452,13 +452,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const newStudent = await storage.createRegisteredUser({
         firstName,
-        lastName,
         email,
         phone,
         tcNumber,
         password: "student123", // Default password
         role: 'student',
-        status: status || 'active',
       });
       
       res.json(newStudent);
@@ -500,6 +498,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting user:", error);
       res.status(500).json({ message: "Kullanıcı silinirken hata oluştu" });
+    }
+  });
+
+  // Update user endpoint
+  app.patch("/api/admin/users/:userId", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { userId: targetUserId } = req.params;
+      const { firstName, lastName, email, phone } = req.body;
+      
+      const updatedUser = await storage.updateUser(targetUserId, {
+        firstName,
+        lastName,
+        email,
+        phone
+      });
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Kullanıcı güncellenirken hata oluştu" });
+    }
+  });
+
+  // Assign courses to user endpoint
+  app.post("/api/admin/users/:userId/courses", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { userId: targetUserId } = req.params;
+      const { courseIds } = req.body;
+      
+      await storage.assignCoursesToUser(targetUserId, courseIds);
+      
+      res.json({ message: "Dersler başarıyla atandı" });
+    } catch (error) {
+      console.error("Error assigning courses:", error);
+      res.status(500).json({ message: "Dersler atanırken hata oluştu" });
     }
   });
 

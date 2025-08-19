@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, ArrowLeft, Mail, Calendar, Shield, UserPlus, Edit, Trash2 } from "lucide-react";
+import { Users, ArrowLeft, Mail, Calendar, Shield, UserPlus, Edit, Trash2, BookOpen, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface User {
   id: string;
@@ -23,10 +25,20 @@ interface User {
   tcNumber?: string;
 }
 
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  isActive: boolean;
+}
+
 export default function AdminUsers() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [assigningCoursesUser, setAssigningCoursesUser] = useState<User | null>(null);
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
   // Redirect to home if not authenticated or not admin
   useEffect(() => {
@@ -45,6 +57,11 @@ export default function AdminUsers() {
 
   const { data: allUsers, isLoading: usersLoading } = useQuery({
     queryKey: ["/api/admin/users"],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  const { data: activeCourses } = useQuery({
+    queryKey: ["/api/admin/courses"],
     enabled: isAuthenticated && user?.role === 'admin',
   });
 
@@ -70,6 +87,51 @@ export default function AdminUsers() {
     },
   });
 
+  const updateUserMutation = useMutation({
+    mutationFn: async (userData: { id: string; firstName: string; lastName?: string; email: string; phone?: string }) => {
+      return await apiRequest(`/api/admin/users/${userData.id}`, "PATCH", userData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı!",
+        description: "Öğrenci bilgileri güncellendi",
+        className: "bg-green-50 border-green-200 text-green-900"
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setEditingUser(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Hata!",
+        description: error.message || "Öğrenci güncellenirken hata oluştu",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const assignCoursesMutation = useMutation({
+    mutationFn: async (data: { userId: string; courseIds: string[] }) => {
+      return await apiRequest(`/api/admin/users/${data.userId}/courses`, "POST", { courseIds: data.courseIds });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı!",
+        description: "Dersler öğrenciye atandı",
+        className: "bg-green-50 border-green-200 text-green-900"
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setAssigningCoursesUser(null);
+      setSelectedCourses([]);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Hata!",
+        description: error.message || "Dersler atanırken hata oluştu",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (isLoading || usersLoading) {
     return (
       <AdminLayout>
@@ -90,32 +152,21 @@ export default function AdminUsers() {
   return (
     <AdminLayout title="Öğrenci Yönetimi" description="Tüm kayıtlı öğrencileri görüntüleyin ve yönetin">
       <div className="space-y-6">
-        {/* Header with Action Buttons */}
+        {/* Header with Add Student Button */}
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <Users className="h-6 w-6 text-blue-600" />
             <h2 className="text-xl font-semibold">Öğrenci Listesi</h2>
           </div>
-          <div className="flex space-x-3">
-            <Link href="/admin/courses/add">
-              <Button
-                className="transition-all duration-300 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
-                data-testid="button-add-course"
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Ders Ekle
-              </Button>
-            </Link>
-            <Link href="/admin/students/add">
-              <Button
-                className="transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
-                data-testid="button-add-student"
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Öğrenci Ekle
-              </Button>
-            </Link>
-          </div>
+          <Link href="/admin/students/add">
+            <Button
+              className="transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105"
+              data-testid="button-add-student"
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Öğrenci Ekle
+            </Button>
+          </Link>
         </div>
 
         {/* Users Table */}
@@ -189,33 +240,47 @@ export default function AdminUsers() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex space-x-2">
+                          <div className="flex space-x-1">
                             <Button 
                               size="sm" 
                               variant="outline"
                               onClick={() => setEditingUser(user)}
-                              className="transition-all duration-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                              className="h-8 px-2 text-xs transition-all duration-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                               data-testid={`button-edit-user-${user.id}`}
                             >
                               <Edit className="h-3 w-3 mr-1" />
                               Düzenle
                             </Button>
                             {user.role !== 'admin' && (
-                              <Button 
-                                size="sm" 
-                                variant="destructive"
-                                onClick={() => {
-                                  if (window.confirm('Bu öğrenciyi silmek istediğinizden emin misiniz?')) {
-                                    deleteUserMutation.mutate(user.id);
-                                  }
-                                }}
-                                disabled={deleteUserMutation.isPending}
-                                className="transition-all duration-300 hover:bg-red-600"
-                                data-testid={`button-delete-user-${user.id}`}
-                              >
-                                <Trash2 className="h-3 w-3 mr-1" />
-                                Sil
-                              </Button>
+                              <>
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => {
+                                    setAssigningCoursesUser(user);
+                                    setSelectedCourses([]);
+                                  }}
+                                  className="h-8 px-2 text-xs transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0"
+                                  data-testid={`button-assign-courses-${user.id}`}
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Ders Ekle
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive"
+                                  onClick={() => {
+                                    if (window.confirm('Bu öğrenciyi silmek istediğinizden emin misiniz?')) {
+                                      deleteUserMutation.mutate(user.id);
+                                    }
+                                  }}
+                                  disabled={deleteUserMutation.isPending}
+                                  className="h-8 px-2 text-xs transition-all duration-300 hover:bg-red-600"
+                                  data-testid={`button-delete-user-${user.id}`}
+                                >
+                                  <Trash2 className="h-3 w-3 mr-1" />
+                                  Sil
+                                </Button>
+                              </>
                             )}
                           </div>
                         </TableCell>
@@ -233,6 +298,161 @@ export default function AdminUsers() {
             )}
           </CardContent>
         </Card>
+        {/* Edit User Modal */}
+        <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Edit className="h-5 w-5 text-blue-600" />
+                Öğrenci Bilgilerini Düzenle
+              </DialogTitle>
+            </DialogHeader>
+            
+            {editingUser && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">İsim</label>
+                  <input
+                    type="text"
+                    value={editingUser.firstName}
+                    onChange={(e) => setEditingUser({...editingUser, firstName: e.target.value})}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Soyisim</label>
+                  <input
+                    type="text"
+                    value={editingUser.lastName || ''}
+                    onChange={(e) => setEditingUser({...editingUser, lastName: e.target.value})}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={editingUser.email}
+                    onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Telefon</label>
+                  <input
+                    type="text"
+                    value={editingUser.phone || ''}
+                    onChange={(e) => setEditingUser({...editingUser, phone: e.target.value})}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            )}
+            
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setEditingUser(null)}
+                disabled={updateUserMutation.isPending}
+              >
+                İptal
+              </Button>
+              <Button
+                onClick={() => {
+                  if (editingUser) {
+                    updateUserMutation.mutate({
+                      id: editingUser.id,
+                      firstName: editingUser.firstName,
+                      lastName: editingUser.lastName,
+                      email: editingUser.email,
+                      phone: editingUser.phone
+                    });
+                  }
+                }}
+                disabled={updateUserMutation.isPending}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {updateUserMutation.isPending ? "Kaydediliyor..." : "Kaydet"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Assign Courses Modal */}
+        <Dialog open={!!assigningCoursesUser} onOpenChange={() => setAssigningCoursesUser(null)}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-green-600" />
+                {assigningCoursesUser?.firstName} {assigningCoursesUser?.lastName} - Ders Atama
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">Öğrenciye hangi dersleri aktif etmek istiyorsunuz?</p>
+              
+              {activeCourses && (activeCourses as Course[]).filter(course => course.isActive).length > 0 ? (
+                <div className="space-y-3 max-h-60 overflow-y-auto">
+                  {(activeCourses as Course[])
+                    .filter(course => course.isActive)
+                    .map((course) => (
+                    <div key={course.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                      <Checkbox
+                        id={course.id}
+                        checked={selectedCourses.includes(course.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedCourses([...selectedCourses, course.id]);
+                          } else {
+                            setSelectedCourses(selectedCourses.filter(id => id !== course.id));
+                          }
+                        }}
+                      />
+                      <label htmlFor={course.id} className="flex-1 cursor-pointer">
+                        <div className="font-medium">{course.title}</div>
+                        <div className="text-sm text-gray-500">{course.description}</div>
+                        <div className="text-sm font-semibold text-blue-600">₺{course.price.toLocaleString('tr-TR')}</div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p className="text-gray-500">Aktif ders bulunmuyor</p>
+                </div>
+              )}
+            </div>
+            
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setAssigningCoursesUser(null);
+                  setSelectedCourses([]);
+                }}
+                disabled={assignCoursesMutation.isPending}
+              >
+                İptal
+              </Button>
+              <Button
+                onClick={() => {
+                  if (assigningCoursesUser && selectedCourses.length > 0) {
+                    assignCoursesMutation.mutate({
+                      userId: assigningCoursesUser.id,
+                      courseIds: selectedCourses
+                    });
+                  }
+                }}
+                disabled={assignCoursesMutation.isPending || selectedCourses.length === 0}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {assignCoursesMutation.isPending ? "Atanıyor..." : `${selectedCourses.length} Dersi Aktif Et`}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </AdminLayout>
   );
