@@ -36,7 +36,8 @@ function Router() {
         <>
           {user?.role === "admin" ? (
             <>
-              <Route path="/" component={AdminDashboard} />
+              <Route path="/" component={Landing} />
+              <Route path="/admin" component={AdminDashboard} />
               <Route path="/admin/students" component={AdminUsers} />
               <Route path="/admin/students/add" component={AdminUsers} />
               <Route path="/admin/students/active" component={AdminUsers} />
@@ -51,7 +52,10 @@ function Router() {
               <Route path="/admin/settings" component={AdminContacts} />
             </>
           ) : (
-            <Route path="/" component={StudentDashboard} />
+            <>
+              <Route path="/" component={Landing} />
+              <Route path="/dashboard" component={StudentDashboard} />
+            </>
           )}
           <Route path="/hakkimizda" component={About} />
           <Route path="/iletisim" component={Contact} />
@@ -63,6 +67,7 @@ function Router() {
           <Route path="/iletisim" component={Contact} />
         </>
       )}
+      <Route component={NotFound} />
     </Switch>
   );
 }

@@ -105,27 +105,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           profileImageUrl: null
         };
         
-        // Store user in session
+        // Store user in session - simpler approach
+        (req.session as any).userId = adminUser.id;
+        (req.session as any).userEmail = adminUser.email;
+        (req.session as any).userRole = adminUser.role;
         (req.session as any).user = adminUser;
         
-        // Also login via passport for consistency
-        req.login(adminUser, (err) => {
-          if (err) {
-            console.error("Passport login error:", err);
-          }
+        console.log('Admin session being set:', { 
+          userId: adminUser.id, 
+          userRole: adminUser.role,
+          sessionId: req.sessionID 
         });
         
-        // Ensure session is saved
-        req.session.save((saveErr) => {
-          if (saveErr) {
-            console.error("Session save error:", saveErr);
-          }
-          
-          console.log('Admin logged in, session saved');
-          res.json({ 
-            message: "Giriş başarılı", 
-            user: adminUser
-          });
+        // Immediately respond with user data
+        res.json({ 
+          message: "Giriş başarılı", 
+          user: adminUser
         });
         return;
       }
@@ -142,7 +137,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Store user in session
-      (req.session as any).user = user;
+      (req.session as any).userId = user.id;
+      (req.session as any).userEmail = user.email;
+      (req.session as any).userRole = user.role || 'student';
+      (req.session as any).user = { ...user, role: user.role || 'student' };
       
       res.json({ 
         message: "Giriş başarılı", 
@@ -150,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: user.id,
           email: user.email,
           firstName: user.firstName,
-          role: user.role
+          role: user.role || 'student'
         }
       });
     } catch (error) {

@@ -42,7 +42,7 @@ function LoginButton() {
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -123,14 +123,30 @@ export function Navigation() {
                 <div className="w-20 h-11 bg-gray-300 rounded-xl animate-pulse"></div>
               </div>
             ) : isAuthenticated ? (
-              <Button
-                variant="outline"
-                onClick={() => window.location.href = "/api/logout"}
-                className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                data-testid="button-logout"
-              >
-                Çıkış Yap
-              </Button>
+              <div className="flex items-center space-x-3">
+                <Button
+                  onClick={() => {
+                    // Role'e göre dashboard'a yönlendir
+                    if (user?.role === 'admin') {
+                      window.location.href = '/admin';
+                    } else {
+                      window.location.href = '/dashboard';
+                    }
+                  }}
+                  className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 bg-black text-white hover:bg-gray-800 border-black hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                  data-testid="button-account"
+                >
+                  Hesabım
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => window.location.href = "/api/logout"}
+                  className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                  data-testid="button-logout"
+                >
+                  Çıkış Yap
+                </Button>
+              </div>
             ) : (
               <>
                 <LoginButton />
@@ -206,14 +222,30 @@ export function Navigation() {
                   <div className="h-12 bg-gray-300 rounded-xl animate-pulse"></div>
                 </div>
               ) : isAuthenticated ? (
-                <Button
-                  variant="outline"
-                  className="w-full py-3 font-semibold border-black text-black hover:bg-black hover:text-white rounded-xl transition-all duration-300"
-                  onClick={() => window.location.href = "/api/logout"}
-                  data-testid="mobile-button-logout"
-                >
-                  Çıkış Yap
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    className="w-full py-3 font-semibold bg-black text-white hover:bg-gray-800 rounded-xl transition-all duration-300"
+                    onClick={() => {
+                      // Role'e göre dashboard'a yönlendir
+                      if (user?.role === 'admin') {
+                        window.location.href = '/admin';
+                      } else {
+                        window.location.href = '/dashboard';
+                      }
+                    }}
+                    data-testid="mobile-button-account"
+                  >
+                    Hesabım
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full py-3 font-semibold border-black text-black hover:bg-black hover:text-white rounded-xl transition-all duration-300"
+                    onClick={() => window.location.href = "/api/logout"}
+                    data-testid="mobile-button-logout"
+                  >
+                    Çıkış Yap
+                  </Button>
+                </div>
               ) : (
                 <div className="space-y-3">
                   <RegistrationButton />
