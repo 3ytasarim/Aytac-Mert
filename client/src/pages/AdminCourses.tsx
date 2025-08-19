@@ -49,10 +49,7 @@ export default function AdminCourses() {
 
   const toggleCourseStatusMutation = useMutation({
     mutationFn: async ({ courseId, isActive }: { courseId: string; isActive: boolean }) => {
-      return await apiRequest(`/api/admin/courses/${courseId}`, {
-        method: "PATCH",
-        body: JSON.stringify({ isActive }),
-      });
+      return await apiRequest(`/api/admin/courses/${courseId}`, "PATCH", { isActive });
     },
     onSuccess: () => {
       toast({
@@ -144,7 +141,7 @@ export default function AdminCourses() {
               </Card>
             ))
           ) : courses && (courses as Course[]).length > 0 ? (
-            (courses as Course[]).map((course: Course) => (
+            (courses as Course[]).map((course) => (
               <Card key={course.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
@@ -188,45 +185,44 @@ export default function AdminCourses() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/admin/courses/edit`)}
-                      data-testid={`button-edit-${course.id}`}
-                      className="flex-1 min-h-9"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">Düzenle</span>
-                      <span className="sm:hidden">Düzenle</span>
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/admin/courses/${course.id}`)}
-                      data-testid={`button-view-${course.id}`}
-                      className="flex-1 min-h-9"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">Görüntüle</span>
-                      <span className="sm:hidden">Görüntüle</span>
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleToggleStatus(course.id, course.isActive)}
-                      disabled={toggleCourseStatusMutation.isPending}
-                      data-testid={`button-toggle-${course.id}`}
-                      className="flex-1 min-h-9"
-                    >
-                      <Archive className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">
-                        {course.isActive ? "Pasifleştir" : "Aktifleştir"}
-                      </span>
-                      <span className="sm:hidden">
-                        {course.isActive ? "Pasif" : "Aktif"}
-                      </span>
-                    </Button>
+                  <div className="pt-3 border-t">
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate(`/admin/courses/edit`)}
+                        data-testid={`button-edit-${course.id}`}
+                        className="h-7 px-1.5 text-[11px] font-medium"
+                      >
+                        <Edit className="h-3 w-3 mr-0.5" />
+                        <span className="hidden xs:inline">Düzenle</span>
+                        <span className="xs:hidden">Edit</span>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate(`/admin/courses/${course.id}`)}
+                        data-testid={`button-view-${course.id}`}
+                        className="h-7 px-1.5 text-[11px] font-medium"
+                      >
+                        <Eye className="h-3 w-3 mr-0.5" />
+                        <span className="hidden xs:inline">Görüntüle</span>
+                        <span className="xs:hidden">View</span>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleToggleStatus(course.id, course.isActive)}
+                        disabled={toggleCourseStatusMutation.isPending}
+                        data-testid={`button-toggle-${course.id}`}
+                        className="h-7 px-1 text-[11px] font-medium"
+                      >
+                        <Archive className="h-3 w-3 mr-0.5" />
+                        <span className="truncate">
+                          {course.isActive ? "Pasif" : "Aktif"}
+                        </span>
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
