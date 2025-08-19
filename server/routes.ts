@@ -10,15 +10,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Auth routes for Replit Auth (not used in custom auth)
+  app.get('/api/auth/user', (req, res) => {
+    // Check custom session first
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      const sessionUser = (req.session as any).user;
+      
+      if (sessionUser) {
+        return res.json(sessionUser);
+      }
+      
+      // Fallback to Replit Auth if available
+      if (req.user && req.user.claims) {
+        const userId = req.user.claims.sub;
+        storage.getUser(userId).then(user => {
+          if (user) {
+            res.json(user);
+          } else {
+            res.status(401).json({ message: "Unauthorized" });
+          }
+        }).catch(() => {
+          res.status(401).json({ message: "Unauthorized" });
+        });
+      } else {
+        res.status(401).json({ message: "Unauthorized" });
+      }
     } catch (error) {
       console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+      res.status(401).json({ message: "Unauthorized" });
     }
   });
 
@@ -67,7 +86,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           role: "admin"
         });
         
-        // Set session or token here if needed
+        // Store user in session
+        (req.session as any).user = adminUser;
+        
         res.json({ 
           message: "Giriş başarılı", 
           user: adminUser
@@ -86,7 +107,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Email veya şifre hatalı" });
       }
 
-      // Set session or token here if needed
+      // Store user in session
+      (req.session as any).user = user;
+      
       res.json({ 
         message: "Giriş başarılı", 
         user: {
@@ -99,6 +122,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({ message: "Giriş işlemi başarısız" });
+    }
+  });
+
+  // Logout endpoint
+  app.post("/api/logout", (req, res) => {
+    try {
+      (req.session as any).user = null;
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destruction error:", err);
+          return res.status(500).json({ message: "Çıkış işlemi başarısız" });
+        }
+        res.json({ message: "Çıkış başarılı" });
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Çıkış işlemi başarısız" });
     }
   });
 
