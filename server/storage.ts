@@ -168,9 +168,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   async assignCoursesToUser(userId: string, courseIds: string[]): Promise<void> {
-    // In a real app, this would create enrollment records
-    // For now, we'll just log it since we don't have enrollment table
     console.log(`Assigning courses ${courseIds.join(', ')} to user ${userId}`);
+    
+    // Create enrollment records for each course
+    for (const courseId of courseIds) {
+      // Check if enrollment already exists
+      const existingEnrollment = await this.getEnrollment(userId, courseId);
+      if (!existingEnrollment) {
+        // Create new enrollment
+        await this.createEnrollment({
+          userId,
+          courseId,
+          status: "active", // Admin assigns courses as active
+          progress: 0,
+        });
+        console.log(`Created enrollment for user ${userId} in course ${courseId}`);
+      } else {
+        // Update existing enrollment to active if it was inactive
+        if (existingEnrollment.status !== "active") {
+          await db
+            .update(enrollments)
+            .set({ status: "active" })
+            .where(eq(enrollments.id, existingEnrollment.id));
+          console.log(`Reactivated enrollment for user ${userId} in course ${courseId}`);
+        }
+      }
+    }
   }
 
   async deactivateCourseEnrollments(courseId: string): Promise<void> {
