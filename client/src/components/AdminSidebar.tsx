@@ -94,17 +94,10 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
       submenu: []
     },
     {
-      title: "İletişim",
-      icon: MessageSquare,
-      path: "/admin/contacts",
-      badge: "Yeni",
-      submenu: []
-    },
-    {
       title: "Öğrenci Mesajları",
       icon: MessageSquare,
       path: "/admin/student-contacts",
-      badge: null,
+      badge: "Yeni",
       submenu: []
     },
     {
