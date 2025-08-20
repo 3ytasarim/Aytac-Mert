@@ -99,11 +99,12 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
 // Student-admin contacts
 export const studentContacts = pgTable("student_contacts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ticketNumber: varchar("ticket_number"),
   userId: varchar("user_id").notNull().references(() => users.id),
   subject: varchar("subject").notNull(),
   message: text("message").notNull(),
   response: text("response"),
-  status: varchar("status").notNull().default("pending"), // pending, responded
+  status: varchar("status").notNull().default("pending"), // pending, responded, closed
   createdAt: timestamp("created_at").defaultNow(),
   respondedAt: timestamp("responded_at"),
 });

@@ -222,20 +222,27 @@ export default function AdminStudentContacts() {
                   <div key={contact.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center mb-2">
-                          <User className="h-4 w-4 text-gray-400 mr-2" />
-                          <span className="font-medium text-gray-900">
-                            {contact.user?.firstName} {contact.user?.lastName}
-                          </span>
-                          <span className="text-sm text-gray-500 ml-2">
-                            ({contact.user?.email})
-                          </span>
-                          <div className="ml-auto">
-                            {getStatusBadge(contact.status)}
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            <User className="h-4 w-4 text-gray-400 mr-2" />
+                            <span className="font-medium text-gray-900">
+                              {contact.user?.firstName} {contact.user?.lastName}
+                            </span>
+                            <span className="text-sm text-gray-500 ml-2">
+                              ({contact.user?.email})
+                            </span>
                           </div>
+                          {getStatusBadge(contact.status)}
                         </div>
                         
-                        <h4 className="font-medium text-gray-900 mb-2">{contact.subject}</h4>
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-gray-900">{contact.subject}</h4>
+                          {contact.ticketNumber && (
+                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                              {contact.ticketNumber}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-gray-600 text-sm mb-3 leading-relaxed">
                           {contact.message}
                         </p>

@@ -326,19 +326,34 @@ export default function StudentDashboard() {
                     {(studentContacts as StudentContact[]).slice(0, 3).map((contact: StudentContact) => (
                       <div key={contact.id} className="border rounded-lg p-3">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-sm">{contact.subject}</h4>
-                          <Badge variant={contact.status === 'responded' ? 'default' : 'secondary'}>
-                            {contact.status === 'responded' ? 'Cevaplanmış' : 'Beklemede'}
+                          <div>
+                            <h4 className="font-medium text-sm">{contact.subject}</h4>
+                            {contact.ticketNumber && (
+                              <span className="text-xs text-gray-500">Ticket: {contact.ticketNumber}</span>
+                            )}
+                          </div>
+                          <Badge variant={
+                            contact.status === 'responded' ? 'default' : 
+                            contact.status === 'closed' ? 'outline' : 'secondary'
+                          }>
+                            {contact.status === 'responded' ? 'Cevaplanmış' : 
+                             contact.status === 'closed' ? 'Kapatıldı' : 'Cevap Bekleniyor'}
                           </Badge>
                         </div>
                         <p className="text-xs text-gray-600 line-clamp-2">{contact.message}</p>
                         {contact.response && (
                           <div className="mt-2 p-2 bg-green-50 rounded text-xs">
-                            <strong>Cevap:</strong> {contact.response}
+                            <strong>Admin Cevabı:</strong> {contact.response}
                           </div>
                         )}
                         <div className="text-xs text-gray-500 mt-2">
-                          {new Date(contact.createdAt).toLocaleDateString('tr-TR')}
+                          {new Date(contact.createdAt).toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
                         </div>
                       </div>
                     ))}

@@ -392,9 +392,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createStudentContact(contact: InsertStudentContact): Promise<StudentContact> {
+    // Generate ticket number
+    const ticketNumber = `TKT-${Date.now()}`;
+    
     const [newContact] = await db
       .insert(studentContacts)
-      .values(contact)
+      .values({
+        ...contact,
+        ticketNumber,
+      })
       .returning();
     return newContact;
   }
