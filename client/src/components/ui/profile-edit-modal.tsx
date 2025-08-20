@@ -116,20 +116,10 @@ export function ProfileEditModal({ isOpen, onClose, user }: ProfileEditModalProp
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center text-xl font-bold">
-              <User className="h-5 w-5 mr-2" />
-              Profili Düzenle
-            </DialogTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="h-6 w-6 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="flex items-center text-xl font-bold">
+            <User className="h-5 w-5 mr-2" />
+            Profili Düzenle
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
