@@ -93,10 +93,6 @@ export function CompactPaymentModal({ isOpen, onClose, course, onPayment }: Comp
                         <Clock className="w-4 h-4" />
                         <span>Sınırsız Erişim</span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span>Sertifika Dahil</span>
-                      </div>
                     </div>
                   </div>
                 </div>

@@ -13,6 +13,9 @@ This is a full-stack web application for a dog training academy (Aytaç Mert Kö
 - Temporarily disabled email sending, using console logging for password reset tokens
 - Enhanced security with proper token validation and database integration
 - Improved error handling and user feedback for authentication processes
+- **Course Purchase Modal Redesigned**: Created compact, rectangular payment modal with side-by-side layout for better screen fit
+- **Payment Process Optimization**: Added "Ödeme Yap" button placeholder for future payment processing integration
+- **UI Improvements**: Removed "Sertifika Dahil" text per user request, keeping only essential course information
 
 # User Preferences
 
