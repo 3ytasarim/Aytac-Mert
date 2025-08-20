@@ -1,23 +1,17 @@
 import nodemailer from 'nodemailer';
 
-// Custom SMTP configuration for aytacmert.com
+// Gmail SMTP configuration (more reliable for email delivery)
 const transporter = nodemailer.createTransport({
-  host: 'mail.aytacmert.com',
-  port: 465,
-  secure: true, // true for 465, false for other ports
+  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
   auth: {
     user: 'info@aytacmert.com',
-    pass: 'Aytacmert123!'
+    pass: process.env.GMAIL_APP_PASSWORD || 'Aytacmert123!'
   },
   tls: {
     rejectUnauthorized: false
-  },
-  pool: true,
-  rateLimit: 5, // Limit to 5 emails per second
-  dkim: {
-    domainName: 'aytacmert.com',
-    keySelector: 'default',
-    privateKey: false
   }
 });
 
@@ -96,7 +90,8 @@ export async function sendPasswordResetEmail(userEmail: string, resetToken: stri
     const mailOptions = {
       from: '"Aytaç Mert Köpek Eğitimi AKADEMİSİ" <info@aytacmert.com>',
       to: userEmail,
-      subject: 'Şifre Yenileme Talebi - Aytaç Mert Köpek Eğitimi AKADEMİSİ',
+      subject: 'Hesap Şifre Yenileme - Aytaç Mert Köpek Eğitimi AKADEMİSİ',
+      replyTo: 'info@aytacmert.com',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
