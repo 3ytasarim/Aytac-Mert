@@ -315,25 +315,47 @@ export default function StudentDashboard() {
               <CardContent className="space-y-3">
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start hover:bg-blue-50 hover:border-blue-200 transition-all duration-200"
+                  className="w-full justify-start relative overflow-hidden group border-2 hover:border-blue-500 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
                   onClick={() => window.location.href = '/#courses'}
                 >
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Tüm Kurslar
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="flex items-center relative z-10">
+                    <div className="p-2 rounded-full bg-blue-100 group-hover:bg-blue-200 transition-colors duration-300 mr-3">
+                      <BookOpen className="h-4 w-4 text-blue-600 group-hover:text-blue-700 transition-colors duration-300" />
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium text-gray-900 group-hover:text-blue-800 transition-colors duration-300">
+                        Tüm Kurslar
+                      </span>
+                      <span className="text-xs text-gray-500 group-hover:text-blue-600 transition-colors duration-300">
+                        Mevcut kursları keşfedin
+                      </span>
+                    </div>
+                  </div>
                 </Button>
                 
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start hover:bg-green-50 hover:border-green-200 transition-all duration-200 group"
+                  className="w-full justify-start relative overflow-hidden group border-2 hover:border-green-500 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
                   onClick={handleWhatsAppClick}
                   data-testid="button-whatsapp"
                 >
-                  <div className="flex items-center justify-between w-full">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="flex items-center justify-between w-full relative z-10">
                     <div className="flex items-center">
-                      <MessageSquare className="h-4 w-4 mr-2 text-green-600" />
-                      <span>WhatsApp ile Mesaj Gönder</span>
+                      <div className="p-2 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300 mr-3">
+                        <MessageSquare className="h-4 w-4 text-green-600 group-hover:text-green-700 transition-colors duration-300" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium text-gray-900 group-hover:text-green-800 transition-colors duration-300">
+                          WhatsApp ile Mesaj Gönder
+                        </span>
+                        <span className="text-xs text-gray-500 group-hover:text-green-600 transition-colors duration-300">
+                          Hızlı iletişim için tıklayın
+                        </span>
+                      </div>
                     </div>
-                    <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-green-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-1" />
                   </div>
                 </Button>
               </CardContent>
