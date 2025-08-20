@@ -640,8 +640,8 @@ export class DatabaseStorage implements IStorage {
       .from(users)
       .where(eq(users.id, userId));
 
-    // Toplam harcanan ücret (katıldığı kursların toplam fiyatı)
-    const totalSpentResult = await db
+    // Toplam harcanan ücret (hem enrollments hem de invoices'dan)
+    const enrollmentSpentResult = await db
       .select({ 
         totalPrice: sql<number>`COALESCE(SUM(${courses.price}), 0)` 
       })
@@ -649,7 +649,19 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(courses, eq(enrollments.courseId, courses.id))
       .where(eq(enrollments.userId, userId));
 
-    const totalSpent = totalSpentResult[0]?.totalPrice || 0;
+    const invoiceSpentResult = await db
+      .select({ 
+        totalAmount: sql<number>`COALESCE(SUM(${invoices.amount}), 0)` 
+      })
+      .from(invoices)
+      .where(eq(invoices.userId, userId));
+
+    const enrollmentSpent = enrollmentSpentResult[0]?.totalPrice || 0;
+    const invoiceSpent = invoiceSpentResult[0]?.totalAmount || 0;
+    
+    // Her iki tablodan gelen miktarları topla (kuruş cinsinden)
+    const totalSpentKurus = Math.max(enrollmentSpent, invoiceSpent); // En yüksek değeri al
+    const totalSpent = totalSpentKurus / 100; // TL'ye çevir
 
     return {
       activeCourses: activeCourses.count.toString(),
