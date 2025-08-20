@@ -55,7 +55,20 @@ export default function AdminStudentContacts() {
 
   const respondMutation = useMutation({
     mutationFn: async ({ contactId, response }: { contactId: string; response: string }) => {
-      return await apiRequest(`/api/admin/student-contacts/${contactId}/respond`, "PATCH", { response });
+      const res = await fetch(`/api/admin/student-contacts/${contactId}/respond`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ response }),
+        credentials: "include",
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to send response");
+      }
+      
+      return res.json();
     },
     onSuccess: () => {
       toast({
