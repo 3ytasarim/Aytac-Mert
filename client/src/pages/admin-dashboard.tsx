@@ -116,7 +116,7 @@ export default function AdminDashboard() {
             <CardContent className="p-4 lg:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs lg:text-sm font-medium text-green-600">Tamamlanan Kurslar</p>
+                  <p className="text-xs lg:text-sm font-medium text-green-600">Eklenen Eğitimler</p>
                   <p className="text-xl lg:text-3xl font-bold text-gray-900">
                     {(dashboardStats as any)?.activeCourses || 0}
                   </p>
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-orange-600">Aktif Öğrenciler</p>
                   <p className="text-xl lg:text-3xl font-bold text-gray-900">
-                    {(dashboardStats as any)?.activeEnrollments || 0}
+                    {(dashboardStats as any)?.activeStudents || 0}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Şu anda aktif</p>
                 </div>
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-purple-600">Satışlar</p>
                   <p className="text-xl lg:text-3xl font-bold text-gray-900">
-                    ₺{((dashboardStats as any)?.totalStudents || 0) * 350}
+                    ₺{(dashboardStats as any)?.totalRevenue || 0}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Toplam gelir</p>
                 </div>
