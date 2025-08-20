@@ -58,7 +58,7 @@ export default function Landing() {
 
   const onContactSubmit = async (values: z.infer<typeof contactFormSchema>) => {
     try {
-      await apiRequest("POST", "/api/contact", values);
+      await apiRequest("/api/contact", "POST", values);
       toast({
         title: "Mesaj Gönderildi",
         description: "Mesajınız alınmıştır. En kısa sürede dönüş yapacağız.",
@@ -96,7 +96,7 @@ export default function Landing() {
         paymentMethod: "bank_transfer"
       };
 
-      await apiRequest("POST", '/api/invoices', invoiceData);
+      await apiRequest('/api/invoices', "POST", invoiceData);
 
       toast({
         title: "Ödeme Kaydı Oluşturuldu",

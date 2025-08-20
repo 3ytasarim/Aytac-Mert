@@ -44,7 +44,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
-      const response = await apiRequest("POST", "/api/login", data);
+      const response = await apiRequest("/api/login", "POST", data);
       return response.json();
     },
     onSuccess: () => {

@@ -52,7 +52,7 @@ export function RegistrationModal({ isOpen, onClose, onSwitchToLogin }: Registra
       if (data.birthDate.toUpperCase() !== captchaCode) {
         throw new Error("Doğrulama kodu yanlış");
       }
-      const response = await apiRequest("POST", "/api/register", data);
+      const response = await apiRequest("/api/register", "POST", data);
       return response.json();
     },
     onSuccess: () => {

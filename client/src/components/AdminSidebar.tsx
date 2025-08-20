@@ -36,7 +36,7 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("POST", "/api/logout", {});
+      return apiRequest("/api/logout", "POST", {});
     },
     onSuccess: () => {
       toast({

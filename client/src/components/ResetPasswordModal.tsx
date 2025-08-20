@@ -34,7 +34,7 @@ export function ResetPasswordModal({ isOpen, onClose, token }: ResetPasswordModa
 
   const resetMutation = useMutation({
     mutationFn: async (data: ResetPassword) => {
-      const response = await apiRequest("POST", "/api/reset-password", data);
+      const response = await apiRequest("/api/reset-password", "POST", data);
       return response.json();
     },
     onSuccess: () => {

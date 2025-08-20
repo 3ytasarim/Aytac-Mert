@@ -29,7 +29,7 @@ export function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: ForgotPa
 
   const resetMutation = useMutation({
     mutationFn: async (data: RequestPasswordReset) => {
-      const response = await apiRequest("POST", "/api/request-password-reset", data);
+      const response = await apiRequest("/api/request-password-reset", "POST", data);
       return response.json();
     },
     onSuccess: () => {

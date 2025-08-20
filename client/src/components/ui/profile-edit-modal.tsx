@@ -42,7 +42,7 @@ export function ProfileEditModal({ isOpen, onClose, user }: ProfileEditModalProp
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("PUT", "/api/profile/update", data);
+      const response = await apiRequest("/api/profile/update", "PUT", data);
       return await response.json();
     },
     onSuccess: () => {
