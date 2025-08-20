@@ -1,10 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Copy, CheckCircle, CreditCard, Phone, Banknote, Clock } from "lucide-react";
 import { useState } from "react";
 import type { Course } from "@shared/schema";
+import denizBankLogo from "@assets/DenizBank_logo.svg_1755708966180.png";
 
 interface CompactPaymentModalProps {
   isOpen: boolean;
@@ -63,7 +64,9 @@ export function CompactPaymentModal({ isOpen, onClose, course, onPayment }: Comp
               <DialogTitle className="text-3xl font-bold mb-2 text-white">
                 Eğitime Başlayın
               </DialogTitle>
-              <p className="text-gray-300">Profesyonel köpek eğitimi deneyimi</p>
+              <DialogDescription className="text-gray-300">
+                Profesyonel köpek eğitimi deneyimi
+              </DialogDescription>
             </div>
           </motion.div>
 
@@ -126,9 +129,11 @@ export function CompactPaymentModal({ isOpen, onClose, course, onPayment }: Comp
 
                 <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
                   <div className="flex items-center justify-center mb-3">
-                    <div className="w-24 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">DenizBank</span>
-                    </div>
+                    <img 
+                      src={denizBankLogo} 
+                      alt="DenizBank" 
+                      className="h-8 w-auto"
+                    />
                   </div>
                   
                   <div className="space-y-2">

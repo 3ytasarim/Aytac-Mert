@@ -40,7 +40,7 @@ export default function Landing() {
     isOpen: false,
   });
   const { toast } = useToast();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
@@ -83,7 +83,7 @@ export default function Landing() {
   };
 
   const handlePayment = async (course: Course) => {
-    if (!user) return;
+    if (!isAuthenticated || !user) return;
 
     try {
       const invoiceData = {
@@ -96,10 +96,7 @@ export default function Landing() {
         paymentMethod: "bank_transfer"
       };
 
-      await apiRequest('/api/invoices', {
-        method: 'POST',
-        body: invoiceData
-      });
+      await apiRequest("POST", '/api/invoices', invoiceData);
 
       toast({
         title: "Ödeme Kaydı Oluşturuldu",
