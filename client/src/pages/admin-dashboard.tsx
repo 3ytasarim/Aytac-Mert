@@ -120,7 +120,7 @@ export default function AdminDashboard() {
                   <p className="text-xl lg:text-3xl font-bold text-gray-900">
                     {(dashboardStats as any)?.activeCourses || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Bu ay tamamlanan</p>
+                  <p className="text-xs text-gray-500 mt-1">{(dashboardStats as any)?.totalLessons || 0} İçerik</p>
                 </div>
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <BookOpen className="h-5 w-5 lg:h-6 lg:w-6 text-green-600" />
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-purple-600">Satışlar</p>
                   <p className="text-xl lg:text-3xl font-bold text-gray-900">
-                    ₺{(dashboardStats as any)?.totalRevenue || 0}
+                    ₺{Number((dashboardStats as any)?.totalRevenue || 0).toLocaleString('tr-TR')}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Toplam gelir</p>
                 </div>

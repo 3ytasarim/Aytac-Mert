@@ -74,6 +74,7 @@ export interface IStorage {
     totalRevenue: string;
     activeStudents: string;
     thisMonthRegistrations: string;
+    totalLessons: string;
   }>;
   getAllUsers(): Promise<User[]>;
   deleteUser(id: string): Promise<void>;
@@ -390,6 +391,7 @@ export class DatabaseStorage implements IStorage {
     totalRevenue: string;
     activeStudents: string;
     thisMonthRegistrations: string;
+    totalLessons: string;
   }> {
     // Bu ay kayıtlar (bu ay oluşturulan öğrenciler)
     const [thisMonthRegistrations] = await db
@@ -412,6 +414,11 @@ export class DatabaseStorage implements IStorage {
     const [revenueResult] = await db
       .select({ total: sql<number>`COALESCE(sum(${invoices.amount}), 0)` })
       .from(invoices);
+    
+    // Toplam içerik sayısı (tüm derslerin toplamı)
+    const [totalLessons] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(lessons);
 
     const [activeEnrollments] = await db
       .select({ count: sql<number>`count(*)` })
@@ -428,9 +435,10 @@ export class DatabaseStorage implements IStorage {
       activeCourses: activeCourses.count.toString(), // Eklenen Eğitimler
       totalEnrollments: activeEnrollments.count.toString(),
       recentContacts: recentContacts.count.toString(),
-      totalRevenue: (revenueResult.total / 100).toLocaleString('tr-TR'), // Kuruştan TL'ye
+      totalRevenue: (revenueResult.total / 100).toString(), // Kuruştan TL'ye, formatlamayı frontend'de yapalım
       activeStudents: "1", // Yasemin aktif öğrenci
       thisMonthRegistrations: thisMonthRegistrations.count.toString(),
+      totalLessons: totalLessons.count.toString(),
     };
   }
 
