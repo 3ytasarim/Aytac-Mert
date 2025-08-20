@@ -1,22 +1,22 @@
 import nodemailer from 'nodemailer';
 
-// Aytacmert.com SMTP configuration (optimized for deliverability)
+// Aytacmert.com SMTP configuration (port 465 for better delivery)
 const transporter = nodemailer.createTransport({
   host: 'mail.aytacmert.com',
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
   auth: {
     user: 'info@aytacmert.com',
     pass: 'Aytacmert123!'
   },
   tls: {
-    ciphers: 'SSLv3',
     rejectUnauthorized: false
   },
-  connectionTimeout: 10000,
-  socketTimeout: 45000,
-  logger: false,
-  debug: false
+  pool: true,
+  maxConnections: 1,
+  rateLimit: 1,
+  logger: true,
+  debug: true
 });
 
 export interface WelcomeEmailData {
@@ -92,16 +92,10 @@ export async function sendPasswordResetEmail(userEmail: string, resetToken: stri
     const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
     
     const mailOptions = {
-      from: '"Aytaç Mert Köpek Eğitimi AKADEMİSİ" <info@aytacmert.com>',
+      from: 'info@aytacmert.com',
       to: userEmail,
-      subject: 'Kullanici Sifre Yenileme Talebi',
+      subject: 'Hesap Sifre Yenileme',
       replyTo: 'info@aytacmert.com',
-      headers: {
-        'X-Mailer': 'Aytac Mert Education System',
-        'X-Priority': '3',
-        'List-Unsubscribe': '<mailto:info@aytacmert.com>',
-        'Message-ID': `<${Date.now()}@aytacmert.com>`
-      },
       text: `
         Sayin uyemiz,
         
@@ -173,8 +167,16 @@ export async function sendPasswordResetEmail(userEmail: string, resetToken: stri
       `
     };
 
+    console.log('Attempting to send email to:', userEmail);
+    console.log('Reset URL:', resetUrl);
+    
     const result = await transporter.sendMail(mailOptions);
     console.log('Password reset email sent successfully:', result.messageId);
+    console.log('Email result details:', {
+      accepted: result.accepted,
+      rejected: result.rejected,
+      response: result.response
+    });
     return true;
   } catch (error) {
     console.error('Error sending password reset email:', error);
