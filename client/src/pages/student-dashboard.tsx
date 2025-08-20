@@ -66,8 +66,9 @@ export default function StudentDashboard() {
   };
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = "905303663586"; // Aytaç Mert'in WhatsApp numarası
-    const message = "Merhaba, köpek eğitimi hakkında bilgi almak istiyorum.";
+    const phoneNumber = "905532658445"; // WhatsApp numarası
+    const userName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'Kullanıcı';
+    const message = `Ben ${userName} Öğrenci Paneli Hakkında yardım istiyorum`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
