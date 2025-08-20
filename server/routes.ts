@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { insertInvoiceSchema } from "@shared/schema";
 import { 
   insertContactSchema, 
   insertEnrollmentSchema, 
@@ -955,7 +956,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Invoice endpoints
+  app.post("/api/invoices", async (req, res) => {
+    try {
+      // Check if user is logged in
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
 
+      const invoiceData = insertInvoiceSchema.parse(req.body);
+      const invoice = await storage.createInvoice({
+        ...invoiceData,
+        userId: sessionUser.id,
+      });
+      
+      res.json({ 
+        message: "Fatura başarıyla oluşturuldu", 
+        invoice 
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid invoice data", errors: error.errors });
+      } else {
+        console.error("Error creating invoice:", error);
+        res.status(500).json({ message: "Failed to create invoice" });
+      }
+    }
+  });
+
+  app.get("/api/admin/invoices", async (req, res) => {
+    try {
+      // Check if user is admin
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const invoices = await storage.getAllInvoices();
+      res.json(invoices);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+      res.status(500).json({ message: "Failed to fetch invoices" });
+    }
+  });
+
+  app.get("/api/invoices/user/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      // Check if user is logged in and either admin or accessing their own invoices
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      
+      if (sessionUser.role !== 'admin' && sessionUser.id !== userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const invoices = await storage.getInvoicesByUser(userId);
+      res.json(invoices);
+    } catch (error) {
+      console.error("Error fetching user invoices:", error);
+      res.status(500).json({ message: "Failed to fetch user invoices" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

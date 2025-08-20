@@ -96,14 +96,31 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Invoices table for payment tracking
+export const invoices = pgTable("invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  courseId: varchar("course_id").notNull().references(() => courses.id),
+  studentName: varchar("student_name").notNull(),
+  tcNumber: varchar("tc_number").notNull(),
+  courseName: varchar("course_name").notNull(),
+  amount: integer("amount").notNull(),
+  status: varchar("status").notNull().default("paid"), // paid, pending, cancelled
+  paymentMethod: varchar("payment_method").default("bank_transfer"), // bank_transfer, online
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   enrollments: many(enrollments),
+  invoices: many(invoices),
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
   enrollments: many(enrollments),
   lessons: many(lessons),
+  invoices: many(invoices),
 }));
 
 export const lessonsRelations = relations(lessons, ({ one }) => ({
@@ -120,6 +137,17 @@ export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
   }),
   course: one(courses, {
     fields: [enrollments.courseId],
+    references: [courses.id],
+  }),
+}));
+
+export const invoicesRelations = relations(invoices, ({ one }) => ({
+  user: one(users, {
+    fields: [invoices.userId],
+    references: [users.id],
+  }),
+  course: one(courses, {
+    fields: [invoices.courseId],
     references: [courses.id],
   }),
 }));
@@ -152,6 +180,12 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   id: true,
   status: true,
   createdAt: true,
+});
+
+export const insertInvoiceSchema = createInsertSchema(invoices).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 // Registration schema for the popup form
@@ -208,3 +242,5 @@ export type InsertLesson = typeof lessons.$inferInsert;
 export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type RequestPasswordReset = z.infer<typeof requestPasswordResetSchema>;
 export type ResetPassword = z.infer<typeof resetPasswordSchema>;
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;

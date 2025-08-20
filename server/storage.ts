@@ -5,6 +5,7 @@ import {
   contacts,
   lessons,
   passwordResetTokens,
+  invoices,
   type User,
   type UpsertUser,
   type Course,
@@ -16,6 +17,8 @@ import {
   type Lesson,
   type InsertLesson,
   type PasswordResetToken,
+  type Invoice,
+  type InsertInvoice,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -73,6 +76,11 @@ export interface IStorage {
   deleteUser(id: string): Promise<void>;
   updateUser(id: string, data: { firstName?: string; lastName?: string; email?: string; phone?: string }): Promise<User>;
   assignCoursesToUser(userId: string, courseIds: string[]): Promise<void>;
+
+  // Invoice operations
+  createInvoice(invoice: InsertInvoice): Promise<Invoice>;
+  getAllInvoices(): Promise<(Invoice & { user: User; course: Course })[]>;
+  getInvoicesByUser(userId: string): Promise<Invoice[]>;
   deactivateCourseEnrollments(courseId: string): Promise<void>;
   reactivateCourseEnrollments(courseId: string): Promise<void>;
   
@@ -462,6 +470,70 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.email, email))
       .returning();
     return user;
+  }
+
+  // Invoice operations
+  async createInvoice(invoice: InsertInvoice): Promise<Invoice> {
+    const [newInvoice] = await db
+      .insert(invoices)
+      .values(invoice)
+      .returning();
+    return newInvoice;
+  }
+
+  async getAllInvoices(): Promise<(Invoice & { user: User; course: Course })[]> {
+    const results = await db
+      .select({
+        // Invoice fields
+        id: invoices.id,
+        userId: invoices.userId,
+        courseId: invoices.courseId,
+        studentName: invoices.studentName,
+        tcNumber: invoices.tcNumber,
+        courseName: invoices.courseName,
+        amount: invoices.amount,
+        status: invoices.status,
+        paymentMethod: invoices.paymentMethod,
+        createdAt: invoices.createdAt,
+        updatedAt: invoices.updatedAt,
+        // User fields
+        user: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          phone: users.phone,
+          tcNumber: users.tcNumber,
+          role: users.role,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt,
+        },
+        // Course fields
+        course: {
+          id: courses.id,
+          title: courses.title,
+          description: courses.description,
+          price: courses.price,
+          imageUrl: courses.imageUrl,
+          isActive: courses.isActive,
+          createdAt: courses.createdAt,
+          updatedAt: courses.updatedAt,
+        }
+      })
+      .from(invoices)
+      .innerJoin(users, eq(invoices.userId, users.id))
+      .innerJoin(courses, eq(invoices.courseId, courses.id))
+      .orderBy(desc(invoices.createdAt));
+    
+    return results as (Invoice & { user: User; course: Course })[];
+  }
+
+  async getInvoicesByUser(userId: string): Promise<Invoice[]> {
+    return await db
+      .select()
+      .from(invoices)
+      .where(eq(invoices.userId, userId))
+      .orderBy(desc(invoices.createdAt));
   }
 
 }

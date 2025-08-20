@@ -82,12 +82,42 @@ export default function Landing() {
     setPaymentModal({ isOpen: true, course });
   };
 
-  const handlePayment = (course: Course) => {
-    // Placeholder for payment processing - we'll implement this together
-    toast({
-      title: "Ödeme İşlemi",
-      description: "Ödeme işlemi başlatılacak...",
-    });
+  const handlePayment = async (course: Course) => {
+    if (!user) return;
+
+    try {
+      const invoiceData = {
+        courseId: course.id,
+        studentName: `${user.firstName} ${user.lastName || ''}`.trim(),
+        tcNumber: user.tcNumber || '',
+        courseName: course.title,
+        amount: course.price,
+        status: "paid",
+        paymentMethod: "bank_transfer"
+      };
+
+      await apiRequest('/api/invoices', {
+        method: 'POST',
+        body: invoiceData
+      });
+
+      toast({
+        title: "Ödeme Kaydı Oluşturuldu",
+        description: "Ödemeniz admin panelde görüntülenecektir.",
+        variant: "default"
+      });
+
+      // Close the modal after successful payment
+      setPaymentModal({ isOpen: false, course: null });
+      
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast({
+        title: "Hata",
+        description: "Ödeme kaydı oluşturulamadı. Lütfen tekrar deneyin.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleAuthModalClose = () => {
