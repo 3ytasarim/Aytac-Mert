@@ -45,7 +45,7 @@ export function CompactPaymentModal({ isOpen, onClose, course, onPayment }: Comp
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Merhaba, "${course.title}" kursu için ödeme yaptım. Dekont gönderiyorum.`
+    `${course.title} eğitiminin ödemesini havale/eft ile gönderdim dekont ektedir.`
   );
 
   return (
@@ -194,7 +194,7 @@ export function CompactPaymentModal({ isOpen, onClose, course, onPayment }: Comp
                   </p>
                   
                   <a
-                    href={`https://wa.me/905301234567?text=${whatsappMessage}`}
+                    href={`https://wa.me/905532658445?text=${whatsappMessage}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center w-full bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors text-sm"
