@@ -46,6 +46,14 @@ export default function StudentDashboard() {
     queryKey: ["/api/student/contacts"],
   });
 
+  const { data: studentStats } = useQuery<{
+    activeCourses: string;
+    registrationDate: string;
+    totalSpent: string;
+  }>({
+    queryKey: ["/api/student/stats"],
+  });
+
   const handleContactSubmit = () => {
     toast({
       title: "Mesaj gönderildi",
@@ -77,7 +85,7 @@ export default function StudentDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Aktif Kurslar</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {enrollments?.filter((e) => e.status === 'active').length || 0}
+                    {studentStats?.activeCourses || '0'}
                   </p>
                 </div>
                 <BookOpen className="h-12 w-12 text-blue-500" />
@@ -89,12 +97,12 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Tamamlanan</p>
-                  <p className="text-3xl font-bold text-gray-900">
-                    {enrollments?.filter((e) => e.status === 'completed').length || 0}
+                  <p className="text-sm font-medium text-gray-600">Kayıt Tarihi</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {studentStats?.registrationDate || 'Bilinmiyor'}
                   </p>
                 </div>
-                <Award className="h-12 w-12 text-green-500" />
+                <Calendar className="h-12 w-12 text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -103,11 +111,9 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Ortalama İlerleme</p>
-                  <p className="text-3xl font-bold text-gray-900">
-                    {enrollments && enrollments.length > 0
-                      ? Math.round(enrollments.reduce((acc, e) => acc + (e.progress || 0), 0) / enrollments.length)
-                      : 0}%
+                  <p className="text-sm font-medium text-gray-600">Toplam Ücret</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {studentStats?.totalSpent || '0₺'}
                   </p>
                 </div>
                 <Clock className="h-12 w-12 text-orange-500" />

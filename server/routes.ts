@@ -358,6 +358,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Student stats endpoint
+  app.get("/api/student/stats", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Giriş yapmanız gerekli" });
+      }
+      
+      const stats = await storage.getStudentStats(sessionUser.id);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching student stats:", error);
+      res.status(500).json({ message: "İstatistikler alınamadı" });
+    }
+  });
+
+  // Student contacts endpoint
+  app.get("/api/student/contacts", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Giriş yapmanız gerekli" });
+      }
+      
+      const contacts = await storage.getStudentContacts(sessionUser.id);
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error fetching student contacts:", error);
+      res.status(500).json({ message: "Mesajlar alınamadı" });
+    }
+  });
+
+  // Student contact creation
+  app.post("/api/student/contacts", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Giriş yapmanız gerekli" });
+      }
+      
+      const contactData = {
+        ...req.body,
+        userId: sessionUser.id
+      };
+      
+      const contact = await storage.createStudentContact(contactData);
+      res.json(contact);
+    } catch (error) {
+      console.error("Error creating student contact:", error);
+      res.status(500).json({ message: "Mesaj gönderilemedi" });
+    }
+  });
+
   // Admin routes
   app.get("/api/admin/stats", async (req, res) => {
     try {

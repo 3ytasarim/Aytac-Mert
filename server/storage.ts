@@ -622,6 +622,48 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(invoices.createdAt));
   }
 
+  // Student-specific stats
+  async getStudentStats(userId: string): Promise<{
+    activeCourses: string;
+    registrationDate: string;
+    totalSpent: string;
+  }> {
+    // Aktif kurslar (atanan kurslar)
+    const [activeCourses] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(enrollments)
+      .where(eq(enrollments.userId, userId));
+
+    // Kayıt tarihi (kullanıcının oluşturulma tarihi)
+    const [userInfo] = await db
+      .select({ createdAt: users.createdAt })
+      .from(users)
+      .where(eq(users.id, userId));
+
+    // Toplam harcanan ücret (katıldığı kursların toplam fiyatı)
+    const totalSpentResult = await db
+      .select({ 
+        totalPrice: sql<number>`COALESCE(SUM(${courses.price}), 0)` 
+      })
+      .from(enrollments)
+      .leftJoin(courses, eq(enrollments.courseId, courses.id))
+      .where(eq(enrollments.userId, userId));
+
+    const totalSpent = totalSpentResult[0]?.totalPrice || 0;
+
+    return {
+      activeCourses: activeCourses.count.toString(),
+      registrationDate: userInfo?.createdAt ? 
+        new Date(userInfo.createdAt).toLocaleDateString('tr-TR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }) : 
+        'Bilinmiyor',
+      totalSpent: `${totalSpent.toLocaleString('tr-TR')}₺`
+    };
+  }
+
 }
 
 export const storage = new DatabaseStorage();
