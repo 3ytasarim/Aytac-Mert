@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navigation } from "@/components/ui/navigation";
 import { ContactModal } from "@/components/ui/contact-modal";
+import { ProfileEditModal } from "@/components/ui/profile-edit-modal";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,8 @@ import {
   Clock,
   MessageSquare,
   MapPin,
-  Calendar
+  Calendar,
+  Edit
 } from "lucide-react";
 import type { User as UserType, Enrollment, StudentContact } from "@shared/schema";
 
@@ -32,6 +34,7 @@ interface ExtendedEnrollment extends Enrollment {
 
 export default function StudentDashboard() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
   const { toast } = useToast();
 
   const { data: user } = useQuery<UserType>({
@@ -285,7 +288,13 @@ export default function StudentDashboard() {
                     <span className="text-sm">{user.phone}</span>
                   </div>
                 )}
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setIsProfileEditModalOpen(true)}
+                  data-testid="button-edit-profile"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
                   Profili Düzenle
                 </Button>
               </CardContent>
@@ -340,6 +349,14 @@ export default function StudentDashboard() {
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
       />
+
+      {user && (
+        <ProfileEditModal 
+          isOpen={isProfileEditModalOpen}
+          onClose={() => setIsProfileEditModalOpen(false)}
+          user={user}
+        />
+      )}
     </div>
   );
 }

@@ -411,6 +411,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Profile update endpoint
+  app.put("/api/profile/update", async (req, res) => {
+    try {
+      const sessionUser = (req.session as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ message: "Giriş yapmanız gerekli" });
+      }
+
+      const { firstName, lastName, phone, currentPassword, newPassword } = req.body;
+
+      // If password change requested, verify current password
+      if (newPassword) {
+        if (!currentPassword) {
+          return res.status(400).json({ message: "Mevcut şifre gerekli" });
+        }
+
+        const user = await storage.getUser(sessionUser.id);
+        if (!user || user.password !== currentPassword) {
+          return res.status(400).json({ message: "Mevcut şifre hatalı" });
+        }
+      }
+
+      // Update user profile
+      const updatedUser = await storage.updateUserProfile(sessionUser.id, {
+        firstName,
+        lastName,
+        phone,
+        ...(newPassword && { password: newPassword })
+      });
+
+      // Update session with new user data
+      (req.session as any).user = {
+        ...sessionUser,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        phone: updatedUser.phone
+      };
+
+      res.json({ 
+        message: "Profil güncellendi",
+        user: updatedUser
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Profil güncellenemedi" });
+    }
+  });
+
   // Admin routes
   app.get("/api/admin/stats", async (req, res) => {
     try {
