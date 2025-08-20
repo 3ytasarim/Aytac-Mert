@@ -141,15 +141,9 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     now: Math.floor(Date.now() / 1000)
   });
 
-  // Check for custom login (session-based admin users)
-  if (sessionUser && sessionUser.id === 'admin-user-id' && sessionUser.role === 'admin') {
-    console.log('Admin user authenticated via session');
-    return next();
-  }
-
-  // Check for passport login (admin users)
-  if (req.isAuthenticated() && user && user.id === 'admin-user-id') {
-    console.log('Admin user authenticated via passport');
+  // Check for custom session auth (both admin and student)
+  if (sessionUser && sessionUser.id) {
+    console.log(`${sessionUser.role === 'admin' ? 'Admin' : 'User'} authenticated via session`);
     return next();
   }
 

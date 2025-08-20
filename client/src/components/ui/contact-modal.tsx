@@ -29,7 +29,20 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { subject: string; message: string }) => {
-      return await apiRequest("/api/student/contact", "POST", data);
+      const response = await fetch("/api/student/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       toast({
