@@ -19,7 +19,7 @@ export default function AdminInvoices() {
       currency: 'TRY',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price / 100);
+    }).format(price);
   };
 
   const formatDate = (dateString: string) => {

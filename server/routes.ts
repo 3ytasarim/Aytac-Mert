@@ -857,13 +857,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const courseData = req.body;
-      // Convert price to integer (from TL to kuruş)
-      const priceInKurus = Math.round(parseFloat(courseData.price) * 100);
+      // Convert price to integer (TL cinsinden)
+      const priceInTL = Math.round(parseFloat(courseData.price));
       
       const newCourse = await storage.createCourse({
         title: courseData.title,
         description: courseData.description,
-        price: priceInKurus,
+        price: priceInTL,
         imageUrl: courseData.imageUrl || null,
         isActive: true,
       });
@@ -893,9 +893,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const updateData = { ...req.body };
       
-      // Convert price to integer if it exists (from TL to kuruş)
+      // Convert price to integer if it exists (TL cinsinden)
       if (updateData.price !== undefined) {
-        updateData.price = Math.round(parseFloat(updateData.price) * 100);
+        updateData.price = Math.round(parseFloat(updateData.price));
       }
       
       const updatedCourse = await storage.updateCourse(id, updateData);

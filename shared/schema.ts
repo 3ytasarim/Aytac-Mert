@@ -48,7 +48,7 @@ export const courses = pgTable("courses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: varchar("title").notNull(),
   description: text("description").notNull(),
-  price: integer("price").notNull(), // in kuruş (25000000 = 25.000₺)
+  price: integer("price").notNull(), // in TL (25000 = 25.000₺)
   imageUrl: varchar("image_url"),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
