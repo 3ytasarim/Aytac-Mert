@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Clock, Award, User, Calendar, Mail, Phone, MapPin } from "lucide-react";
-import { useEffect } from "react";
+import { ContactModal } from "@/components/ui/contact-modal";
+import { BookOpen, Clock, Award, User, Calendar, Mail, Phone, MapPin, MessageSquare, AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 
@@ -28,9 +29,20 @@ interface Enrollment {
   course: Course;
 }
 
+interface StudentContact {
+  id: string;
+  subject: string;
+  message: string;
+  response?: string;
+  status: 'pending' | 'responded';
+  createdAt: string;
+  respondedAt?: string;
+}
+
 export default function StudentDashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -61,6 +73,17 @@ export default function StudentDashboard() {
   const { data: availableCourses } = useQuery({
     queryKey: ["/api/courses"],
     enabled: isAuthenticated,
+  });
+
+  const { data: studentContacts } = useQuery({
+    queryKey: ["/api/student/contacts"],
+    enabled: isAuthenticated,
+    retry: (failureCount, error) => {
+      if (isUnauthorizedError(error as Error)) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   if (isLoading) {
@@ -271,17 +294,66 @@ export default function StudentDashboard() {
             {/* Support */}
             <Card className="bg-blue-50 border-blue-200">
               <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <MessageSquare className="h-6 w-6 text-blue-600" />
+                </div>
                 <h3 className="font-semibold text-blue-900 mb-2">Destek Gerekiyor mu?</h3>
                 <p className="text-sm text-blue-700 mb-4">
                   Uzman eğitmenlerimizden yardım alın.
                 </p>
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Button 
+                  size="sm" 
+                  className="bg-blue-600 hover:bg-blue-700"
+                  onClick={() => setIsContactModalOpen(true)}
+                  data-testid="button-contact-support"
+                >
                   İletişime Geç
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Student Messages */}
+            {studentContacts && (studentContacts as StudentContact[]).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <MessageSquare className="h-5 w-5 mr-2" />
+                    Mesajlarım
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {(studentContacts as StudentContact[]).slice(0, 3).map((contact: StudentContact) => (
+                      <div key={contact.id} className="border rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-sm">{contact.subject}</h4>
+                          <Badge variant={contact.status === 'responded' ? 'default' : 'secondary'}>
+                            {contact.status === 'responded' ? 'Cevaplanmış' : 'Beklemede'}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-gray-600 line-clamp-2">{contact.message}</p>
+                        {contact.response && (
+                          <div className="mt-2 p-2 bg-green-50 rounded text-xs">
+                            <strong>Cevap:</strong> {contact.response}
+                          </div>
+                        )}
+                        <div className="text-xs text-gray-500 mt-2">
+                          {new Date(contact.createdAt).toLocaleDateString('tr-TR')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
+
+        {/* Contact Modal */}
+        <ContactModal 
+          isOpen={isContactModalOpen} 
+          onClose={() => setIsContactModalOpen(false)} 
+        />
       </div>
     </div>
   );

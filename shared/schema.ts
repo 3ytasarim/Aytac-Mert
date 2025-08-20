@@ -96,6 +96,18 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Student-admin contacts
+export const studentContacts = pgTable("student_contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  subject: varchar("subject").notNull(),
+  message: text("message").notNull(),
+  response: text("response"),
+  status: varchar("status").notNull().default("pending"), // pending, responded
+  createdAt: timestamp("created_at").defaultNow(),
+  respondedAt: timestamp("responded_at"),
+});
+
 // Invoices table for payment tracking
 export const invoices = pgTable("invoices", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -115,6 +127,7 @@ export const invoices = pgTable("invoices", {
 export const usersRelations = relations(users, ({ many }) => ({
   enrollments: many(enrollments),
   invoices: many(invoices),
+  studentContacts: many(studentContacts),
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -152,11 +165,44 @@ export const invoicesRelations = relations(invoices, ({ one }) => ({
   }),
 }));
 
+export const studentContactsRelations = relations(studentContacts, ({ one }) => ({
+  user: one(users, {
+    fields: [studentContacts.userId],
+    references: [users.id],
+  }),
+}));
+
+// Types
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type Course = typeof courses.$inferSelect;
+export type InsertCourse = typeof courses.$inferInsert;
+export type Enrollment = typeof enrollments.$inferSelect;
+export type InsertEnrollment = typeof enrollments.$inferInsert;
+export type Contact = typeof contacts.$inferSelect;
+export type InsertContact = typeof contacts.$inferInsert;
+export type Lesson = typeof lessons.$inferSelect;
+export type InsertLesson = typeof lessons.$inferInsert;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type InsertPasswordResetToken = typeof passwordResetTokens.$inferInsert;
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = typeof invoices.$inferInsert;
+export type StudentContact = typeof studentContacts.$inferSelect;
+export type InsertStudentContact = typeof studentContacts.$inferInsert;
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertStudentContactSchema = createInsertSchema(studentContacts).omit({
+  id: true,
+  userId: true, // This will be added automatically from session
+  status: true,
+  createdAt: true,
+  respondedAt: true,
 });
 
 export const upsertUserSchema = createInsertSchema(users).omit({
@@ -227,21 +273,12 @@ export const resetPasswordSchema = z.object({
   path: ["confirmPassword"],
 });
 
-// Types
-export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type Registration = z.infer<typeof registrationSchema>;
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type Course = typeof courses.$inferSelect;
 export type InsertCourse = z.infer<typeof insertCourseSchema>;
-export type Enrollment = typeof enrollments.$inferSelect;
 export type InsertEnrollment = z.infer<typeof insertEnrollmentSchema>;
-export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
-export type Lesson = typeof lessons.$inferSelect;
-export type InsertLesson = typeof lessons.$inferInsert;
-export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type RequestPasswordReset = z.infer<typeof requestPasswordResetSchema>;
 export type ResetPassword = z.infer<typeof resetPasswordSchema>;
-export type Invoice = typeof invoices.$inferSelect;
 export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+export type InsertStudentContactType = z.infer<typeof insertStudentContactSchema>;

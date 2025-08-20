@@ -101,6 +101,13 @@ export function AdminSidebar({ isCollapsed, onToggle, onMobileClose }: AdminSide
       submenu: []
     },
     {
+      title: "Öğrenci Mesajları",
+      icon: MessageSquare,
+      path: "/admin/student-contacts",
+      badge: null,
+      submenu: []
+    },
+    {
       title: "Raporlar",
       icon: BarChart3,
       path: "/admin/reports",

@@ -8,7 +8,8 @@ import {
   insertEnrollmentSchema, 
   registrationSchema,
   requestPasswordResetSchema,
-  resetPasswordSchema 
+  resetPasswordSchema,
+  insertStudentContactSchema
 } from "@shared/schema";
 import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 import { z } from "zod";
@@ -378,6 +379,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin student contact routes
+  app.get("/api/admin/student-contacts", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const contacts = await storage.getAllStudentContacts();
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error fetching student contacts:", error);
+      res.status(500).json({ message: "Failed to fetch student contacts" });
+    }
+  });
+
+  app.patch("/api/admin/student-contacts/:id/respond", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      const { id } = req.params;
+      const { response } = req.body;
+      
+      if (!response || response.trim() === '') {
+        return res.status(400).json({ message: "Response cannot be empty" });
+      }
+
+      const updatedContact = await storage.updateStudentContactResponse(id, response);
+      res.json(updatedContact);
+    } catch (error) {
+      console.error("Error responding to student contact:", error);
+      res.status(500).json({ message: "Failed to send response" });
+    }
+  });
+
   app.get("/api/admin/users", async (req, res) => {
     try {
       const users = await storage.getAllUsers();
@@ -391,12 +444,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Protected student routes
   app.get("/api/enrollments", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
       const enrollments = await storage.getUserEnrollments(userId);
       res.json(enrollments);
     } catch (error) {
       console.error("Error fetching enrollments:", error);
       res.status(500).json({ message: "Failed to fetch enrollments" });
+    }
+  });
+
+  // Student contact routes
+  app.post("/api/student/contact", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const contactData = insertStudentContactSchema.parse(req.body);
+      const newContact = await storage.createStudentContact({
+        ...contactData,
+        userId
+      });
+      
+      res.json(newContact);
+    } catch (error) {
+      console.error("Error creating student contact:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  app.get("/api/student/contacts", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const contacts = await storage.getStudentContacts(userId);
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error fetching student contacts:", error);
+      res.status(500).json({ message: "Failed to fetch contacts" });
     }
   });
 

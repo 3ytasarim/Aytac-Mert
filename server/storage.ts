@@ -6,6 +6,7 @@ import {
   lessons,
   passwordResetTokens,
   invoices,
+  studentContacts,
   type User,
   type UpsertUser,
   type Course,
@@ -19,6 +20,8 @@ import {
   type PasswordResetToken,
   type Invoice,
   type InsertInvoice,
+  type StudentContact,
+  type InsertStudentContact,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -58,6 +61,12 @@ export interface IStorage {
   createContact(contact: InsertContact): Promise<Contact>;
   getAllContacts(): Promise<Contact[]>;
   updateContactStatus(id: string, status: string): Promise<Contact>;
+  
+  // Student Contact operations
+  createStudentContact(contact: InsertStudentContact): Promise<StudentContact>;
+  getStudentContacts(userId: string): Promise<StudentContact[]>;
+  getAllStudentContacts(): Promise<(StudentContact & { user: User })[]>;
+  updateStudentContactResponse(id: string, response: string): Promise<StudentContact>;
   
   // Lesson operations
   createLessons(courseId: string, lessonsData: { title: string; videoEmbedCode: string; orderIndex: number }[]): Promise<void>;
@@ -378,6 +387,58 @@ export class DatabaseStorage implements IStorage {
       .update(contacts)
       .set({ status })
       .where(eq(contacts.id, id))
+      .returning();
+    return updatedContact;
+  }
+
+  async createStudentContact(contact: InsertStudentContact): Promise<StudentContact> {
+    const [newContact] = await db
+      .insert(studentContacts)
+      .values(contact)
+      .returning();
+    return newContact;
+  }
+
+  async getStudentContacts(userId: string): Promise<StudentContact[]> {
+    return await db
+      .select()
+      .from(studentContacts)
+      .where(eq(studentContacts.userId, userId))
+      .orderBy(desc(studentContacts.createdAt));
+  }
+
+  async getAllStudentContacts(): Promise<(StudentContact & { user: User })[]> {
+    return await db
+      .select({
+        id: studentContacts.id,
+        userId: studentContacts.userId,
+        subject: studentContacts.subject,
+        message: studentContacts.message,
+        response: studentContacts.response,
+        status: studentContacts.status,
+        createdAt: studentContacts.createdAt,
+        respondedAt: studentContacts.respondedAt,
+        user: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+        }
+      })
+      .from(studentContacts)
+      .leftJoin(users, eq(studentContacts.userId, users.id))
+      .orderBy(desc(studentContacts.createdAt));
+  }
+
+  async updateStudentContactResponse(id: string, response: string): Promise<StudentContact> {
+    const [updatedContact] = await db
+      .update(studentContacts)
+      .set({ 
+        response, 
+        status: "responded",
+        respondedAt: new Date()
+      })
+      .where(eq(studentContacts.id, id))
       .returning();
     return updatedContact;
   }
