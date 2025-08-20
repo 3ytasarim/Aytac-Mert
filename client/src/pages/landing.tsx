@@ -11,7 +11,7 @@ import { insertContactSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { PaymentModal } from "@/components/ui/payment-modal";
+import { EnhancedPaymentModal } from "@/components/ui/enhanced-payment-modal";
 import { LoginModal } from "@/components/LoginModal";
 import { RegistrationModal } from "@/components/RegistrationModal";
 import { CourseCard } from "@/components/ui/course-card";
@@ -403,7 +403,7 @@ export default function Landing() {
       </Dialog>
 
       {/* Payment Modal */}
-      <PaymentModal
+      <EnhancedPaymentModal
         isOpen={paymentModal.isOpen}
         onClose={() => setPaymentModal({ isOpen: false, course: null })}
         course={paymentModal.course}
