@@ -91,6 +91,18 @@ export async function sendPasswordResetEmail(userEmail: string, resetToken: stri
       : 'http://localhost:5000';
     const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
     
+    // Development mode: Log to console instead of sending email
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n=== ŞİFRE SIFIRLAMA TOKEN\'I ===');
+      console.log(`Email: ${userEmail}`);
+      console.log(`Reset URL: ${resetUrl}`);
+      console.log(`Token: ${resetToken}`);
+      console.log('Bu URL\'yi tarayıcınızda açarak şifrenizi sıfırlayabilirsiniz.');
+      console.log('==============================\n');
+      return true;
+    }
+
+    // Production mode: Try to send email
     const mailOptions = {
       from: 'info@aytacmert.com',
       to: userEmail,
