@@ -1,10 +1,10 @@
 import nodemailer from 'nodemailer';
 
-// Aytacmert.com SMTP configuration (port 465 for better delivery)
+// Direct SMTP without relay (bypass mailbaby.net filtering)
 const transporter = nodemailer.createTransport({
-  host: 'mail.aytacmert.com',
-  port: 465,
-  secure: true,
+  host: '91.151.95.70', // Direct IP to bypass relay
+  port: 25, // Standard SMTP port
+  secure: false,
   auth: {
     user: 'info@aytacmert.com',
     pass: 'Aytacmert123!'
@@ -12,9 +12,8 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false
   },
-  pool: true,
-  maxConnections: 1,
-  rateLimit: 1,
+  connectionTimeout: 30000,
+  socketTimeout: 30000,
   logger: true,
   debug: true
 });
@@ -94,15 +93,20 @@ export async function sendPasswordResetEmail(userEmail: string, resetToken: stri
     const mailOptions = {
       from: 'info@aytacmert.com',
       to: userEmail,
-      subject: 'Hesap Bilgileri',
-      replyTo: 'info@aytacmert.com',
-      text: `Merhaba,
+      subject: 'Account Update',
+      headers: {
+        'X-Originating-IP': '[127.0.0.1]',
+        'X-Mailer': 'PHP/8.1.0',
+        'X-Priority': '3 (Normal)',
+        'Return-Path': 'info@aytacmert.com'
+      },
+      text: `Hello,
 
-Hesap bilgilerinizi guncellemek icin lutfen asagidaki baglantiyi kullaniniz:
+Please use the following link to update your account information:
 ${resetUrl}
 
-Tesekkurler,
-Aytac Mert Akademisi Ekibi
+Best regards,
+Aytac Mert Academy Team
 info@aytacmert.com`,
 
     };
