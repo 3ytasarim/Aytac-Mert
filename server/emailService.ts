@@ -1,18 +1,22 @@
 import nodemailer from 'nodemailer';
 
-// Gmail SMTP configuration (more reliable for email delivery)
+// Aytacmert.com SMTP configuration (optimized for deliverability)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  host: 'smtp.gmail.com',
+  host: 'mail.aytacmert.com',
   port: 587,
   secure: false,
   auth: {
     user: 'info@aytacmert.com',
-    pass: process.env.GMAIL_APP_PASSWORD || 'Aytacmert123!'
+    pass: 'Aytacmert123!'
   },
   tls: {
+    ciphers: 'SSLv3',
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeout: 10000,
+  socketTimeout: 45000,
+  logger: false,
+  debug: false
 });
 
 export interface WelcomeEmailData {
@@ -90,53 +94,80 @@ export async function sendPasswordResetEmail(userEmail: string, resetToken: stri
     const mailOptions = {
       from: '"Aytaç Mert Köpek Eğitimi AKADEMİSİ" <info@aytacmert.com>',
       to: userEmail,
-      subject: 'Hesap Şifre Yenileme - Aytaç Mert Köpek Eğitimi AKADEMİSİ',
+      subject: 'Kullanici Sifre Yenileme Talebi',
       replyTo: 'info@aytacmert.com',
+      headers: {
+        'X-Mailer': 'Aytac Mert Education System',
+        'X-Priority': '3',
+        'List-Unsubscribe': '<mailto:info@aytacmert.com>',
+        'Message-ID': `<${Date.now()}@aytacmert.com>`
+      },
+      text: `
+        Sayin uyemiz,
+        
+        Hesabiniz icin sifre yenileme talebinde bulundunuz.
+        
+        Sifrenizi yenilemek icin asagidaki baglantiya tiklayin:
+        ${resetUrl}
+        
+        Bu baglanti 60 dakika sonra gecerliligi kaybolacaktir.
+        
+        Bu talep sizin tarafinizdan yapilmadiysa, bu mesaji gormezden gelebilirsiniz.
+        
+        Saygılar,
+        AYTAC MERT KOPEK EGITIMI AKADEMISI
+        info@aytacmert.com
+      `,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #333; font-size: 24px; margin-bottom: 10px;">
-              AYTAÇ MERT KÖPEK EĞİTİMİ AKADEMİSİ
-            </h1>
-            <p style="color: #666; font-size: 16px;">Şifre Yenileme Talebi</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+            <h2 style="color: #2c3e50; font-size: 22px; margin: 0;">
+              AYTAC MERT KOPEK EGITIMI AKADEMISI
+            </h2>
+            <p style="color: #6c757d; font-size: 14px; margin: 5px 0 0 0;">Kullanici Sifre Yenileme</p>
           </div>
           
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <p style="color: #333; font-size: 16px; line-height: 1.6;">
-              Sayın Üyemiz,
+          <div style="padding: 25px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 25px;">
+            <p style="color: #495057; font-size: 16px; line-height: 1.6; margin-bottom: 15px;">
+              Sayin uyemiz,
             </p>
-            <p style="color: #333; font-size: 16px; line-height: 1.6;">
-              Hesabınız için şifre yenileme talebinde bulundunuz. Yeni şifrenizi belirlemek için 
-              aşağıdaki butona tıklayarak işlemi tamamlayabilirsiniz:
+            <p style="color: #495057; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+              Hesabiniz icin sifre yenileme talebinde bulundunuz. Yeni sifrenizi belirlemek icin 
+              asagidaki dugmeye tiklayiniz:
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
               <a href="${resetUrl}" 
-                 style="background-color: #28a745; color: white; padding: 15px 40px; 
-                        text-decoration: none; border-radius: 8px; font-weight: bold; 
-                        display: inline-block; font-size: 16px;">
-                Şifremi Yenile
+                 style="background-color: #007bff; color: #ffffff; padding: 14px 28px; 
+                        text-decoration: none; border-radius: 6px; font-weight: 600; 
+                        display: inline-block; font-size: 15px; border: none;">
+                Sifremi Yenile
               </a>
             </div>
             
-            <p style="color: #333; font-size: 14px; line-height: 1.6;">
-              • Bu bağlantı güvenlik nedeniyle 60 dakika sonra geçerliliğini yitirecektir.
+            <p style="color: #6c757d; font-size: 13px; line-height: 1.5; margin: 20px 0 5px 0;">
+              Bu baglanti guvenlik nedeniyle 60 dakika sonra gecerliligi yitirecektir.
             </p>
             
-            <p style="color: #333; font-size: 14px; line-height: 1.6;">
-              • Bu talep sizin tarafınızdan yapılmadıysa, bu mesajı görmezden gelebilirsiniz.
+            <p style="color: #6c757d; font-size: 13px; line-height: 1.5; margin: 5px 0 20px 0;">
+              Bu talep sizin tarafinizdan yapilmadiysa, bu mesaji gormezden gelebilirsiniz.
             </p>
             
-            <p style="color: #333; font-size: 16px; line-height: 1.6; margin-top: 25px;">
-              İyi günler dileriz,<br>
-              <strong>AYTAÇ MERT KÖPEK EĞİTİMİ AKADEMİSİ</strong><br>
-              <span style="color: #666; font-size: 14px;">Teknik Destek Ekibi</span>
-            </p>
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+              <p style="color: #495057; font-size: 15px; line-height: 1.4; margin: 0;">
+                Saygılar,<br>
+                <strong>AYTAC MERT KOPEK EGITIMI AKADEMISI</strong>
+              </p>
+            </div>
           </div>
           
-          <div style="text-align: center; color: #666; font-size: 12px; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
-            <p><strong>İletişim:</strong> info@aytacmert.com</p>
-            <p>© 2024 Aytaç Mert Köpek Eğitimi AKADEMİSİ. Tüm hakları saklıdır.</p>
+          <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+            <p style="color: #6c757d; font-size: 12px; margin: 5px 0;">
+              İletişim: info@aytacmert.com
+            </p>
+            <p style="color: #6c757d; font-size: 12px; margin: 5px 0;">
+              © 2024 Aytac Mert Kopek Egitimi Akademisi
+            </p>
           </div>
         </div>
       `
