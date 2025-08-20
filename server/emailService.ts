@@ -1,10 +1,11 @@
 import nodemailer from 'nodemailer';
 
-// Direct SMTP without relay (bypass mailbaby.net filtering)
+// Proper SMTP configuration using mail.aytacmert.com
 const transporter = nodemailer.createTransport({
-  host: '91.151.95.70', // Direct IP to bypass relay
-  port: 25, // Standard SMTP port
+  host: 'mail.aytacmert.com',
+  port: 587,
   secure: false,
+  requireTLS: true,
   auth: {
     user: 'info@aytacmert.com',
     pass: 'Aytacmert123!'
@@ -12,11 +13,11 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false
   },
-  connectionTimeout: 30000,
-  socketTimeout: 30000,
+  connectionTimeout: 60000,
+  socketTimeout: 60000,
   logger: true,
   debug: true
-});
+} as any);
 
 export interface WelcomeEmailData {
   firstName: string;
