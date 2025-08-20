@@ -11,7 +11,7 @@ import { insertContactSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { EnhancedPaymentModal } from "@/components/ui/enhanced-payment-modal";
+import { CompactPaymentModal } from "@/components/ui/compact-payment-modal";
 import { LoginModal } from "@/components/LoginModal";
 import { RegistrationModal } from "@/components/RegistrationModal";
 import { CourseCard } from "@/components/ui/course-card";
@@ -80,6 +80,14 @@ export default function Landing() {
       return;
     }
     setPaymentModal({ isOpen: true, course });
+  };
+
+  const handlePayment = (course: Course) => {
+    // Placeholder for payment processing - we'll implement this together
+    toast({
+      title: "Ödeme İşlemi",
+      description: "Ödeme işlemi başlatılacak...",
+    });
   };
 
   const handleAuthModalClose = () => {
@@ -403,10 +411,11 @@ export default function Landing() {
       </Dialog>
 
       {/* Payment Modal */}
-      <EnhancedPaymentModal
+      <CompactPaymentModal
         isOpen={paymentModal.isOpen}
         onClose={() => setPaymentModal({ isOpen: false, course: null })}
         course={paymentModal.course}
+        onPayment={handlePayment}
       />
 
       {/* Authentication Modals */}
