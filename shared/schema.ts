@@ -184,6 +184,7 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
 
 export const insertInvoiceSchema = createInsertSchema(invoices).omit({
   id: true,
+  userId: true, // This will be added automatically from session
   createdAt: true,
   updatedAt: true,
 });
