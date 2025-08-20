@@ -27,6 +27,8 @@ export default function AdminStudentContacts() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  console.log("AdminStudentContacts component loaded", { user, isAuthenticated, isLoading });
 
   // State for response dialog
   const [responseDialogOpen, setResponseDialogOpen] = useState(false);
@@ -52,6 +54,8 @@ export default function AdminStudentContacts() {
     queryKey: ["/api/admin/student-contacts"],
     enabled: isAuthenticated && user?.role === 'admin',
   });
+  
+  console.log("Student contacts query result:", { studentContacts, contactsLoading, enabled: isAuthenticated && user?.role === 'admin' });
 
   const respondMutation = useMutation({
     mutationFn: async ({ contactId, response }: { contactId: string; response: string }) => {

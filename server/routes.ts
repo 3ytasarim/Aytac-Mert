@@ -384,11 +384,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const sessionUser = (req.session as any)?.user;
       
+      console.log("Admin student contacts request:", { sessionUser, hasSession: !!req.session });
+      
       if (!sessionUser || sessionUser.role !== 'admin') {
+        console.log("Access denied:", { sessionUser, role: sessionUser?.role });
         return res.status(403).json({ message: "Admin access required" });
       }
 
       const contacts = await storage.getAllStudentContacts();
+      console.log("Student contacts found:", contacts.length);
       res.json(contacts);
     } catch (error) {
       console.error("Error fetching student contacts:", error);
