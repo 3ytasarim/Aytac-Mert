@@ -16,9 +16,9 @@ import {
   Award, 
   Clock,
   MessageSquare,
-  MapPin,
   Calendar,
-  Edit
+  Edit,
+  ExternalLink
 } from "lucide-react";
 import type { User as UserType, Enrollment, StudentContact } from "@shared/schema";
 
@@ -63,6 +63,13 @@ export default function StudentDashboard() {
       description: "Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.",
     });
     setIsContactModalOpen(false);
+  };
+
+  const handleWhatsAppClick = () => {
+    const phoneNumber = "905303663586"; // Aytaç Mert'in WhatsApp numarası
+    const message = "Merhaba, köpek eğitimi hakkında bilgi almak istiyorum.";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
@@ -306,17 +313,28 @@ export default function StudentDashboard() {
                 <CardTitle>Hızlı İşlemler</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-blue-50 hover:border-blue-200 transition-all duration-200"
+                  onClick={() => window.location.href = '/#courses'}
+                >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Tüm Kurslar
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Award className="h-4 w-4 mr-2" />
-                  Sertifikalarım
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  İletişim
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-green-50 hover:border-green-200 transition-all duration-200 group"
+                  onClick={handleWhatsAppClick}
+                  data-testid="button-whatsapp"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <MessageSquare className="h-4 w-4 mr-2 text-green-600" />
+                      <span>WhatsApp ile Mesaj Gönder</span>
+                    </div>
+                    <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                  </div>
                 </Button>
               </CardContent>
             </Card>
