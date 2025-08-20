@@ -407,7 +407,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(studentContacts.createdAt));
   }
 
-  async getAllStudentContacts(): Promise<(StudentContact & { user: User })[]> {
+  async getAllStudentContacts(): Promise<any[]> {
     return await db
       .select({
         id: studentContacts.id,
@@ -427,7 +427,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(studentContacts)
       .leftJoin(users, eq(studentContacts.userId, users.id))
-      .orderBy(desc(studentContacts.createdAt));
+      .orderBy(desc(studentContacts.createdAt)) as any[];
   }
 
   async updateStudentContactResponse(id: string, response: string): Promise<StudentContact> {
