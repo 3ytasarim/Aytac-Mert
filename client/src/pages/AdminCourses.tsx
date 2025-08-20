@@ -307,19 +307,19 @@ export default function AdminCourses() {
                         data-testid={`button-toggle-${course.id}`}
                         className={`h-8 px-2 text-xs font-semibold transition-all duration-300 ${
                           course.isActive 
-                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700' 
-                            : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl' 
+                            : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-xl'
                         } text-white border-0 shadow-md hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
                       >
                         {course.isActive ? (
                           <>
                             <ToggleLeft className="h-3 w-3 mr-1" />
-                            <span>Pasif</span>
+                            <span>Pasif Yap</span>
                           </>
                         ) : (
                           <>
                             <ToggleRight className="h-3 w-3 mr-1" />
-                            <span>Aktif</span>
+                            <span>Aktif Yap</span>
                           </>
                         )}
                       </Button>
