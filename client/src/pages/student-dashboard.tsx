@@ -253,7 +253,14 @@ export default function StudentDashboard() {
                         </div>
                       </CardContent>
                       <CardFooter>
-                        <Button className="w-full">Kursa Devam Et</Button>
+                        <Button 
+                          className="w-full"
+                          onClick={() => navigate(`/course/${enrollment.course.id}`)}
+                          data-testid={`button-view-course-${enrollment.course.id}`}
+                        >
+                          <BookOpen className="h-4 w-4 mr-2" />
+                          Kursa Devam Et
+                        </Button>
                       </CardFooter>
                     </Card>
                   ))}

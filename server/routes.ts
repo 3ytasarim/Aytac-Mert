@@ -547,6 +547,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get course lessons for students
+  app.get("/api/courses/:id/lessons", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      const { id } = req.params;
+      
+      // Check if student is enrolled in this course
+      const enrollments = await storage.getUserEnrollments(userId);
+      const isEnrolled = enrollments.some(enrollment => enrollment.course.id === id);
+      
+      if (!isEnrolled) {
+        return res.status(403).json({ message: "Not enrolled in this course" });
+      }
+      
+      const lessons = await storage.getCourseLessons(id);
+      res.json(lessons);
+    } catch (error) {
+      console.error("Error fetching course lessons:", error);
+      res.status(500).json({ message: "Failed to fetch lessons" });
+    }
+  });
+
+  // Get student enrollment for specific course
+  app.get("/api/student/enrollments/:courseId", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      const { courseId } = req.params;
+      
+      const enrollments = await storage.getUserEnrollments(userId);
+      const enrollment = enrollments.find(e => e.course.id === courseId);
+      
+      if (!enrollment) {
+        return res.status(404).json({ message: "Not enrolled in this course" });
+      }
+      
+      res.json(enrollment);
+    } catch (error) {
+      console.error("Error fetching enrollment:", error);
+      res.status(500).json({ message: "Failed to fetch enrollment" });
+    }
+  });
+
   // Student contact routes
   app.post("/api/student/contact", isAuthenticated, async (req: any, res) => {
     try {
@@ -937,6 +982,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting course:", error);
       res.status(500).json({ message: "Failed to delete course" });
+    }
+  });
+
+  // Video serving endpoint
+  app.get("/objects/:objectPath(*)", async (req, res) => {
+    try {
+      const { ObjectStorageService, ObjectNotFoundError } = await import("./objectStorage");
+      const objectStorageService = new ObjectStorageService();
+      
+      const objectFile = await objectStorageService.getObjectEntityFile(req.path);
+      await objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error serving video:", error);
+      if (error.name === 'ObjectNotFoundError') {
+        return res.sendStatus(404);
+      }
+      return res.sendStatus(500);
+    }
+  });
+
+  // Video upload for lessons
+  app.post("/api/admin/lessons/upload", isAuthenticated, async (req: any, res) => {
+    try {
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+      
+      if (sessionUser && sessionUser.role === 'admin') {
+        // Continue
+      } else {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
+      }
+
+      // Generate presigned URL for video upload
+      const { ObjectStorageService } = await import("./objectStorage");
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error("Error generating upload URL:", error);
+      res.status(500).json({ message: "Failed to generate upload URL" });
     }
   });
 

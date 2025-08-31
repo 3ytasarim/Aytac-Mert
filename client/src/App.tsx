@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import StudentDashboard from "@/pages/student-dashboard";
+import CourseViewer from "@/pages/CourseViewer";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminUsers from "@/pages/AdminUsers";
 import AdminContacts from "@/pages/AdminContacts";
@@ -64,6 +65,7 @@ function Router() {
             <>
               <Route path="/" component={Landing} />
               <Route path="/dashboard" component={StudentDashboard} />
+              <Route path="/course/:id" component={CourseViewer} />
             </>
           )}
           <Route path="/hakkimizda" component={About} />

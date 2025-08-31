@@ -252,11 +252,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Lesson operations
-  async createLessons(courseId: string, lessonsData: { title: string; videoEmbedCode: string; orderIndex: number }[]): Promise<void> {
+  async createLessons(courseId: string, lessonsData: any[]): Promise<void> {
     const lessonsToInsert = lessonsData.map(lesson => ({
       courseId,
       title: lesson.title,
-      videoEmbedCode: lesson.videoEmbedCode,
+      videoEmbedCode: lesson.videoEmbedCode || null,
+      videoUrl: lesson.videoUrl || null,
+      videoType: lesson.videoType || "embed",
       orderIndex: lesson.orderIndex,
     }));
     

@@ -80,7 +80,9 @@ export const lessons = pgTable("lessons", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   courseId: varchar("course_id").notNull().references(() => courses.id, { onDelete: "cascade" }),
   title: varchar("title").notNull(),
-  videoEmbedCode: text("video_embed_code").notNull(),
+  videoEmbedCode: text("video_embed_code"), // Optional for YouTube/embed
+  videoUrl: varchar("video_url"), // For uploaded video files
+  videoType: varchar("video_type").notNull().default("embed"), // embed, upload
   orderIndex: integer("order_index").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

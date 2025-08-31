@@ -67,36 +67,17 @@ export class ObjectStorageService {
     return dir;
   }
 
-  // Search for a public object from the search paths.
-  async searchPublicObject(filePath: string): Promise<File | null> {
-    for (const searchPath of this.getPublicObjectSearchPaths()) {
-      const fullPath = `${searchPath}/${filePath}`;
-
-      // Full path format: /<bucket_name>/<object_name>
-      const { bucketName, objectName } = parseObjectPath(fullPath);
-      const bucket = objectStorageClient.bucket(bucketName);
-      const file = bucket.file(objectName);
-
-      // Check if file exists
-      const [exists] = await file.exists();
-      if (exists) {
-        return file;
-      }
-    }
-
-    return null;
-  }
-
   // Downloads an object to the response.
   async downloadObject(file: File, res: Response, cacheTtlSec: number = 3600) {
     try {
       // Get file metadata
       const [metadata] = await file.getMetadata();
       
-      // Set appropriate headers
+      // Set appropriate headers for video streaming
       res.set({
         "Content-Type": metadata.contentType || "application/octet-stream",
         "Content-Length": metadata.size,
+        "Accept-Ranges": "bytes",
         "Cache-Control": `public, max-age=${cacheTtlSec}`,
       });
 
@@ -119,33 +100,78 @@ export class ObjectStorageService {
     }
   }
 
-  // Gets the upload URL for an image
-  async getImageUploadURL(): Promise<{ uploadURL: string; imageId: string }> {
-    const publicSearchPaths = this.getPublicObjectSearchPaths();
-    if (publicSearchPaths.length === 0) {
-      throw new Error("No public search paths configured");
+  // Gets the upload URL for an object entity.
+  async getObjectEntityUploadURL(): Promise<string> {
+    const privateObjectDir = this.getPrivateObjectDir();
+    if (!privateObjectDir) {
+      throw new Error(
+        "PRIVATE_OBJECT_DIR not set. Create a bucket in 'Object Storage' " +
+          "tool and set PRIVATE_OBJECT_DIR env var."
+      );
     }
 
-    const imageId = randomUUID();
-    const fullPath = `${publicSearchPaths[0]}/images/${imageId}`;
+    const objectId = randomUUID();
+    const fullPath = `${privateObjectDir}/videos/${objectId}`;
 
     const { bucketName, objectName } = parseObjectPath(fullPath);
 
     // Sign URL for PUT method with TTL
-    const uploadURL = await signObjectURL({
+    return signObjectURL({
       bucketName,
       objectName,
       method: "PUT",
       ttlSec: 900,
     });
-
-    return { uploadURL, imageId };
   }
 
-  // Get public URL for an uploaded image
-  getImagePublicURL(imageId: string): string {
-    const publicSearchPaths = this.getPublicObjectSearchPaths();
-    return `/public-objects/images/${imageId}`;
+  // Gets the object entity file from the object path.
+  async getObjectEntityFile(objectPath: string): Promise<File> {
+    if (!objectPath.startsWith("/objects/")) {
+      throw new ObjectNotFoundError();
+    }
+
+    const parts = objectPath.slice(1).split("/");
+    if (parts.length < 2) {
+      throw new ObjectNotFoundError();
+    }
+
+    const entityId = parts.slice(1).join("/");
+    let entityDir = this.getPrivateObjectDir();
+    if (!entityDir.endsWith("/")) {
+      entityDir = `${entityDir}/`;
+    }
+    const objectEntityPath = `${entityDir}${entityId}`;
+    const { bucketName, objectName } = parseObjectPath(objectEntityPath);
+    const bucket = objectStorageClient.bucket(bucketName);
+    const objectFile = bucket.file(objectName);
+    const [exists] = await objectFile.exists();
+    if (!exists) {
+      throw new ObjectNotFoundError();
+    }
+    return objectFile;
+  }
+
+  normalizeObjectEntityPath(rawPath: string): string {
+    if (!rawPath.startsWith("https://storage.googleapis.com/")) {
+      return rawPath;
+    }
+  
+    // Extract the path from the URL by removing query parameters and domain
+    const url = new URL(rawPath);
+    const rawObjectPath = url.pathname;
+  
+    let objectEntityDir = this.getPrivateObjectDir();
+    if (!objectEntityDir.endsWith("/")) {
+      objectEntityDir = `${objectEntityDir}/`;
+    }
+  
+    if (!rawObjectPath.startsWith(objectEntityDir)) {
+      return rawObjectPath;
+    }
+  
+    // Extract the entity ID from the path
+    const entityId = rawObjectPath.slice(objectEntityDir.length);
+    return `/objects/${entityId}`;
   }
 }
 

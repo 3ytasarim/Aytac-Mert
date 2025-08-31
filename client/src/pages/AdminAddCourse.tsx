@@ -11,7 +11,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { BookOpen, Upload, Save, ArrowLeft, ArrowRight, Plus, X, Video, GripVertical } from "lucide-react";
+import { BookOpen, Upload, Save, ArrowLeft, ArrowRight, Plus, X, Video, GripVertical, FileVideo } from "lucide-react";
+import { ObjectUploader } from "@/components/ui/ObjectUploader";
+import type { UploadResult } from "@uppy/core";
 import { z } from "zod";
 
 const courseSchema = z.object({
@@ -23,8 +25,19 @@ const courseSchema = z.object({
 
 const lessonSchema = z.object({
   title: z.string().min(1, "Bölüm başlığı gereklidir"),
-  videoEmbedCode: z.string().min(1, "Video embed kodu gereklidir"),
+  videoEmbedCode: z.string().optional(),
+  videoUrl: z.string().optional(),
+  videoType: z.enum(["embed", "upload"]).default("embed"),
   orderIndex: z.number().min(0, "Sıra numarası 0'dan küçük olamaz"),
+}).refine((data) => {
+  if (data.videoType === "embed") {
+    return data.videoEmbedCode && data.videoEmbedCode.length > 0;
+  } else {
+    return data.videoUrl && data.videoUrl.length > 0;
+  }
+}, {
+  message: "Video embed kodu veya video dosyası gereklidir",
+  path: ["videoEmbedCode"]
 });
 
 type CourseFormData = z.infer<typeof courseSchema>;
@@ -44,6 +57,7 @@ export default function AdminAddCourse() {
     imageUrl: "",
   });
   const [lessons, setLessons] = useState<LessonFormData[]>([]);
+  const [uploadingLessons, setUploadingLessons] = useState<Record<number, boolean>>({});
   const [createdCourseId, setCreatedCourseId] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -191,6 +205,8 @@ export default function AdminAddCourse() {
     setLessons(prev => [...prev, {
       title: "",
       videoEmbedCode: "",
+      videoUrl: "",
+      videoType: "embed" as const,
       orderIndex: prev.length
     }]);
   };
@@ -596,25 +612,127 @@ export default function AdminAddCourse() {
                             )}
                           </div>
 
-                          {/* Video Embed Code */}
+                          {/* Video Type Selection */}
                           <div className="space-y-2">
-                            <Label htmlFor={`lesson-video-${index}`}>Video Embed Kodu</Label>
-                            <Textarea
-                              id={`lesson-video-${index}`}
-                              placeholder="YouTube iframe embed kodunu buraya yapıştırın..."
-                              value={lesson.videoEmbedCode}
-                              onChange={(e) => handleLessonChange(index, "videoEmbedCode", e.target.value)}
-                              rows={3}
-                              className={lessonErrors[index]?.videoEmbedCode ? "border-red-500" : ""}
-                              data-testid={`textarea-lesson-video-${index}`}
-                            />
-                            {lessonErrors[index]?.videoEmbedCode && (
-                              <p className="text-sm text-red-600">{lessonErrors[index].videoEmbedCode}</p>
-                            )}
-                            <p className="text-xs text-gray-500">
-                              Video paylaşım hizmetinizden HTML kodunu yapıştırın.
-                            </p>
+                            <Label>Video Türü</Label>
+                            <div className="flex gap-4">
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name={`videoType-${index}`}
+                                  value="embed"
+                                  checked={lesson.videoType === "embed"}
+                                  onChange={(e) => {
+                                    handleLessonChange(index, "videoType", e.target.value);
+                                    // Clear other video field when switching types
+                                    handleLessonChange(index, "videoUrl", "");
+                                  }}
+                                  className="text-blue-600"
+                                />
+                                <span className="text-sm">YouTube/Embed Kodu</span>
+                              </label>
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name={`videoType-${index}`}
+                                  value="upload"
+                                  checked={lesson.videoType === "upload"}
+                                  onChange={(e) => {
+                                    handleLessonChange(index, "videoType", e.target.value);
+                                    // Clear other video field when switching types
+                                    handleLessonChange(index, "videoEmbedCode", "");
+                                  }}
+                                  className="text-blue-600"
+                                />
+                                <span className="text-sm">Video Dosyası Yükle</span>
+                              </label>
+                            </div>
                           </div>
+
+                          {/* Video Content based on type */}
+                          {lesson.videoType === "embed" ? (
+                            <div className="space-y-2">
+                              <Label htmlFor={`lesson-video-${index}`}>YouTube Video URL'si</Label>
+                              <Textarea
+                                id={`lesson-video-${index}`}
+                                placeholder="https://www.youtube.com/watch?v=..."
+                                value={lesson.videoEmbedCode || ""}
+                                onChange={(e) => handleLessonChange(index, "videoEmbedCode", e.target.value)}
+                                rows={3}
+                                className={lessonErrors[index]?.videoEmbedCode ? "border-red-500" : ""}
+                                data-testid={`textarea-lesson-video-${index}`}
+                              />
+                              {lessonErrors[index]?.videoEmbedCode && (
+                                <p className="text-sm text-red-600">{lessonErrors[index].videoEmbedCode}</p>
+                              )}
+                              <p className="text-xs text-gray-500">
+                                YouTube video URL'sini yapıştırın.
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <Label>Video Dosyası</Label>
+                              <div className="flex items-center gap-4">
+                                <ObjectUploader
+                                  maxNumberOfFiles={1}
+                                  maxFileSize={104857600} // 100MB
+                                  allowedTypes={['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/quicktime']}
+                                  onGetUploadParameters={async () => {
+                                    const response = await apiRequest("/api/admin/lessons/upload", "POST");
+                                    const data = await response.json();
+                                    return {
+                                      method: "PUT" as const,
+                                      url: data.uploadURL,
+                                    };
+                                  }}
+                                  onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+                                    if (result.successful?.[0]?.uploadURL) {
+                                      const uploadUrl = result.successful[0].uploadURL as string;
+                                      console.log('Upload URL:', uploadUrl);
+                                      
+                                      // Extract object path from the Google Cloud Storage URL
+                                      let objectPath = '';
+                                      if (uploadUrl.includes('storage.googleapis.com')) {
+                                        // Extract the object path from GCS URL
+                                        const urlParts = uploadUrl.split('/');
+                                        const bucketIndex = urlParts.findIndex(part => part === 'replit-objstore-a63a6255-5761-4388-819b-d9200523e108');
+                                        if (bucketIndex !== -1) {
+                                          const pathParts = urlParts.slice(bucketIndex + 1);
+                                          // Remove .private/ prefix and add /objects/ prefix
+                                          const cleanPath = pathParts.join('/').replace('.private/', '');
+                                          objectPath = `/objects/${cleanPath}`;
+                                        }
+                                      }
+                                      
+                                      console.log('Converted object path:', objectPath);
+                                      handleLessonChange(index, "videoUrl", objectPath);
+                                      setUploadingLessons(prev => ({ ...prev, [index]: false }));
+                                      toast({
+                                        title: "Başarılı",
+                                        description: "Video başarıyla yüklendi!",
+                                      });
+                                    }
+                                  }}
+                                  buttonClassName={uploadingLessons[index] ? "opacity-50 cursor-not-allowed" : ""}
+                                >
+                                  <FileVideo className="h-4 w-4 mr-2" />
+                                  {uploadingLessons[index] ? "Yükleniyor..." : 
+                                   lesson.videoUrl ? "Video Değiştir" : "Video Yükle"}
+                                </ObjectUploader>
+                                {lesson.videoUrl && (
+                                  <div className="flex items-center text-sm text-green-600">
+                                    <span>✓ Video yüklendi</span>
+                                  </div>
+                                )}
+                              </div>
+                              {lessonErrors[index]?.videoUrl && (
+                                <p className="text-sm text-red-600">{lessonErrors[index].videoUrl}</p>
+                              )}
+                              <p className="text-xs text-gray-500">
+                                MP4, WebM, AVI, MOV formatlarında video yükleyebilirsiniz. (Max: 100MB)
+                              </p>
+                            </div>
+                          )}
 
                           {/* Order Index */}
                           <div className="space-y-2">
