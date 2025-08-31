@@ -117,7 +117,7 @@ export function ImageUploader({ currentImageUrl, onImageChange, label = "Resim" 
           <img 
             src={currentImageUrl} 
             alt="Yüklenen resim"
-            className="w-full max-w-lg h-80 object-cover rounded border"
+            className="w-full max-w-lg h-96 object-cover rounded border"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
@@ -132,7 +132,7 @@ export function ImageUploader({ currentImageUrl, onImageChange, label = "Resim" 
           </Button>
         </div>
       ) : (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center min-h-80">
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center min-h-96">
           <ImageIcon className="h-12 w-12 mx-auto text-gray-400 mb-2" />
           <div className="text-gray-500 mb-4">Henüz resim eklenmemiş</div>
           
