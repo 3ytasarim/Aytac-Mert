@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Navigation } from "@/components/ui/navigation";
 import { ContactModal } from "@/components/ui/contact-modal";
 import { ProfileEditModal } from "@/components/ui/profile-edit-modal";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,7 @@ export default function StudentDashboard() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const { data: user } = useQuery<UserType>({
     queryKey: ["/api/auth/user"],
@@ -255,11 +257,11 @@ export default function StudentDashboard() {
                       <CardFooter>
                         <Button 
                           className="w-full"
-                          onClick={() => navigate(`/course/${enrollment.course.id}`)}
+                          onClick={() => setLocation(`/course/${enrollment.course.id}`)}
                           data-testid={`button-view-course-${enrollment.course.id}`}
                         >
                           <BookOpen className="h-4 w-4 mr-2" />
-                          Kursa Devam Et
+                          Derse Gözat
                         </Button>
                       </CardFooter>
                     </Card>

@@ -221,9 +221,24 @@ export default function CourseViewer() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
-                              {lesson.title}
-                            </p>
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {lesson.title}
+                              </p>
+                              <Button
+                                size="sm"
+                                variant={selectedLessonIndex === index ? "default" : "outline"}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedLessonIndex(index);
+                                }}
+                                className="ml-2 text-xs"
+                                data-testid={`video-watch-button-${lesson.id}`}
+                              >
+                                <PlayCircle className="h-3 w-3 mr-1" />
+                                {selectedLessonIndex === index ? "İzleniyor" : "Video İzle"}
+                              </Button>
+                            </div>
                             <div className="flex items-center text-xs text-gray-500">
                               <Clock className="h-3 w-3 mr-1" />
                               Bölüm {index + 1}
