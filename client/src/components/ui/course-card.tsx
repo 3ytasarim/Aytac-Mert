@@ -17,7 +17,8 @@ export function CourseCard({ course, onPurchase }: CourseCardProps) {
       <img
         src={course.imageUrl || "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400"}
         alt={course.title}
-        className="w-full h-64 object-cover grayscale hover:grayscale-0 transition-all duration-500"
+        className="w-full grayscale hover:grayscale-0 transition-all duration-500"
+        style={{ height: '300px', objectFit: 'cover' }}
         data-testid="img-course"
       />
       
@@ -28,10 +29,13 @@ export function CourseCard({ course, onPurchase }: CourseCardProps) {
         <p className="text-gray-600 mb-6 text-lg leading-relaxed" data-testid="text-course-description">
           {course.description}
         </p>
-        <div className="flex justify-center">
+        <div className="flex justify-between items-center">
+          <div className="text-2xl font-bold text-green-600">
+            {formatPrice(course.price)}
+          </div>
           <Button
             onClick={() => onPurchase(course)}
-            className="bg-black text-white hover:bg-gray-800 transition-colors font-semibold px-8 py-3 hover-lift rounded-full"
+            className="bg-black text-white hover:bg-gray-800 transition-colors font-semibold px-6 py-2 hover-lift rounded-full"
             data-testid={`button-purchase-${course.id}`}
           >
             Satın Al
