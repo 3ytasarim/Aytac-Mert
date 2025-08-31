@@ -309,7 +309,9 @@ export default function AdminCourseEdit() {
     addLessonMutation.mutate({
       courseId: selectedCourse.id,
       title: newLesson.title,
-      videoEmbedCode: newLesson.videoEmbedCode
+      videoEmbedCode: newLesson.videoEmbedCode,
+      videoUrl: newLesson.videoUrl,
+      videoType: newLesson.videoType
     });
   };
 
@@ -318,7 +320,9 @@ export default function AdminCourseEdit() {
     setEditLessonForm({
       id: lesson.id,
       title: lesson.title,
-      videoEmbedCode: lesson.videoEmbedCode
+      videoEmbedCode: lesson.videoEmbedCode || "",
+      videoUrl: lesson.videoUrl || "",
+      videoType: lesson.videoType || "embed"
     });
   };
 
@@ -343,7 +347,7 @@ export default function AdminCourseEdit() {
 
   const cancelEdit = () => {
     setEditingLesson(null);
-    setEditLessonForm({ id: "", title: "", videoEmbedCode: "" });
+    setEditLessonForm({ id: "", title: "", videoEmbedCode: "", videoUrl: "", videoType: "embed" });
   };
 
   if (isLoading) {
