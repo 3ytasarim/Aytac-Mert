@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Edit, Plus, Trash2, Video, Save, X, Check } from "lucide-react";
+import { Edit, Plus, Trash2, Video, Save, X, Check, FileVideo } from "lucide-react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { ImageUploader } from "@/components/ImageUploader";
+import { ObjectUploader } from "@/components/ui/ObjectUploader";
+import type { UploadResult } from "@uppy/core";
 
 interface Course {
   id: string;
@@ -26,7 +28,9 @@ interface Lesson {
   id: string;
   courseId: string;
   title: string;
-  videoEmbedCode: string;
+  videoEmbedCode: string | null;
+  videoUrl: string | null;
+  videoType: string;
   orderIndex: number;
 }
 
@@ -43,13 +47,18 @@ export default function AdminCourseEdit() {
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [newLesson, setNewLesson] = useState({
     title: "",
-    videoEmbedCode: ""
+    videoEmbedCode: "",
+    videoUrl: "",
+    videoType: "embed"
   });
   const [editLessonForm, setEditLessonForm] = useState({
     id: "",
     title: "",
-    videoEmbedCode: ""
+    videoEmbedCode: "",
+    videoUrl: "",
+    videoType: "embed"
   });
+  const [uploadingLessons, setUploadingLessons] = useState<Record<string, boolean>>({});
 
   // Redirect to home if not authenticated or not admin
   useEffect(() => {
@@ -133,7 +142,7 @@ export default function AdminCourseEdit() {
   });
 
   const addLessonMutation = useMutation({
-    mutationFn: async (lessonData: { courseId: string; title: string; videoEmbedCode: string }) => {
+    mutationFn: async (lessonData: { courseId: string; title: string; videoEmbedCode: string; videoUrl: string; videoType: string }) => {
       const response = await fetch('/api/admin/lessons', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -141,7 +150,9 @@ export default function AdminCourseEdit() {
           courseId: lessonData.courseId,
           lessons: [{
             title: lessonData.title,
-            videoEmbedCode: lessonData.videoEmbedCode
+            videoEmbedCode: lessonData.videoEmbedCode || null,
+            videoUrl: lessonData.videoUrl || null,
+            videoType: lessonData.videoType || "embed"
           }]
         }),
       });
@@ -156,7 +167,7 @@ export default function AdminCourseEdit() {
         title: "Başarılı",
         description: "Yeni bölüm eklendi.",
       });
-      setNewLesson({ title: "", videoEmbedCode: "" });
+      setNewLesson({ title: "", videoEmbedCode: "", videoUrl: "", videoType: "embed" });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses", selectedCourse?.id, "lessons"] });
     },
     onError: (error) => {
@@ -201,7 +212,7 @@ export default function AdminCourseEdit() {
         description: "Bölüm güncellendi.",
       });
       setEditingLesson(null);
-      setEditLessonForm({ id: "", title: "", videoEmbedCode: "" });
+      setEditLessonForm({ id: "", title: "", videoEmbedCode: "", videoUrl: "", videoType: "embed" });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses", selectedCourse?.id, "lessons"] });
     },
     onError: (error) => {
@@ -560,18 +571,124 @@ export default function AdminCourseEdit() {
                             data-testid="new-lesson-title"
                           />
                         </div>
-                        <div>
-                          <Label>YouTube Video URL'si</Label>
-                          <Input
-                            value={newLesson.videoEmbedCode}
-                            onChange={(e) => setNewLesson({...newLesson, videoEmbedCode: e.target.value})}
-                            placeholder="https://www.youtube.com/watch?v=..."
-                            data-testid="new-lesson-video"
-                          />
+                        
+                        {/* Video Type Selection */}
+                        <div className="space-y-2">
+                          <Label>Video Türü</Label>
+                          <div className="flex gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="newVideoType"
+                                value="embed"
+                                checked={newLesson.videoType === "embed"}
+                                onChange={(e) => {
+                                  setNewLesson({...newLesson, videoType: e.target.value, videoUrl: ""});
+                                }}
+                                className="text-blue-600"
+                              />
+                              <span className="text-sm">YouTube URL</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="newVideoType"
+                                value="upload"
+                                checked={newLesson.videoType === "upload"}
+                                onChange={(e) => {
+                                  setNewLesson({...newLesson, videoType: e.target.value, videoEmbedCode: ""});
+                                }}
+                                className="text-blue-600"
+                              />
+                              <span className="text-sm">Video Dosyası Yükle</span>
+                            </label>
+                          </div>
                         </div>
+
+                        {/* Video Content based on type */}
+                        {newLesson.videoType === "embed" ? (
+                          <div>
+                            <Label>YouTube Video URL'si</Label>
+                            <Input
+                              value={newLesson.videoEmbedCode}
+                              onChange={(e) => setNewLesson({...newLesson, videoEmbedCode: e.target.value})}
+                              placeholder="https://www.youtube.com/watch?v=..."
+                              data-testid="new-lesson-video"
+                            />
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <Label>Video Dosyası</Label>
+                            <div className="flex items-center gap-4">
+                              <ObjectUploader
+                                maxNumberOfFiles={1}
+                                maxFileSize={104857600} // 100MB
+                                allowedTypes={['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/quicktime']}
+                                onGetUploadParameters={async () => {
+                                  const response = await apiRequest("/api/admin/lessons/upload", "POST");
+                                  const data = await response.json();
+                                  return {
+                                    method: "PUT" as const,
+                                    url: data.uploadURL,
+                                  };
+                                }}
+                                onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+                                  if (result.successful?.[0]?.uploadURL) {
+                                    const uploadUrl = result.successful[0].uploadURL as string;
+                                    console.log('Upload URL:', uploadUrl);
+                                    
+                                    // Extract object path from the Google Cloud Storage URL
+                                    let objectPath = '';
+                                    if (uploadUrl.includes('storage.googleapis.com')) {
+                                      const urlParts = uploadUrl.split('/');
+                                      const bucketIndex = urlParts.findIndex(part => part === 'replit-objstore-a63a6255-5761-4388-819b-d9200523e108');
+                                      if (bucketIndex !== -1) {
+                                        const pathParts = urlParts.slice(bucketIndex + 1);
+                                        const cleanPath = pathParts.join('/').replace('.private/', '');
+                                        objectPath = `/objects/${cleanPath}`;
+                                      }
+                                    }
+                                    
+                                    setNewLesson({...newLesson, videoUrl: objectPath});
+                                    setUploadingLessons(prev => ({ ...prev, "new": false }));
+                                    toast({
+                                      title: "Başarılı",
+                                      description: "Video başarıyla yüklendi!",
+                                    });
+                                  }
+                                }}
+                                buttonClassName={uploadingLessons["new"] ? "opacity-50 cursor-not-allowed" : ""}
+                              >
+                                <FileVideo className="h-4 w-4 mr-2" />
+                                {uploadingLessons["new"] ? "Yükleniyor..." : 
+                                 newLesson.videoUrl ? "Video Değiştir" : "Video Yükle"}
+                              </ObjectUploader>
+                              {newLesson.videoUrl && (
+                                <div className="flex items-center text-sm text-green-600">
+                                  <span>✓ Video yüklendi</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        
                         <Button 
-                          onClick={handleAddLesson}
-                          disabled={addLessonMutation.isPending}
+                          onClick={() => {
+                            const hasContent = newLesson.videoType === "embed" 
+                              ? newLesson.videoEmbedCode 
+                              : newLesson.videoUrl;
+                              
+                            if (newLesson.title && hasContent) {
+                              addLessonMutation.mutate({
+                                courseId: selectedCourse.id,
+                                title: newLesson.title,
+                                videoEmbedCode: newLesson.videoEmbedCode,
+                                videoUrl: newLesson.videoUrl,
+                                videoType: newLesson.videoType
+                              });
+                            }
+                          }}
+                          disabled={!newLesson.title || (!newLesson.videoEmbedCode && !newLesson.videoUrl) || addLessonMutation.isPending}
                           className="w-full"
                           data-testid="add-lesson-button"
                         >
