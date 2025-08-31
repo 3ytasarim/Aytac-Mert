@@ -224,6 +224,26 @@ export default function Landing() {
             <p className="section-subtitle">
               Temel eğitimden profesyonel eğitmenliğe kadar kapsamlı programlar
             </p>
+            
+            {/* Yeni Eğitimler Duyurusu */}
+            <div className="announcement-banner animate-on-scroll">
+              <div className="announcement-content">
+                <div className="announcement-icon">
+                  <svg className="announcement-sparkle" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0l3.09 6.26L22 9l-6.91 2.74L12 18l-3.09-6.26L2 9l6.91-2.74L12 0z"/>
+                  </svg>
+                </div>
+                <div className="announcement-text">
+                  <span className="announcement-badge">YENİ</span>
+                  <p className="announcement-message">
+                    Yeni eğitim videoları ve kapsamlı dersler <strong>sırasıyla eklenmektedir</strong>
+                  </p>
+                  <p className="announcement-sub">
+                    Her hafta yeni içeriklerle köpek eğitimi yolculuğunuzu destekliyoruz
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {coursesLoading ? (
