@@ -243,9 +243,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCourse(id: string): Promise<void> {
+    // Delete in correct order to avoid foreign key constraint violations
     // First delete related enrollments
     await db.delete(enrollments).where(eq(enrollments.courseId, id));
-    // Then delete related lessons
+    // Delete related invoices
+    await db.delete(invoices).where(eq(invoices.courseId, id));
+    // Delete related lessons
     await db.delete(lessons).where(eq(lessons.courseId, id));
     // Finally delete the course
     await db.delete(courses).where(eq(courses.id, id));
