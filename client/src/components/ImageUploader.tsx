@@ -108,12 +108,9 @@ export function ImageUploader({ currentImageUrl, onImageChange, label = "Resim" 
     onImageChange(null);
   };
 
-  console.log("ImageUploader rendering:", { currentImageUrl, label });
-  
   return (
-    <div className="space-y-3" style={{ minHeight: '200px', border: '2px solid red', padding: '10px', backgroundColor: 'lightblue' }}>
-      <Label style={{ fontSize: '16px', fontWeight: 'bold', color: 'black' }}>{label}</Label>
-      <div style={{ color: 'black' }}>Debug: currentImageUrl = {currentImageUrl || 'null'}</div>
+    <div className="space-y-3">
+      <Label>{label}</Label>
       
       {currentImageUrl ? (
         <div className="relative">
