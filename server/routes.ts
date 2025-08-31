@@ -995,7 +995,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await objectStorageService.downloadObject(objectFile, res);
     } catch (error) {
       console.error("Error serving video:", error);
-      if (error.name === 'ObjectNotFoundError') {
+      if ((error as any).name === 'ObjectNotFoundError') {
         return res.sendStatus(404);
       }
       return res.sendStatus(500);
@@ -1160,11 +1160,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const { ObjectStorageService } = await import("./objectStorage");
-      const objectStorageService = new ObjectStorageService();
-      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
       // Generate a simple image ID
       const imageId = `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create public path for the image
+      const publicPath = `/replit-objstore-a63a6255-5761-4388-819b-d9200523e108/public/images/${imageId}`;
+      
+      // Parse the path and create signed upload URL
+      const pathParts = publicPath.split("/");
+      const bucketName = pathParts[1];
+      const objectName = pathParts.slice(2).join("/");
+      
+      // Create signed upload URL
+      const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
+      const request = {
+        bucket_name: bucketName,
+        object_name: objectName,
+        method: "PUT",
+        expires_at: new Date(Date.now() + 900 * 1000).toISOString(),
+      };
+      
+      const response = await fetch(
+        `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(request),
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Failed to sign object URL: ${response.status}`);
+      }
+      
+      const { signed_url: uploadURL } = await response.json();
+      
       res.json({ uploadURL, imageId });
     } catch (error) {
       console.error("Error generating upload URL:", error);
