@@ -530,7 +530,7 @@ export class DatabaseStorage implements IStorage {
       activeCourses: activeCourses.count.toString(), // Eklenen Eğitimler
       totalEnrollments: activeEnrollments.count.toString(),
       recentContacts: recentContacts.count.toString(),
-      totalRevenue: (revenueResult.total / 100).toString(), // Kuruştan TL'ye, formatlamayı frontend'de yapalım
+      totalRevenue: (revenueResult.total / 100).toString(), // Convert kuruş to TL for display
       activeStudents: "1", // Yasemin aktif öğrenci
       thisMonthRegistrations: thisMonthRegistrations.count.toString(),
       totalLessons: totalLessons.count.toString(),

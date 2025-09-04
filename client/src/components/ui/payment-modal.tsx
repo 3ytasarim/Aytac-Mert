@@ -21,7 +21,7 @@ export function PaymentModal({ isOpen, onClose, course }: PaymentModalProps) {
       currency: 'TRY',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price / 100);
+    }).format(price); // Course prices are already in TL
   };
 
   const copyIban = () => {

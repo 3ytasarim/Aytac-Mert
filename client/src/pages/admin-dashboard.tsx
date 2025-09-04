@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, BookOpen, MessageSquare, TrendingUp, Calendar, Mail, Phone, Shield, BarChart3, Activity } from "lucide-react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { formatTL } from "@/lib/money";
 
 interface User {
   id: string;
@@ -152,7 +153,7 @@ export default function AdminDashboard() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-purple-600">Satışlar</p>
                   <p className="text-xl lg:text-3xl font-bold text-gray-900">
-                    ₺{Number((dashboardStats as any)?.totalRevenue || 0).toLocaleString('tr-TR')}
+                    {formatTL(Number((dashboardStats as any)?.totalRevenue || 0))}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Toplam gelir</p>
                 </div>
