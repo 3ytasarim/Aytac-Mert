@@ -101,10 +101,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-blue-600">Bu Ay Kayıtlar</p>
-                  <p className="text-xl lg:text-3xl font-bold text-gray-900">
+                  <p className="text-xl lg:text-3xl font-bold text-gray-900" data-testid="text-thisMonthRegistrations">
                     {(dashboardStats as any)?.thisMonthRegistrations || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">+20% geçen aya göre</p>
+                  <p className="text-xs text-gray-500 mt-1" data-testid="text-totalStudents">Toplam: {(dashboardStats as any)?.totalStudents || 0} öğrenci</p>
                 </div>
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Users className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
@@ -117,11 +117,11 @@ export default function AdminDashboard() {
             <CardContent className="p-4 lg:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs lg:text-sm font-medium text-green-600">Eklenen Eğitimler</p>
-                  <p className="text-xl lg:text-3xl font-bold text-gray-900">
+                  <p className="text-xs lg:text-sm font-medium text-green-600">Toplam Kurslar</p>
+                  <p className="text-xl lg:text-3xl font-bold text-gray-900" data-testid="text-totalCourses">
                     {(dashboardStats as any)?.activeCourses || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">{(dashboardStats as any)?.totalLessons || 0} İçerik</p>
+                  <p className="text-xs text-gray-500 mt-1" data-testid="text-totalLessons">{(dashboardStats as any)?.totalLessons || 0} Toplam Bölüm</p>
                 </div>
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <BookOpen className="h-5 w-5 lg:h-6 lg:w-6 text-green-600" />
@@ -135,10 +135,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-orange-600">Aktif Öğrenciler</p>
-                  <p className="text-xl lg:text-3xl font-bold text-gray-900">
+                  <p className="text-xl lg:text-3xl font-bold text-gray-900" data-testid="text-activeStudents">
                     {(dashboardStats as any)?.activeStudents || 0}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Şu anda aktif</p>
+                  <p className="text-xs text-gray-500 mt-1">Kurslara kayıtlı</p>
                 </div>
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Activity className="h-5 w-5 lg:h-6 lg:w-6 text-orange-600" />
@@ -152,8 +152,8 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs lg:text-sm font-medium text-purple-600">Satışlar</p>
-                  <p className="text-xl lg:text-3xl font-bold text-gray-900">
-                    {formatTL(Number((dashboardStats as any)?.totalRevenue || 0))}
+                  <p className="text-xl lg:text-3xl font-bold text-gray-900" data-testid="text-totalRevenue">
+                    {formatTL((dashboardStats as any)?.totalRevenue || 0)}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Toplam gelir</p>
                 </div>

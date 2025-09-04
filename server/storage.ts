@@ -76,14 +76,14 @@ export interface IStorage {
 
   // Admin operations
   getDashboardStats(): Promise<{
-    totalStudents: string;
-    activeCourses: string;
-    totalEnrollments: string;
-    recentContacts: string;
-    totalRevenue: string;
-    activeStudents: string;
-    thisMonthRegistrations: string;
-    totalLessons: string;
+    totalStudents: number;
+    activeCourses: number;
+    totalEnrollments: number;
+    recentContacts: number;
+    totalRevenue: number;
+    activeStudents: number;
+    thisMonthRegistrations: number;
+    totalLessons: number;
   }>;
   getAllUsers(): Promise<User[]>;
   deleteUser(id: string): Promise<void>;
@@ -479,14 +479,14 @@ export class DatabaseStorage implements IStorage {
 
   // Admin operations
   async getDashboardStats(): Promise<{
-    totalStudents: string;
-    activeCourses: string;
-    totalEnrollments: string;
-    recentContacts: string;
-    totalRevenue: string;
-    activeStudents: string;
-    thisMonthRegistrations: string;
-    totalLessons: string;
+    totalStudents: number;
+    activeCourses: number;
+    totalEnrollments: number;
+    recentContacts: number;
+    totalRevenue: number;
+    activeStudents: number;
+    thisMonthRegistrations: number;
+    totalLessons: number;
   }> {
     // Bu ay kayıtlar (bu ay oluşturulan öğrenciler)
     const [thisMonthRegistrations] = await db
@@ -499,11 +499,17 @@ export class DatabaseStorage implements IStorage {
       .select({ count: sql<number>`count(*)` })
       .from(courses);
     
-    // Aktif öğrenciler (giriş yapmış öğrenciler sayısı - basit sayım)
+    // Toplam öğrenciler (tüm kayıtlı öğrenciler)
     const [totalStudents] = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
       .where(eq(users.role, "student"));
+    
+    // Aktif öğrenciler (aktif kayıtları olan öğrenciler)
+    const [activeStudentsResult] = await db
+      .select({ count: sql<number>`count(DISTINCT ${enrollments.userId})` })
+      .from(enrollments)
+      .where(sql`${enrollments.status} IN ('active', 'enrolled', 'in_progress')`);
     
     // Toplam satışlar (toplam gelir TL olarak)
     const [revenueResult] = await db
@@ -526,14 +532,14 @@ export class DatabaseStorage implements IStorage {
       .where(sql`${contacts.createdAt} >= CURRENT_DATE - INTERVAL '30 days'`);
 
     return {
-      totalStudents: totalStudents.count.toString(),
-      activeCourses: activeCourses.count.toString(), // Eklenen Eğitimler
-      totalEnrollments: activeEnrollments.count.toString(),
-      recentContacts: recentContacts.count.toString(),
-      totalRevenue: (revenueResult.total / 100).toString(), // Convert kuruş to TL for display
-      activeStudents: "1", // Yasemin aktif öğrenci
-      thisMonthRegistrations: thisMonthRegistrations.count.toString(),
-      totalLessons: totalLessons.count.toString(),
+      totalStudents: totalStudents.count,
+      activeCourses: activeCourses.count, // Total courses
+      totalEnrollments: activeEnrollments.count,
+      recentContacts: recentContacts.count,
+      totalRevenue: Math.round(revenueResult.total / 100), // Convert kuruş to TL for display
+      activeStudents: activeStudentsResult.count, // Real active student count
+      thisMonthRegistrations: thisMonthRegistrations.count,
+      totalLessons: totalLessons.count,
     };
   }
 
