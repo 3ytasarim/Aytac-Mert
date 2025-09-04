@@ -687,9 +687,8 @@ export class DatabaseStorage implements IStorage {
     const enrollmentSpent = enrollmentSpentResult[0]?.totalPrice || 0;
     const invoiceSpent = invoiceSpentResult[0]?.totalAmount || 0;
     
-    // Her iki tablodan gelen miktarları topla (kuruş cinsinden)
-    const totalSpentKurus = Math.max(enrollmentSpent, invoiceSpent); // En yüksek değeri al
-    const totalSpent = totalSpentKurus / 100; // TL'ye çevir
+    // Her iki tablodan gelen miktarları topla (TL cinsinden)
+    const totalSpent = Math.max(enrollmentSpent, invoiceSpent); // En yüksek değeri al (zaten TL cinsinden)
 
     return {
       activeCourses: activeCourses.count.toString(),
