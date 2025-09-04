@@ -678,12 +678,38 @@ export default function AdminAddCourse() {
                                   maxFileSize={104857600} // 100MB
                                   allowedTypes={['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/quicktime']}
                                   onGetUploadParameters={async () => {
-                                    const response = await apiRequest("/api/admin/lessons/upload", "POST");
-                                    const data = await response.json();
-                                    return {
-                                      method: "PUT" as const,
-                                      url: data.uploadURL,
-                                    };
+                                    try {
+                                      const response = await apiRequest("/api/admin/lessons/upload", "POST");
+                                      
+                                      if (!response.ok) {
+                                        console.error('Upload URL request failed:', response.status, response.statusText);
+                                        throw new Error(`Upload URL alınamadı: ${response.status}`);
+                                      }
+                                      
+                                      const contentType = response.headers.get('content-type');
+                                      if (!contentType || !contentType.includes('application/json')) {
+                                        console.error('Non-JSON response received:', contentType);
+                                        const text = await response.text();
+                                        console.error('Response text:', text.substring(0, 200));
+                                        throw new Error('Server geçersiz yanıt döndürdü');
+                                      }
+                                      
+                                      const data = await response.json();
+                                      console.log('Upload URL received:', data.uploadURL);
+                                      
+                                      return {
+                                        method: "PUT" as const,
+                                        url: data.uploadURL,
+                                      };
+                                    } catch (error) {
+                                      console.error('Upload parameters error:', error);
+                                      toast({
+                                        title: "Upload Hatası",
+                                        description: error instanceof Error ? error.message : "Upload URL alınamadı",
+                                        variant: "destructive",
+                                      });
+                                      throw error;
+                                    }
                                   }}
                                   onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
                                     if (result.successful?.[0]?.uploadURL) {

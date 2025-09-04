@@ -1009,10 +1009,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = sessionUser?.id || req.user?.claims?.sub;
       
       if (sessionUser && sessionUser.role === 'admin') {
-        // Continue
+        console.log('Admin authorized via session for video upload');
       } else {
         const user = await storage.getUser(userId);
         if (!user || user.role !== "admin") {
+          console.log('Upload access denied: User not admin');
           return res.status(403).json({ message: "Admin access required" });
         }
       }
@@ -1020,11 +1021,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate presigned URL for video upload
       const { ObjectStorageService } = await import("./objectStorage");
       const objectStorageService = new ObjectStorageService();
+      
+      console.log('Generating upload URL for video...');
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      console.log('Upload URL generated successfully');
+      
       res.json({ uploadURL });
     } catch (error) {
       console.error("Error generating upload URL:", error);
-      res.status(500).json({ message: "Failed to generate upload URL" });
+      
+      // Provide more specific error messages
+      let errorMessage = "Failed to generate upload URL";
+      if (error instanceof Error) {
+        console.error("Error details:", error.message);
+        if (error.message.includes('PRIVATE_OBJECT_DIR')) {
+          errorMessage = "Object storage not configured";
+        } else if (error.message.includes('bucket')) {
+          errorMessage = "Storage bucket access error";
+        } else if (error.message.includes('quota') || error.message.includes('limit')) {
+          errorMessage = "Storage quota exceeded";
+        }
+      }
+      
+      res.status(500).json({ message: errorMessage });
     }
   });
 
