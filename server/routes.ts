@@ -247,23 +247,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin-only routes
   app.get("/api/admin/stats", async (req, res) => {
     try {
-      // First check the session user (for custom login)
       const sessionUser = (req.session as any).user;
       const sessionUserId = (req.session as any).userId;
       const sessionUserRole = (req.session as any).userRole;
       
-      console.log('Admin stats - sessionUser:', sessionUser);
-      console.log('Admin stats - sessionUserId:', sessionUserId);
-      console.log('Admin stats - sessionUserRole:', sessionUserRole);
-      
       // Check if it's the admin user (hardcoded admin or session admin)
       if (sessionUserId === 'admin-user-id' || (sessionUser && sessionUser.role === 'admin') || sessionUserRole === 'admin') {
         const stats = await storage.getDashboardStats();
-        console.log('Dashboard stats:', stats);
         return res.json(stats);
       }
       
-      console.log('Access denied - not admin');
       return res.status(403).json({ message: "Admin yetkisi gerekli" });
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
