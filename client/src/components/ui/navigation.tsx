@@ -247,24 +247,13 @@ export function Navigation() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <RegistrationButton />
-                  <LoginButton />
-                  <Button
-                    variant="outline"
-                    className="w-full py-3 font-semibold border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-black rounded-xl transition-all duration-300"
-                    onClick={() => window.location.href = "/api/login"}
-                    data-testid="mobile-button-login"
-                  >
-                    Giriş Yap
-                  </Button>
-                  <Button
-                    className="w-full py-3 font-semibold bg-black text-white hover:bg-gray-800 rounded-xl transition-all duration-300 hover:shadow-lg"
-                    onClick={() => window.location.href = "/api/login"}
-                    data-testid="mobile-button-register"
-                  >
-                    Üye Ol
-                  </Button>
+                <div className="flex space-x-3">
+                  <div className="flex-1">
+                    <RegistrationButton />
+                  </div>
+                  <div className="flex-1">
+                    <LoginButton />
+                  </div>
                 </div>
               )}
             </div>
