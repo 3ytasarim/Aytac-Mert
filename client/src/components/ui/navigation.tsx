@@ -4,35 +4,49 @@ import { useAuth } from "@/hooks/useAuth";
 import { RegistrationModal } from "@/components/RegistrationModal";
 import { LoginModal } from "@/components/LoginModal";
 
-function RegistrationButton() {
+function RegistrationButton({ onModalOpen }: { onModalOpen?: () => void }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    onModalOpen?.();
+  };
 
   return (
     <>
       <Button
-        onClick={() => setIsModalOpen(true)}
-        className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 bg-black text-white hover:bg-gray-800 border-black hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+        onClick={handleOpenModal}
+        className="w-full auth-btn font-bold px-8 py-4 rounded-2xl border-0 bg-gradient-to-r from-black to-gray-800 text-white hover:from-gray-800 hover:to-black shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1"
         data-testid="button-register"
       >
-        Üye Ol
+        <span className="flex items-center justify-center gap-2">
+          ✨ Üye Ol
+        </span>
       </Button>
       <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
 
-function LoginButton() {
+function LoginButton({ onModalOpen }: { onModalOpen?: () => void }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    onModalOpen?.();
+  };
 
   return (
     <>
       <Button
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleOpenModal}
         variant="outline"
-        className="auth-btn font-semibold px-6 py-3 rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105"
+        className="w-full auth-btn font-bold px-8 py-4 rounded-2xl border-3 border-black text-black hover:bg-black hover:text-white hover:border-black shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1"
         data-testid="button-login"
       >
-        Giriş Yap
+        <span className="flex items-center justify-center gap-2">
+          🔐 Giriş Yap
+        </span>
       </Button>
       <LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
@@ -247,13 +261,9 @@ export function Navigation() {
                   </Button>
                 </div>
               ) : (
-                <div className="flex space-x-3">
-                  <div className="flex-1">
-                    <RegistrationButton />
-                  </div>
-                  <div className="flex-1">
-                    <LoginButton />
-                  </div>
+                <div className="space-y-3">
+                  <RegistrationButton onModalOpen={() => setIsMobileMenuOpen(false)} />
+                  <LoginButton onModalOpen={() => setIsMobileMenuOpen(false)} />
                 </div>
               )}
             </div>
