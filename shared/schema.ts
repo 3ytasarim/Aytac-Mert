@@ -241,6 +241,7 @@ export const insertInvoiceSchema = createInsertSchema(invoices).omit({
 // Registration schema for the popup form
 export const registrationSchema = createInsertSchema(users).pick({
   firstName: true,
+  lastName: true,
   tcNumber: true,
   email: true,
   phone: true,
@@ -250,6 +251,7 @@ export const registrationSchema = createInsertSchema(users).pick({
   termsAccepted: true,
 }).extend({
   firstName: z.string().min(2, "Ad en az 2 karakter olmalıdır"),
+  lastName: z.string().min(2, "Soyad en az 2 karakter olmalıdır"),
   tcNumber: z.string().length(11, "T.C. Kimlik No 11 haneli olmalıdır"),
   email: z.string().email("Geçerli bir email adresi giriniz"),
   phone: z.string().min(10, "Telefon numarası en az 10 haneli olmalıdır"),
@@ -278,10 +280,6 @@ export const resetPasswordSchema = z.object({
 
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type Registration = z.infer<typeof registrationSchema>;
-export type InsertCourse = z.infer<typeof insertCourseSchema>;
-export type InsertEnrollment = z.infer<typeof insertEnrollmentSchema>;
-export type InsertContact = z.infer<typeof insertContactSchema>;
 export type RequestPasswordReset = z.infer<typeof requestPasswordResetSchema>;
 export type ResetPassword = z.infer<typeof resetPasswordSchema>;
-export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
 export type InsertStudentContactType = z.infer<typeof insertStudentContactSchema>;
