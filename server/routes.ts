@@ -247,13 +247,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin-only routes
   app.get("/api/admin/stats", async (req, res) => {
     try {
+      // First check the session user (for custom login)
       const sessionUser = (req.session as any).user;
-      if (!sessionUser || sessionUser.role !== 'admin') {
-        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      const sessionUserId = (req.session as any).userId;
+      const sessionUserRole = (req.session as any).userRole;
+      
+      console.log('Admin stats - sessionUser:', sessionUser);
+      console.log('Admin stats - sessionUserId:', sessionUserId);
+      console.log('Admin stats - sessionUserRole:', sessionUserRole);
+      
+      // Check if it's the admin user (hardcoded admin or session admin)
+      if (sessionUserId === 'admin-user-id' || (sessionUser && sessionUser.role === 'admin') || sessionUserRole === 'admin') {
+        const stats = await storage.getDashboardStats();
+        console.log('Dashboard stats:', stats);
+        return res.json(stats);
       }
       
-      const stats = await storage.getDashboardStats();
-      res.json(stats);
+      console.log('Access denied - not admin');
+      return res.status(403).json({ message: "Admin yetkisi gerekli" });
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
       res.status(500).json({ message: "İstatistik verileri alınamadı" });
@@ -263,12 +274,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/contacts", async (req, res) => {
     try {
       const sessionUser = (req.session as any).user;
-      if (!sessionUser || sessionUser.role !== 'admin') {
-        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      const sessionUserId = (req.session as any).userId;
+      const sessionUserRole = (req.session as any).userRole;
+      
+      if (sessionUserId === 'admin-user-id' || (sessionUser && sessionUser.role === 'admin') || sessionUserRole === 'admin') {
+        const contacts = await storage.getAllContacts();
+        return res.json(contacts);
       }
       
-      const contacts = await storage.getAllContacts();
-      res.json(contacts);
+      return res.status(403).json({ message: "Admin yetkisi gerekli" });
     } catch (error) {
       console.error("Error fetching contacts:", error);
       res.status(500).json({ message: "İletişim mesajları alınamadı" });
@@ -278,12 +292,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/users", async (req, res) => {
     try {
       const sessionUser = (req.session as any).user;
-      if (!sessionUser || sessionUser.role !== 'admin') {
-        return res.status(403).json({ message: "Admin yetkisi gerekli" });
+      const sessionUserId = (req.session as any).userId;
+      const sessionUserRole = (req.session as any).userRole;
+      
+      if (sessionUserId === 'admin-user-id' || (sessionUser && sessionUser.role === 'admin') || sessionUserRole === 'admin') {
+        const users = await storage.getAllUsers();
+        return res.json(users);
       }
       
-      const users = await storage.getAllUsers();
-      res.json(users);
+      return res.status(403).json({ message: "Admin yetkisi gerekli" });
     } catch (error) {
       console.error("Error fetching users:", error);
       res.status(500).json({ message: "Kullanıcı listesi alınamadı" });
