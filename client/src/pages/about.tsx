@@ -257,7 +257,7 @@ export default function About() {
                 Köpeklerinizin davranış sorunlarını çözmek ve onlarla daha sağlıklı bir yaşam sürmenizi sağlamak amacıyla buradayız.
               </p>
               <div className="flex justify-center space-x-6">
-                <a href="https://api.whatsapp.com/send?phone=905532658445" 
+                <a href="https://wa.me/905532658445" 
                    target="_blank" 
                    rel="noopener noreferrer" 
                    className="w-12 h-12 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all duration-300 transform hover:scale-110 hover:rotate-12 shadow-lg hover:shadow-xl">

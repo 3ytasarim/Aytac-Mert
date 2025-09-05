@@ -133,7 +133,7 @@ export function PaymentModal({ isOpen, onClose, course }: PaymentModalProps) {
           </div>
 
           <a
-            href={`https://api.whatsapp.com/send?phone=905532658445&text=${whatsappMessage}`}
+            href={`https://wa.me/905532658445?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center"
