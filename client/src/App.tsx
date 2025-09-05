@@ -22,6 +22,7 @@ import NotFound from "@/pages/not-found";
 import ResetPassword from "@/pages/ResetPassword";
 import { SocialIcons } from "@/components/SocialIcons";
 import { ScrollUpButton } from "@/components/ScrollUpButton";
+import { Footer } from "@/components/ui/footer";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -90,6 +91,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <Footer />
         <SocialIcons />
         <ScrollUpButton />
       </TooltipProvider>

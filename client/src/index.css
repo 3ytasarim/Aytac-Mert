@@ -4,6 +4,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom animations for footer */
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 3s ease infinite;
+}
+
 :root {
   /* Professional Black & White Theme */
   --background: hsl(0 0% 98%);
