@@ -55,11 +55,6 @@ export function Footer() {
 
             {/* Animated underline */}
             <div className="mt-2 mx-auto w-0 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent group-hover:w-64 transition-all duration-700"></div>
-            
-            {/* Year */}
-            <div className="mt-3 text-xs text-gray-400 opacity-80 hover:opacity-100 transition-opacity duration-300">
-              © 2025 • Tüm hakları saklıdır
-            </div>
           </div>
         </div>
       </div>
