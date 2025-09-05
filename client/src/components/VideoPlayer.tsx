@@ -9,20 +9,12 @@ interface VideoPlayerProps {
   title?: string;
 }
 
-function YouTubeEmbed({ url, title }: { url: string; title?: string }) {
-  // Extract video ID from YouTube URL
-  const getYouTubeId = (url: string): string | null => {
-    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : null;
-  };
-
-  const videoId = getYouTubeId(url);
-  
-  if (!videoId) {
+function VideoEmbed({ url, title }: { url: string; title?: string }) {
+  // Support for various video platforms
+  if (!url || typeof url !== 'string') {
     return (
       <div className="w-full h-64 bg-gray-100 flex items-center justify-center rounded-lg">
-        <p className="text-gray-500">Geçersiz YouTube URL'si</p>
+        <p className="text-gray-500">Geçersiz video URL'si</p>
       </div>
     );
   }
@@ -30,7 +22,7 @@ function YouTubeEmbed({ url, title }: { url: string; title?: string }) {
   return (
     <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden">
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}`}
+        src={url}
         title={title || "Video"}
         className="absolute top-0 left-0 w-full h-full"
         frameBorder="0"
@@ -227,7 +219,7 @@ export function VideoPlayer({ videoUrl, videoType, title }: VideoPlayerProps) {
   }
 
   if (videoType === "embed") {
-    return <YouTubeEmbed url={videoUrl} title={title} />;
+    return <VideoEmbed url={videoUrl} title={title} />;
   } else {
     return <CustomVideoPlayer videoUrl={videoUrl} title={title} />;
   }

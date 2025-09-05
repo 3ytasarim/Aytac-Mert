@@ -629,7 +629,7 @@ export default function AdminAddCourse() {
                                   }}
                                   className="text-blue-600"
                                 />
-                                <span className="text-sm">YouTube/Embed Kodu</span>
+                                <span className="text-sm">Video Embed/URL</span>
                               </label>
                               <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -652,10 +652,10 @@ export default function AdminAddCourse() {
                           {/* Video Content based on type */}
                           {lesson.videoType === "embed" ? (
                             <div className="space-y-2">
-                              <Label htmlFor={`lesson-video-${index}`}>YouTube Video URL'si</Label>
+                              <Label htmlFor={`lesson-video-${index}`}>Video URL'si</Label>
                               <Textarea
                                 id={`lesson-video-${index}`}
-                                placeholder="https://www.youtube.com/watch?v=..."
+                                placeholder="Video URL'si girin..."
                                 value={lesson.videoEmbedCode || ""}
                                 onChange={(e) => handleLessonChange(index, "videoEmbedCode", e.target.value)}
                                 rows={3}
@@ -666,7 +666,7 @@ export default function AdminAddCourse() {
                                 <p className="text-sm text-red-600">{lessonErrors[index].videoEmbedCode}</p>
                               )}
                               <p className="text-xs text-gray-500">
-                                YouTube video URL'sini yapıştırın.
+                                Video URL'sini yapıştırın.
                               </p>
                             </div>
                           ) : (

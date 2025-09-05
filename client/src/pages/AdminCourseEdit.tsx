@@ -495,11 +495,11 @@ export default function AdminCourseEdit() {
                                   />
                                 </div>
                                 <div>
-                                  <Label>YouTube Video URL'si</Label>
+                                  <Label>Video URL'si</Label>
                                   <Input
                                     value={editLessonForm.videoEmbedCode}
                                     onChange={(e) => setEditLessonForm({...editLessonForm, videoEmbedCode: e.target.value})}
-                                    placeholder="https://www.youtube.com/watch?v=..."
+                                    placeholder="Video URL'si girin..."
                                   />
                                 </div>
                                 <div className="flex gap-2">
@@ -612,11 +612,11 @@ export default function AdminCourseEdit() {
                         {/* Video Content based on type */}
                         {newLesson.videoType === "embed" ? (
                           <div>
-                            <Label>YouTube Video URL'si</Label>
+                            <Label>Video URL'si</Label>
                             <Input
                               value={newLesson.videoEmbedCode}
                               onChange={(e) => setNewLesson({...newLesson, videoEmbedCode: e.target.value})}
-                              placeholder="https://www.youtube.com/watch?v=..."
+                              placeholder="Video URL'si girin..."
                               data-testid="new-lesson-video"
                             />
                           </div>
