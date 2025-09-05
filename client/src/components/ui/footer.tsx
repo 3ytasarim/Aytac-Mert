@@ -21,7 +21,7 @@ export function Footer() {
         <div className="absolute bottom-8 right-8 w-1 h-1 bg-yellow-400 rounded-full animate-pulse"></div>
       </div>
 
-      <div className="relative z-10 py-6 px-4">
+      <div className="relative z-40 py-6 px-4">
         <div className="max-w-7xl mx-auto">
           <div 
             className={`text-center transform transition-all duration-1000 ease-out ${
