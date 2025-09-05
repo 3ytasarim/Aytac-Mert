@@ -12,7 +12,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="relative w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+    <footer className="relative w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden mobile-footer">
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-2 left-8 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
