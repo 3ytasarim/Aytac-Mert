@@ -183,33 +183,126 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Who Are We Section */}
-      <section className="who-are-we-section">
-        <div className="container">
-          <div className="who-are-we-content">
-            <div className="who-are-we-header">
-              <h2 className="who-are-we-title">Biz Kimiz?</h2>
-              <div className="title-underline"></div>
+      {/* Who Are We Section - Professional & Animated */}
+      <section className="relative py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+        {/* Background Decorative Elements */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-600 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Section Header with Modern Typography */}
+          <div className="text-center mb-20 animate-on-scroll">
+            <div className="inline-flex items-center gap-3 mb-6">
+              <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-blue-600"></div>
+              <svg className="w-8 h-8 text-blue-600 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-purple-600"></div>
             </div>
             
-            <div className="who-are-we-text">
-              <div className="text-block animate-on-scroll">
-                <div className="text-highlight-bar"></div>
-                <p className="text-content">
-                  Bu sayfa diğer sayfalarda bulacağınız bilen köpeklere komut verilmesini içermez. Bu sayfada 
-                  hiç komutları bilmeyen sıfırdan çalışmaya başlayan köpeklerin eğitimlerinin nasıl yapıldığını, 
-                  köpeklerin duruşu, davranışlarına göre ödüllendirme sistemi ile nasıl eğitildiğini açıklamalı 
-                  şekilde anlatır.
+            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-6">
+              Biz Kimiz?
+            </h2>
+            
+            <div className="w-32 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+            
+            <p className="text-xl text-gray-600 mt-8 max-w-3xl mx-auto leading-relaxed">
+              Profesyonel köpek eğitimi alanında uzman kadromuzla, hem yeni başlayanlar hem de deneyimli eğitmenler için kapsamlı eğitim programları sunuyoruz.
+            </p>
+          </div>
+
+          {/* Professional Content Cards */}
+          <div className="grid md:grid-cols-2 gap-12 mb-16">
+            {/* Card 1 - Beginner Training */}
+            <div className="group bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 animate-on-scroll border border-gray-100 relative overflow-hidden">
+              {/* Card Background Pattern */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-transparent rounded-bl-full opacity-50"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Sıfırdan Eğitim</h3>
+                    <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
+                  </div>
+                </div>
+                
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Hiç komut bilmeyen köpeklerin sıfırdan eğitimi için özel tasarlanmış programlarımız ile 
+                  köpeğinizin davranışlarını anlayarak ödüllendirme sistemi ile etkili eğitim metodları öğreneceksiniz.
                 </p>
+                
+                <div className="mt-6 flex items-center text-blue-600 font-semibold group-hover:text-blue-700 transition-colors">
+                  <span>Temel eğitim programları</span>
+                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2 - Professional Certification */}
+            <div className="group bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 animate-on-scroll border border-gray-100 relative overflow-hidden">
+              {/* Card Background Pattern */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-100 to-transparent rounded-bl-full opacity-50"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Sertifikalı Eğitim</h3>
+                    <div className="w-16 h-0.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"></div>
+                  </div>
+                </div>
+                
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  Kendi köpeğiniz veya farklı köpeklerle çalışarak eğitim becerilerinizi geliştirin. 
+                  İletişime geçtiğinizde mevcut koşullara uygun sertifikalandırma imkanlarından yararlanabilirsiniz.
+                </p>
+                
+                <div className="mt-6 flex items-center text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                  <span>Profesyonel sertifikasyon</span>
+                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action Section */}
+          <div className="text-center animate-on-scroll">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white relative overflow-hidden">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+              <div className="absolute top-0 left-0 w-full h-full">
+                <div className="absolute top-10 left-10 w-20 h-20 border border-white border-opacity-20 rounded-full"></div>
+                <div className="absolute bottom-10 right-10 w-32 h-32 border border-white border-opacity-20 rounded-full"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 border border-white border-opacity-10 rounded-full"></div>
               </div>
               
-              <div className="text-block animate-on-scroll">
-                <div className="text-highlight-bar"></div>
-                <p className="text-content">
-                  Bu sayfa'da kendi köpeğiniz yada birkaç farklı köpekle çalışmakla eğitimlerinizi 
-                  geliştirebileceğiniz dilediğiniz taktirde iletişime geçmeniz halinde o günkü koşullarla aynı 
-                  zamanda sertifikalandırabiliceğiniz bir sayfadır.
+              <div className="relative z-10">
+                <h3 className="text-4xl font-bold mb-6">Eğitim Yolculuğunuza Başlayın</h3>
+                <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                  Profesyonel köpek eğitimi ve eğitmen yetiştirme programlarımız ile hem köpeğinizi eğitin, hem de bu alanda uzman olun.
                 </p>
+                <button 
+                  onClick={() => scrollToSection('courses')}
+                  className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  data-testid="button-view-courses"
+                >
+                  Eğitim Programlarını İncele
+                </button>
               </div>
             </div>
           </div>
