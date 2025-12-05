@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -20,7 +20,8 @@ import type { Course } from "@shared/schema";
 import { z } from "zod";
 import { ProfessionalSlider } from "@/components/ProfessionalSlider";
 import { SocialIcons } from "@/components/SocialIcons";
-import { ChevronDown, Star, Users, Award, Clock } from "lucide-react";
+import { ChevronDown, Star, Users, Award, Clock, Play, Volume2 } from "lucide-react";
+import heroVideo from "@assets/Aytac_Mert_Video_1764954711333.mp4";
 
 const contactFormSchema = insertContactSchema.extend({
   fullName: z.string().min(2, "Ad soyad en az 2 karakter olmalıdır"),
@@ -179,6 +180,84 @@ export default function Landing() {
             <div className="chevron" style={{pointerEvents: 'none'}}></div>
             <div className="chevron" style={{pointerEvents: 'none'}}></div>
             <div className="chevron" style={{pointerEvents: 'none'}}></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Professional Video Section */}
+      <section className="relative py-16 md:py-24 bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden">
+        {/* Background Decorative Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black to-transparent z-10"></div>
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent z-10"></div>
+          <div className="absolute top-1/4 left-10 w-64 h-64 bg-blue-600 rounded-full filter blur-[100px] opacity-20 animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-purple-600 rounded-full filter blur-[100px] opacity-20 animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-20">
+          {/* Section Header */}
+          <div className="text-center mb-12 animate-on-scroll">
+            <div className="inline-flex items-center gap-3 mb-6">
+              <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-blue-500"></div>
+              <Play className="w-8 h-8 text-blue-500 animate-pulse" />
+              <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-purple-500"></div>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                Eğitim Dünyamıza Hoş Geldiniz
+              </span>
+            </h2>
+            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+              Profesyonel köpek eğitimi yolculuğunuza başlamadan önce bu videoyu izleyin
+            </p>
+          </div>
+
+          {/* Video Container */}
+          <div className="relative max-w-5xl mx-auto animate-on-scroll">
+            {/* Decorative Frame */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 rounded-2xl md:rounded-3xl opacity-75 blur-sm animate-pulse"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl md:rounded-3xl"></div>
+            
+            {/* Video Wrapper */}
+            <div className="relative bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
+              <video
+                className="w-full h-auto aspect-video object-cover"
+                autoPlay
+                loop
+                playsInline
+                controls
+                data-testid="hero-video"
+              >
+                <source src={heroVideo} type="video/mp4" />
+                Tarayıcınız video oynatmayı desteklemiyor.
+              </video>
+            </div>
+
+            {/* Video Info Badge */}
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full shadow-lg flex items-center gap-2">
+              <Volume2 className="w-4 h-4" />
+              <span className="text-sm font-medium">Sesi açmayı unutmayın</span>
+            </div>
+          </div>
+
+          {/* Stats or Features Below Video */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto animate-on-scroll">
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-blue-500/50 transition-colors">
+              <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">10+</div>
+              <div className="text-sm text-gray-400">Yıllık Deneyim</div>
+            </div>
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-purple-500/50 transition-colors">
+              <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">500+</div>
+              <div className="text-sm text-gray-400">Mutlu Öğrenci</div>
+            </div>
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-blue-500/50 transition-colors">
+              <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">50+</div>
+              <div className="text-sm text-gray-400">Video Ders</div>
+            </div>
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-purple-500/50 transition-colors">
+              <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">%100</div>
+              <div className="text-sm text-gray-400">Memnuniyet</div>
+            </div>
           </div>
         </div>
       </section>
