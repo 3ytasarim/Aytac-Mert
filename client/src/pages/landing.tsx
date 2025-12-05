@@ -223,6 +223,7 @@ export default function Landing() {
               <video
                 className="w-full h-auto aspect-[9/16] object-cover"
                 autoPlay
+                muted
                 loop
                 playsInline
                 controls
