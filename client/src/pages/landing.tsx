@@ -212,8 +212,8 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Video Container */}
-          <div className="relative max-w-5xl mx-auto animate-on-scroll">
+          {/* Video Container - Vertical/Portrait Format */}
+          <div className="relative max-w-sm md:max-w-md mx-auto animate-on-scroll">
             {/* Decorative Frame */}
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 rounded-2xl md:rounded-3xl opacity-75 blur-sm animate-pulse"></div>
             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl md:rounded-3xl"></div>
@@ -221,7 +221,7 @@ export default function Landing() {
             {/* Video Wrapper */}
             <div className="relative bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
               <video
-                className="w-full h-auto aspect-video object-cover"
+                className="w-full h-auto aspect-[9/16] object-cover"
                 autoPlay
                 loop
                 playsInline
