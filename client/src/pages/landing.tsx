@@ -242,9 +242,9 @@ export default function Landing() {
           </div>
 
           {/* Stats or Features Below Video */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto animate-on-scroll">
+          <div className="grid grid-cols-3 gap-6 mt-16 max-w-3xl mx-auto animate-on-scroll">
             <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-blue-500/50 transition-colors">
-              <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">10+</div>
+              <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">25+</div>
               <div className="text-sm text-gray-400">Yıllık Deneyim</div>
             </div>
             <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-purple-500/50 transition-colors">
@@ -252,11 +252,7 @@ export default function Landing() {
               <div className="text-sm text-gray-400">Mutlu Öğrenci</div>
             </div>
             <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-blue-500/50 transition-colors">
-              <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">50+</div>
-              <div className="text-sm text-gray-400">Video Ders</div>
-            </div>
-            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:border-purple-500/50 transition-colors">
-              <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">%100</div>
+              <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">%100</div>
               <div className="text-sm text-gray-400">Memnuniyet</div>
             </div>
           </div>
