@@ -1,0 +1,24 @@
+Web sitenizin her sayfasına Google etiketini yükleyin.
+Her bir sayfanın HTML'sini açın.
+Aşağıdakilerden birini seçin:
+Google etiketini web sitenize yüklemediyseniz aşağıdaki etiketi kopyalayıp head etiketleri (<head></head>) arasına yapıştırın:
+
+<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17830624600"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-17830624600'); </script>
+
+Google etiketini ayarlama hakkındaki diğer kuralları inceleyin.
+
+Google etiketini web sitenize farklı bir Google ürününden (ör. Google Analytics) veya başka bir Google Ads hesabından yüklediyseniz aşağıdaki "config" komutunu kopyalayıp Google etiketinin bulunduğu her yerde </script> bitiş etiketinin hemen üstüne yerleştirin.
+
+gtag('config', 'AW-17830624600');
+
+Google etiketi, farklı bir dönüşüm işleminin etiketi ayarlanırken web sitenize sizin tarafınızdan veya bir yönetici hesabı tarafından zaten yüklenmişse etiketin web sitenizdeki her sayfada bulunduğundan ve "config" komutunda Google Ads hesabına ait şu dönüşüm kimliğinin yer aldığından emin olun: AW-17830624600
+Web sayfalarınızdaki değişiklikleri kaydedin.
+
+Etkinlik snippet'ini dönüşüm sayfasına yükleyin. Bu sayfa, müşterilerinizin bir dönüşümü tamamladıktan sonra web sitenizde eriştiği sayfadır (örneğin "Siparişiniz için teşekkürler" sayfası).
+Dönüşüm sayfasının HTML'sini açın.
+Aşağıdaki snippet'i kopyalayın ve Google etiketinden hemen sonra gelecek şekilde sayfanın head etiketleri (<head></head>) arasına yapıştırın.
+
+<!-- Event snippet for Satın alma işlemi conversion page --> <script> gtag('event', 'conversion', { 'send_to': 'AW-17830624600/HXEMCMHVkdgbENj6prZC', 'transaction_id': '' }); </script>
+
+transaction_id parametresine dinamik olarak değer iletilmesi için kod ekleyin. Bu parametre, web sitenizdeki alım satım işlemleri veya potansiyel müşteriler izlenirken her dönüşümün yalnızca bir kez sayılmasını sağlar.
+Web sayfanızdaki değişiklikleri kaydedin.

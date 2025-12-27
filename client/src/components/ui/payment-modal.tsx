@@ -36,6 +36,16 @@ export function PaymentModal({ isOpen, onClose, course }: PaymentModalProps) {
     `Merhaba, "${course.title}" kursu için ödeme yaptım. Dekont gönderiyorum.`
   );
 
+  // Google Ads dönüşüm izleme
+  const trackConversion = () => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-17830624600/HXEMCMHVkdgbENj6prZC',
+        'transaction_id': `course_${course.id}_${Date.now()}`
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md" data-testid="payment-modal">
@@ -136,6 +146,7 @@ export function PaymentModal({ isOpen, onClose, course }: PaymentModalProps) {
             href={`https://wa.me/905532658445?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={trackConversion}
             className="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center"
             data-testid="button-whatsapp"
           >
