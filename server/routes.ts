@@ -13,7 +13,8 @@ import {
 } from "@shared/schema";
 import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 import { z } from "zod";
-import { randomBytes } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
+import { saveUpload, sendUpload, isUploadKind, UploadError } from "./localStorage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -998,19 +999,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Video serving endpoint
-  app.get("/objects/:objectPath(*)", async (req, res) => {
+  app.get("/objects/videos/:id", async (req, res) => {
+    await sendUpload("videos", req.params.id, res);
+  });
+
+  // Receives the file body for an upload URL handed out by the admin upload endpoints
+  app.put("/api/admin/uploads/:kind/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const { ObjectStorageService, ObjectNotFoundError } = await import("./objectStorage");
-      const objectStorageService = new ObjectStorageService();
-      
-      const objectFile = await objectStorageService.getObjectEntityFile(req.path);
-      await objectStorageService.downloadObject(objectFile, res);
-    } catch (error) {
-      console.error("Error serving video:", error);
-      if ((error as any).name === 'ObjectNotFoundError') {
-        return res.sendStatus(404);
+      const sessionUser = (req.session as any)?.user;
+      const userId = sessionUser?.id || req.user?.claims?.sub;
+
+      if (!(sessionUser && sessionUser.role === 'admin')) {
+        const user = await storage.getUser(userId);
+        if (!user || user.role !== "admin") {
+          return res.status(403).json({ message: "Admin access required" });
+        }
       }
-      return res.sendStatus(500);
+
+      const { kind, id } = req.params;
+      if (!isUploadKind(kind)) {
+        return res.status(404).json({ message: "Unknown upload type" });
+      }
+
+      await saveUpload(kind, id, req);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error saving upload:", error);
+      if (error instanceof UploadError) {
+        return res.status(error.status).json({ message: error.message });
+      }
+      res.status(500).json({ message: "Failed to save upload" });
     }
   });
 
@@ -1030,32 +1048,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Generate presigned URL for video upload
-      const { ObjectStorageService } = await import("./objectStorage");
-      const objectStorageService = new ObjectStorageService();
-      
-      console.log('Generating upload URL for video...');
-      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-      console.log('Upload URL generated successfully');
-      
-      res.json({ uploadURL });
+      const videoId = randomUUID();
+      res.json({
+        uploadURL: `/api/admin/uploads/videos/${videoId}`,
+        objectPath: `/objects/videos/${videoId}`,
+      });
     } catch (error) {
       console.error("Error generating upload URL:", error);
-      
-      // Provide more specific error messages
-      let errorMessage = "Failed to generate upload URL";
-      if (error instanceof Error) {
-        console.error("Error details:", error.message);
-        if (error.message.includes('PRIVATE_OBJECT_DIR')) {
-          errorMessage = "Object storage not configured";
-        } else if (error.message.includes('bucket')) {
-          errorMessage = "Storage bucket access error";
-        } else if (error.message.includes('quota') || error.message.includes('limit')) {
-          errorMessage = "Storage quota exceeded";
-        }
-      }
-      
-      res.status(500).json({ message: errorMessage });
+      res.status(500).json({ message: "Failed to generate upload URL" });
     }
   });
 
@@ -1161,20 +1161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Image upload routes
-  app.get("/public-objects/:filePath(*)", async (req, res) => {
-    const filePath = req.params.filePath;
-    const { ObjectStorageService } = await import("./objectStorage");
-    const objectStorageService = new ObjectStorageService();
-    try {
-      const file = await objectStorageService.searchPublicObject(filePath);
-      if (!file) {
-        return res.status(404).json({ error: "File not found" });
-      }
-      objectStorageService.downloadObject(file, res);
-    } catch (error) {
-      console.error("Error searching for public object:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
+  app.get("/public-objects/images/:id", async (req, res) => {
+    await sendUpload("images", req.params.id, res);
   });
 
   app.post("/api/admin/images/upload-url", isAuthenticated, async (req: any, res) => {
@@ -1191,44 +1179,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Generate a simple image ID
-      const imageId = `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Create public path for the image
-      const publicPath = `/replit-objstore-a63a6255-5761-4388-819b-d9200523e108/public/images/${imageId}`;
-      
-      // Parse the path and create signed upload URL
-      const pathParts = publicPath.split("/");
-      const bucketName = pathParts[1];
-      const objectName = pathParts.slice(2).join("/");
-      
-      // Create signed upload URL
-      const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
-      const request = {
-        bucket_name: bucketName,
-        object_name: objectName,
-        method: "PUT",
-        expires_at: new Date(Date.now() + 900 * 1000).toISOString(),
-      };
-      
-      const response = await fetch(
-        `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(request),
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Failed to sign object URL: ${response.status}`);
-      }
-      
-      const { signed_url: uploadURL } = await response.json();
-      
-      res.json({ uploadURL, imageId });
+      const imageId = `img_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+      res.json({ uploadURL: `/api/admin/uploads/images/${imageId}`, imageId });
     } catch (error) {
       console.error("Error generating upload URL:", error);
       res.status(500).json({ message: "Failed to generate upload URL" });

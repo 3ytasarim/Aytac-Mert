@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { BookOpen, Upload, Save, ArrowLeft, ArrowRight, Plus, X, Video, GripVertical, FileVideo } from "lucide-react";
-import { ObjectUploader } from "@/components/ui/ObjectUploader";
+import { ObjectUploader, toAbsoluteUrl, toVideoObjectPath } from "@/components/ui/ObjectUploader";
 import type { UploadResult } from "@uppy/core";
 import { z } from "zod";
 
@@ -699,7 +699,7 @@ export default function AdminAddCourse() {
                                       
                                       return {
                                         method: "PUT" as const,
-                                        url: data.uploadURL,
+                                        url: toAbsoluteUrl(data.uploadURL),
                                       };
                                     } catch (error) {
                                       console.error('Upload parameters error:', error);
@@ -713,24 +713,7 @@ export default function AdminAddCourse() {
                                   }}
                                   onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
                                     if (result.successful?.[0]?.uploadURL) {
-                                      const uploadUrl = result.successful[0].uploadURL as string;
-                                      console.log('Upload URL:', uploadUrl);
-                                      
-                                      // Extract object path from the Google Cloud Storage URL
-                                      let objectPath = '';
-                                      if (uploadUrl.includes('storage.googleapis.com')) {
-                                        // Extract the object path from GCS URL
-                                        const urlParts = uploadUrl.split('/');
-                                        const bucketIndex = urlParts.findIndex(part => part === 'replit-objstore-a63a6255-5761-4388-819b-d9200523e108');
-                                        if (bucketIndex !== -1) {
-                                          const pathParts = urlParts.slice(bucketIndex + 1);
-                                          // Remove .private/ prefix and add /objects/ prefix
-                                          const cleanPath = pathParts.join('/').replace('.private/', '');
-                                          objectPath = `/objects/${cleanPath}`;
-                                        }
-                                      }
-                                      
-                                      console.log('Converted object path:', objectPath);
+                                      const objectPath = toVideoObjectPath(result.successful[0].uploadURL as string);
                                       handleLessonChange(index, "videoUrl", objectPath);
                                       setUploadingLessons(prev => ({ ...prev, [index]: false }));
                                       toast({

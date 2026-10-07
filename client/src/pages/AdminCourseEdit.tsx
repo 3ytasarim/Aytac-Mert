@@ -12,7 +12,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Edit, Plus, Trash2, Video, Save, X, Check, FileVideo } from "lucide-react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { ImageUploader } from "@/components/ImageUploader";
-import { ObjectUploader } from "@/components/ui/ObjectUploader";
+import { ObjectUploader, toAbsoluteUrl, toVideoObjectPath } from "@/components/ui/ObjectUploader";
 import type { UploadResult } from "@uppy/core";
 
 interface Course {
@@ -633,26 +633,13 @@ export default function AdminCourseEdit() {
                                   const data = await response.json();
                                   return {
                                     method: "PUT" as const,
-                                    url: data.uploadURL,
+                                    url: toAbsoluteUrl(data.uploadURL),
                                   };
                                 }}
                                 onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
                                   if (result.successful?.[0]?.uploadURL) {
-                                    const uploadUrl = result.successful[0].uploadURL as string;
-                                    console.log('Upload URL:', uploadUrl);
-                                    
-                                    // Extract object path from the Google Cloud Storage URL
-                                    let objectPath = '';
-                                    if (uploadUrl.includes('storage.googleapis.com')) {
-                                      const urlParts = uploadUrl.split('/');
-                                      const bucketIndex = urlParts.findIndex(part => part === 'replit-objstore-a63a6255-5761-4388-819b-d9200523e108');
-                                      if (bucketIndex !== -1) {
-                                        const pathParts = urlParts.slice(bucketIndex + 1);
-                                        const cleanPath = pathParts.join('/').replace('.private/', '');
-                                        objectPath = `/objects/${cleanPath}`;
-                                      }
-                                    }
-                                    
+                                    const objectPath = toVideoObjectPath(result.successful[0].uploadURL as string);
+
                                     setNewLesson({...newLesson, videoUrl: objectPath});
                                     setUploadingLessons(prev => ({ ...prev, "new": false }));
                                     toast({

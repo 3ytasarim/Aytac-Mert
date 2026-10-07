@@ -8,6 +8,17 @@ import AwsS3 from "@uppy/aws-s3";
 import type { UploadResult } from "@uppy/core";
 import { Button } from "@/components/ui/button";
 
+// Maps the URL a video was uploaded to (/api/admin/uploads/videos/<id>) to its playback path.
+export function toVideoObjectPath(uploadUrl: string): string {
+  const match = uploadUrl.match(/\/api\/admin\/uploads\/videos\/([A-Za-z0-9_-]+)/);
+  return match ? `/objects/videos/${match[1]}` : "";
+}
+
+// Uppy needs an absolute URL for the upload request.
+export function toAbsoluteUrl(url: string): string {
+  return new URL(url, window.location.origin).href;
+}
+
 interface ObjectUploaderProps {
   maxNumberOfFiles?: number;
   maxFileSize?: number;
